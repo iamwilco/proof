@@ -973,7 +973,7 @@
     {
       "id": "PROOF-050",
       "priority": 50,
-      "status": "pending",
+      "status": "completed",
       "title": "Design Milestone schema",
       "description": "Create Milestone model for project milestones",
       "acceptance_criteria": [
@@ -984,7 +984,7 @@
       ],
       "milestone": 11,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-051",
