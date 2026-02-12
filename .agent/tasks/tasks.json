@@ -1115,7 +1115,7 @@
     {
       "id": "PROOF-059",
       "priority": 59,
-      "status": "pending",
+      "status": "completed",
       "title": "Build Organization profiles",
       "description": "Team/company profile pages",
       "acceptance_criteria": [
@@ -1126,7 +1126,7 @@
       ],
       "milestone": 13,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-060",
