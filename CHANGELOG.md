@@ -20,6 +20,9 @@ All notable changes to this project will be documented in this file.
 - Voting record schema for proposal voting data.
 - Voting data source research notes for Catalyst and Jörmungandr.
 - Voting data ingestion script with rankings and freshness timestamps.
+- Voting UI components: VotingStats, RankingBadge, VotingTrendsChart.
+- Voting analytics dashboard page with fund-wide statistics.
+- Voting data integrated on project detail and list pages.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

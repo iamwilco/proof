@@ -19,7 +19,7 @@
 | 6 | Data Export | ✅ Complete | 2/2 | 100% |
 | 7 | Community Reviews | ⏳ Pending | 0/6 | 0% |
 | 8 | Accountability Scoring | ⏳ Pending | 0/3 | 0% |
-| 9 | Voting Data | ⏳ Pending | 0/4 | 0% |
+| 9 | Voting Data | 🔄 In Progress | 4/4 | 100% |
 | 10 | Red Flag Detection | ⏳ Pending | 0/5 | 0% |
 | 11 | Milestone Tracking | ⏳ Pending | 0/4 | 0% |
 | 12 | Monthly Reports | ⏳ Pending | 0/3 | 0% |
@@ -38,17 +38,17 @@
 ## Current Task
 
 ```
-ID:          PROOF-044
-Title:       Build voting analytics UI
-Milestone:   9 — Voting Data
+ID:          PROOF-045
+Title:       Design Flag schema
+Milestone:   10 — Red Flag Detection
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] Voting analytics dashboard
-- [ ] Fund/category rankings
-- [ ] Proposal-level vote breakdowns
-- [ ] Data freshness indicators
+- [ ] Flag model with type (automated/community)
+- [ ] Category enum: repeat_delays, similar, abandoned, plagiarism, etc.
+- [ ] Status: pending, confirmed, dismissed
+- [ ] Relations to Project and optional User
 
 ---
 
@@ -56,6 +56,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-044 | Build Voting UI components | 2026-02-12 |
 | PROOF-043 | Build voting data ingestion | 2026-02-12 |
 | PROOF-042 | Research and access voting data sources | 2026-02-12 |
 | — | PRD + Tasks for transparency features | 2026-02-12 |
@@ -114,3 +115,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-041 voting record schema
 - **2026-02-12:** Completed PROOF-042 voting data source research
 - **2026-02-12:** Completed PROOF-043 voting data ingestion
+- **2026-02-12:** Completed PROOF-044 voting UI components (VotingStats, RankingBadge, analytics dashboard, trends chart)

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import prisma from "../../../lib/prisma";
+import RankingBadge from "../../../components/RankingBadge";
+import VotingStats from "../../../components/VotingStats";
 import FeedbackForm from "./FeedbackForm";
 import LeaderResponsePanel from "./LeaderResponsePanel";
 import ReviewSection from "./ReviewSection";
@@ -140,6 +142,10 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         orderBy: { createdAt: "desc" },
       },
       links: true,
+      votingRecords: {
+        orderBy: { capturedAt: "desc" },
+        take: 1,
+      },
     },
   });
 
@@ -165,7 +171,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               <h1 className="text-2xl font-bold text-slate-900">{project.title}</h1>
               <p className="mt-2 text-base text-slate-600">{project.description}</p>
             </div>
-            <StatusBadge status={project.status} />
+            <div className="flex items-center gap-2">
+              {project.votingRecords[0]?.fundRank && (
+                <RankingBadge rank={project.votingRecords[0].fundRank} label="Fund" />
+              )}
+              <StatusBadge status={project.status} />
+            </div>
           </div>
 
           <div className="mt-6 grid gap-4 border-t border-slate-100 pt-6 sm:grid-cols-4">
@@ -203,6 +214,20 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         </header>
 
         <div className="space-y-6">
+          {project.votingRecords.length > 0 && (
+            <Section title="Voting Results">
+              <VotingStats
+                yesVotes={project.votingRecords[0].yesVotes}
+                noVotes={project.votingRecords[0].noVotes}
+                abstainVotes={project.votingRecords[0].abstainVotes}
+                uniqueWallets={project.votingRecords[0].uniqueWallets}
+                approvalRate={project.votingRecords[0].approvalRate}
+                fundRank={project.votingRecords[0].fundRank}
+                categoryRank={project.votingRecords[0].categoryRank}
+              />
+            </Section>
+          )}
+
           <Section title="Feedback">
             <FeedbackForm projectId={project.id} />
           </Section>

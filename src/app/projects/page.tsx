@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import prisma from "../../lib/prisma";
+import RankingBadge from "../../components/RankingBadge";
 
 export const revalidate = 60;
 
@@ -49,6 +50,7 @@ type ProjectCardProps = {
   category: string;
   fundingAmount: number;
   fundName: string;
+  fundRank?: number | null;
 };
 
 const ProjectCard = ({
@@ -59,6 +61,7 @@ const ProjectCard = ({
   category,
   fundingAmount,
   fundName,
+  fundRank,
 }: ProjectCardProps) => {
   return (
     <Link
@@ -69,7 +72,10 @@ const ProjectCard = ({
         <h3 className="text-lg font-semibold leading-snug text-slate-900 group-hover:text-blue-600">
           {title}
         </h3>
-        <StatusBadge status={status} />
+        <div className="flex items-center gap-2">
+          {fundRank && <RankingBadge rank={fundRank} size="sm" />}
+          <StatusBadge status={status} />
+        </div>
       </div>
       <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-600">
         {description}
@@ -128,6 +134,11 @@ export default async function ProjectsPage({
     include: {
       fund: {
         select: { name: true },
+      },
+      votingRecords: {
+        orderBy: { capturedAt: "desc" },
+        take: 1,
+        select: { fundRank: true },
       },
     },
     orderBy: { createdAt: "desc" },
@@ -263,6 +274,7 @@ export default async function ProjectsPage({
                   category={project.category}
                   fundingAmount={Number(project.fundingAmount)}
                   fundName={project.fund.name}
+                  fundRank={project.votingRecords[0]?.fundRank}
                 />
               ))}
             </section>

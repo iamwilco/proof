@@ -724,7 +724,7 @@
     {
       "id": "PROOF-044",
       "priority": 44,
-      "status": "pending",
+      "status": "completed",
       "title": "Build Voting UI components",
       "description": "Display voting data on proposals and analytics pages",
       "acceptance_criteria": [
@@ -735,7 +735,7 @@
       ],
       "milestone": 9,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-045",
