@@ -625,7 +625,7 @@
     {
       "id": "PROOF-038",
       "priority": 38,
-      "status": "pending",
+      "status": "completed",
       "title": "Design AccountabilityScore schema",
       "description": "Create AccountabilityScore model for person reputation",
       "acceptance_criteria": [
@@ -636,7 +636,7 @@
       ],
       "milestone": 8,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-039",

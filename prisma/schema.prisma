@@ -138,6 +138,7 @@ model Person {
   // Relationships
   projectPeople           ProjectPerson[]
   organizations           PersonOrganization[]
+  accountabilityScore     AccountabilityScore?
   sourceUrl               String
   sourceType              String
   lastSeenAt              DateTime
@@ -289,6 +290,22 @@ model ReviewVote {
 
   @@unique([reviewId, userId])
   @@index([userId, createdAt])
+}
+
+model AccountabilityScore {
+  id                  String   @id @default(uuid())
+  personId            String   @unique
+  person              Person   @relation(fields: [personId], references: [id])
+  overallScore        Int
+  completionScore     Int
+  deliveryScore       Int
+  communityScore      Int
+  efficiencyScore     Int
+  communicationScore  Int
+  badge               String
+  calculatedAt        DateTime @default(now())
+
+  @@index([badge])
 }
 
 model Rating {
