@@ -863,6 +863,21 @@
       "completed": "2026-02-12"
     },
     {
+      "id": "PROOF-054",
+      "priority": 54,
+      "status": "completed",
+      "title": "Add milestone status dashboard",
+      "description": "Dashboard with filters and CSV export for milestones",
+      "acceptance_criteria": [
+        "Milestone status overview page",
+        "Filter by fund and status",
+        "Export milestone status summary"
+      ],
+      "milestone": 12,
+      "created": "2026-02-12",
+      "completed": "2026-02-12"
+    },
+    {
       "id": "PROOF-049",
       "priority": 49,
       "status": "completed",

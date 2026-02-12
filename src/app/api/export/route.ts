@@ -6,6 +6,7 @@ export async function GET(request: NextRequest) {
   const format = searchParams.get("format") || "json";
   const type = searchParams.get("type") || "projects";
   const fundId = searchParams.get("fund");
+  const status = searchParams.get("status");
 
   try {
     let data: unknown[];
@@ -49,6 +50,24 @@ export async function GET(request: NextRequest) {
         data = await prisma.fund.findMany({
           where: { number: { gt: 0 } },
           orderBy: { number: "desc" },
+        });
+        break;
+      }
+
+      case "milestones": {
+        const where: Record<string, unknown> = {};
+        if (status) {
+          where.status = status;
+        }
+        if (fundId) {
+          where.project = { fundId };
+        }
+        data = await prisma.milestone.findMany({
+          where,
+          include: {
+            project: { select: { id: true, title: true, fundId: true } },
+          },
+          orderBy: { dueDate: "asc" },
         });
         break;
       }

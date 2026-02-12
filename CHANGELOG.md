@@ -36,6 +36,7 @@ All notable changes to this project will be documented in this file.
 - Extended Milestone schema with Catalyst SoM/PoA fields and evidence tracking.
 - Milestone ingestion script and payload example for manual sync.
 - Milestone tracking UI with SoM/PoA status badges and evidence links.
+- Milestone status dashboard with filters and CSV export.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
