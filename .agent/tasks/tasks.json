@@ -803,6 +803,21 @@
       "completed": "2026-02-12"
     },
     {
+      "id": "PROOF-050",
+      "priority": 50,
+      "status": "completed",
+      "title": "Research and access milestone data sources",
+      "description": "Research Catalyst milestone reporting data sources",
+      "acceptance_criteria": [
+        "Identify Catalyst milestone reporting data sources",
+        "Document API endpoints or data formats",
+        "Test access and sample data retrieval"
+      ],
+      "milestone": 11,
+      "created": "2026-02-12",
+      "completed": "2026-02-12"
+    },
+    {
       "id": "PROOF-049",
       "priority": 49,
       "status": "completed",

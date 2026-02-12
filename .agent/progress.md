@@ -21,7 +21,7 @@
 | 8 | Accountability Scoring | ⏳ Pending | 0/3 | 0% |
 | 9 | Voting Data | 🔄 In Progress | 4/4 | 100% |
 | 10 | Red Flag Detection | ✅ Complete | 5/5 | 100% |
-| 11 | Milestone Tracking | ⏳ Pending | 0/4 | 0% |
+| 11 | Milestone Tracking | 🔄 In Progress | 1/4 | 25% |
 | 12 | Monthly Reports | ⏳ Pending | 0/3 | 0% |
 | 13 | Communities & Groups | ⏳ Pending | 0/3 | 0% |
 | 14 | Advanced Analytics | ⏳ Pending | 0/4 | 0% |
@@ -38,16 +38,16 @@
 ## Current Task
 
 ```
-ID:          PROOF-050
-Title:       Research and access milestone data sources
+ID:          PROOF-051
+Title:       Extend Milestone schema with Catalyst fields
 Milestone:   11 — Milestone Tracking
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] Identify Catalyst milestone reporting data sources
-- [ ] Document API endpoints or data formats
-- [ ] Test access and sample data retrieval
+- [ ] Add SoM/PoA status fields to Milestone model
+- [ ] Add payment tracking fields
+- [ ] Add evidence URLs array field
 
 ---
 
@@ -55,6 +55,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-050 | Research milestone data sources | 2026-02-12 |
 | PROOF-049 | Build flagged projects indicator | 2026-02-12 |
 | PROOF-048 | Build flag review dashboard | 2026-02-12 |
 | PROOF-047 | Build community flag submission UI | 2026-02-12 |
@@ -125,3 +126,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-047 Community flag submission UI with category selector and evidence input
 - **2026-02-12:** Completed PROOF-048 Flag review dashboard with filters and action buttons
 - **2026-02-12:** Completed PROOF-049 Flagged projects indicator (badges, warning banner, filter)
+- **2026-02-12:** Completed PROOF-050 Milestone data sources research (Milestone Module, LidoNation API)

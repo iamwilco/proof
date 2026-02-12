@@ -32,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - FlagActions component for confirm/dismiss/resolve workflows.
 - Flagged projects indicator: badge on project cards, warning banner on detail pages.
 - Flag status filter on projects listing page.
+- Milestone data sources research documentation.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
