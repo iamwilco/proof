@@ -38,6 +38,9 @@ All notable changes to this project will be documented in this file.
 - Milestone tracking UI with SoM/PoA status badges and evidence links.
 - Milestone status dashboard with filters and CSV export.
 - Monthly reports schema with submission form and report history.
+- Monthly reports moderation dashboard with approve/flag actions.
+- Report moderation export support and status tracking.
+- Similar proposal detection using lightweight text similarity scoring.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

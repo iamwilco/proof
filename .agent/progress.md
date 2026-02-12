@@ -20,9 +20,9 @@
 | 7 | Community Reviews | ⏳ Pending | 0/6 | 0% |
 | 8 | Accountability Scoring | ⏳ Pending | 0/3 | 0% |
 | 9 | Voting Data | 🔄 In Progress | 4/4 | 100% |
-| 10 | Red Flag Detection | ✅ Complete | 5/5 | 100% |
+| 10 | Red Flag Detection | ✅ Complete | 6/6 | 100% |
 | 11 | Milestone Tracking | ✅ Complete | 4/4 | 100% |
-| 12 | Monthly Reports | 🔄 In Progress | 2/3 | 66% |
+| 12 | Monthly Reports | ✅ Complete | 3/3 | 100% |
 | 13 | Communities & Groups | ⏳ Pending | 0/3 | 0% |
 | 14 | Advanced Analytics | ⏳ Pending | 0/4 | 0% |
 | 15 | GitHub Integration | ⏳ Pending | 0/2 | 0% |
@@ -38,16 +38,16 @@
 ## Current Task
 
 ```
-ID:          PROOF-056
-Title:       Add monthly reports moderation dashboard
-Milestone:   12 — Monthly Reports
+ID:          PROOF-057
+Title:       Build report exports + insights
+Milestone:   13 — Communities & Groups
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] Review reports by project
-- [ ] Approve or flag reports
-- [ ] Export report summaries
+- [ ] Export report summaries by fund
+- [ ] Highlight reports with blockers
+- [ ] Add report stats widget
 
 ---
 
@@ -55,6 +55,8 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-047b | Implement text similarity detection | 2026-02-12 |
+| PROOF-056 | Add monthly reports moderation dashboard | 2026-02-12 |
 | PROOF-055 | Build monthly report templates | 2026-02-12 |
 | PROOF-054 | Add milestone status dashboard | 2026-02-12 |
 | PROOF-053 | Create milestone tracking UI | 2026-02-12 |
@@ -137,3 +139,5 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-053 Milestone tracking UI (SoM/PoA badges, evidence links)
 - **2026-02-12:** Completed PROOF-054 Milestone status dashboard with filters and export
 - **2026-02-12:** Completed PROOF-055 Monthly reports schema + submission UI
+- **2026-02-12:** Completed PROOF-056 Monthly reports moderation dashboard
+- **2026-02-12:** Completed PROOF-047b Text similarity detection for similar proposals

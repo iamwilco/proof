@@ -14,6 +14,12 @@ interface ReportPayload {
   evidenceUrls?: string[];
 }
 
+interface ReportModerationPayload {
+  reportId: string;
+  status: "approved" | "flagged" | "pending";
+  reviewerNote?: string | null;
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const projectId = searchParams.get("projectId");
@@ -50,4 +56,22 @@ export async function POST(request: Request) {
   });
 
   return NextResponse.json({ report }, { status: 201 });
+}
+
+export async function PATCH(request: Request) {
+  const body = (await request.json()) as ReportModerationPayload;
+  if (!body.reportId || !body.status) {
+    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+  }
+
+  const report = await prisma.monthlyReport.update({
+    where: { id: body.reportId },
+    data: {
+      status: body.status,
+      reviewerNote: body.reviewerNote ?? null,
+      reviewedAt: new Date(),
+    },
+  });
+
+  return NextResponse.json({ report });
 }

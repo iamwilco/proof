@@ -10,6 +10,31 @@ interface DetectionResult {
   metadata: Prisma.InputJsonValue;
 }
 
+const SIMILARITY_THRESHOLD = 0.76;
+
+const normalizeText = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const tokenize = (text: string) =>
+  new Set(
+    normalizeText(text)
+      .split(" ")
+      .filter((token) => token.length > 2)
+  );
+
+const jaccardSimilarity = (a: Set<string>, b: Set<string>) => {
+  if (a.size === 0 || b.size === 0) return 0;
+  let intersection = 0;
+  for (const token of a) {
+    if (b.has(token)) intersection += 1;
+  }
+  return intersection / (a.size + b.size - intersection);
+};
+
 /**
  * Detect repeat delays: People with >2 incomplete/delayed projects
  */
@@ -60,6 +85,87 @@ async function detectRepeatDelays(): Promise<DetectionResult[]> {
             incompleteCount: incompleteProjects.length,
             projectIds: incompleteProjects.map((p) => p.id),
             projectTitles: incompleteProjects.map((p) => p.title),
+          },
+        });
+      }
+    }
+  }
+
+  return results;
+}
+
+/**
+ * Detect similar proposals based on lightweight text similarity.
+ */
+async function detectSimilarProposals(): Promise<DetectionResult[]> {
+  const results: DetectionResult[] = [];
+  const projects = await prisma.project.findMany({
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      problem: true,
+      solution: true,
+      fundId: true,
+      category: true,
+    },
+  });
+
+  const grouped = new Map<string, typeof projects>();
+  for (const project of projects) {
+    const key = `${project.fundId}::${project.category}`;
+    const list = grouped.get(key) ?? [];
+    list.push(project);
+    grouped.set(key, list);
+  }
+
+  for (const list of grouped.values()) {
+    const candidates = list.slice(0, 50);
+    for (let i = 0; i < candidates.length; i += 1) {
+      const base = candidates[i];
+      const baseText = [base.title, base.description, base.problem, base.solution]
+        .filter(Boolean)
+        .join(" ");
+      const baseTokens = tokenize(baseText);
+
+      for (let j = i + 1; j < candidates.length; j += 1) {
+        const compare = candidates[j];
+        const compareText = [compare.title, compare.description, compare.problem, compare.solution]
+          .filter(Boolean)
+          .join(" ");
+        const compareTokens = tokenize(compareText);
+        const similarityScore = jaccardSimilarity(baseTokens, compareTokens);
+
+        if (similarityScore < SIMILARITY_THRESHOLD) continue;
+
+        const severity = similarityScore > 0.86 ? "high" : "medium";
+        const description = `Potentially similar proposals detected (${Math.round(
+          similarityScore * 100
+        )}% overlap). Review for duplicate scope or reuse.`;
+
+        results.push({
+          projectId: base.id,
+          category: "similar_proposal",
+          severity,
+          title: `Similar proposal detected: ${compare.title}`,
+          description,
+          metadata: {
+            similarProjectId: compare.id,
+            similarProjectTitle: compare.title,
+            similarityScore,
+          },
+        });
+
+        results.push({
+          projectId: compare.id,
+          category: "similar_proposal",
+          severity,
+          title: `Similar proposal detected: ${base.title}`,
+          description,
+          metadata: {
+            similarProjectId: base.id,
+            similarProjectTitle: base.title,
+            similarityScore,
           },
         });
       }
@@ -253,6 +359,7 @@ export async function runAllDetectors(): Promise<{
     { name: "ghost_project", fn: detectGhostProjects },
     { name: "overdue_milestone", fn: detectOverdueMilestones },
     { name: "funding_cluster", fn: detectFundingClusters },
+    { name: "similar_proposal", fn: detectSimilarProposals },
   ];
 
   for (const detector of detectors) {
@@ -301,7 +408,12 @@ export async function runAllDetectors(): Promise<{
  * Run a specific detector
  */
 export async function runDetector(
-  category: "repeat_delays" | "ghost_project" | "overdue_milestone" | "funding_cluster"
+  category:
+    | "repeat_delays"
+    | "ghost_project"
+    | "overdue_milestone"
+    | "funding_cluster"
+    | "similar_proposal"
 ): Promise<DetectionResult[]> {
   switch (category) {
     case "repeat_delays":
@@ -312,9 +424,17 @@ export async function runDetector(
       return detectOverdueMilestones();
     case "funding_cluster":
       return detectFundingClusters();
+    case "similar_proposal":
+      return detectSimilarProposals();
     default:
       throw new Error(`Unknown detector: ${category}`);
   }
 }
 
-export { detectRepeatDelays, detectGhostProjects, detectOverdueMilestones, detectFundingClusters };
+export {
+  detectRepeatDelays,
+  detectGhostProjects,
+  detectOverdueMilestones,
+  detectFundingClusters,
+  detectSimilarProposals,
+};

@@ -72,6 +72,24 @@ export async function GET(request: NextRequest) {
         break;
       }
 
+      case "reports": {
+        const where: Record<string, unknown> = {};
+        if (status) {
+          where.status = status;
+        }
+        if (fundId) {
+          where.project = { fundId };
+        }
+        data = await prisma.monthlyReport.findMany({
+          where,
+          include: {
+            project: { select: { id: true, title: true, fundId: true } },
+          },
+          orderBy: [{ year: "desc" }, { month: "desc" }],
+        });
+        break;
+      }
+
       case "graph": {
         const [projects, people, projectPeople] = await Promise.all([
           prisma.project.findMany({

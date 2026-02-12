@@ -68,7 +68,13 @@ export async function POST(request: NextRequest) {
 
   if (action === "run_detection") {
     if (category) {
-      const validCategories = ["repeat_delays", "ghost_project", "overdue_milestone", "funding_cluster"];
+      const validCategories = [
+        "repeat_delays",
+        "ghost_project",
+        "overdue_milestone",
+        "funding_cluster",
+        "similar_proposal",
+      ];
       if (!validCategories.includes(category)) {
         return NextResponse.json({ error: "Invalid category" }, { status: 400 });
       }

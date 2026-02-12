@@ -125,6 +125,9 @@ model MonthlyReport {
   blockers      String?
   nextSteps     String?
   evidenceUrls  String[]
+  status        String   @default("pending")
+  reviewerNote  String?
+  reviewedAt    DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

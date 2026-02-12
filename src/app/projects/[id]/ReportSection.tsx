@@ -28,6 +28,7 @@ type MonthlyReport = {
   blockers?: string | null;
   nextSteps?: string | null;
   evidenceUrls: string[];
+  status: string;
   createdAt: string;
 };
 
@@ -227,9 +228,14 @@ export default function ReportSection({ projectId, initialReports }: ReportSecti
                   </h3>
                   <p className="text-xs text-slate-500">Submitted by {report.reporterName}</p>
                 </div>
-                <span className="text-xs text-slate-400">
-                  {new Date(report.createdAt).toLocaleDateString()}
-                </span>
+                <div className="text-right">
+                  <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+                    {report.status.replace(/_/g, " ")}
+                  </span>
+                  <div className="mt-1 text-xs text-slate-400">
+                    {new Date(report.createdAt).toLocaleDateString()}
+                  </div>
+                </div>
               </div>
               <p className="mt-3 text-sm text-slate-700">{report.summary}</p>
               {report.progress && (

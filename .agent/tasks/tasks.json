@@ -893,6 +893,21 @@
       "completed": "2026-02-12"
     },
     {
+      "id": "PROOF-056",
+      "priority": 56,
+      "status": "completed",
+      "title": "Add monthly reports moderation dashboard",
+      "description": "Moderation dashboard with filters and approve/flag actions",
+      "acceptance_criteria": [
+        "Review reports by project",
+        "Approve or flag reports",
+        "Export report summaries"
+      ],
+      "milestone": 12,
+      "created": "2026-02-12",
+      "completed": "2026-02-12"
+    },
+    {
       "id": "PROOF-049",
       "priority": 49,
       "status": "completed",
@@ -910,7 +925,7 @@
     {
       "id": "PROOF-047b",
       "priority": 47,
-      "status": "pending",
+      "status": "completed",
       "title": "Implement text similarity detection",
       "description": "Detect similar/duplicate proposals using NLP",
       "acceptance_criteria": [
