@@ -33,6 +33,12 @@ type GraphPayload = {
     funds: number;
     links: number;
   };
+  clusters?: Array<{
+    id: string;
+    nodes: string[];
+    fundingTotal: number;
+  }>;
+  centrality?: Record<string, number>;
 };
 
 const typeLabels: Record<GraphNode["data"]["type"], string> = {
@@ -59,6 +65,8 @@ export default function GraphClient() {
   });
   const [selectedNode, setSelectedNode] = useState<GraphNode["data"] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<"default" | "centrality" | "clusters" | "funding">("default");
+  const [highlightCluster, setHighlightCluster] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -131,6 +139,65 @@ export default function GraphClient() {
           ))}
         </div>
       </div>
+
+      {/* View Mode Selector */}
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <span className="text-sm font-medium text-slate-500">View:</span>
+        {[
+          { key: "default", label: "Default" },
+          { key: "centrality", label: "Centrality" },
+          { key: "clusters", label: "Clusters" },
+          { key: "funding", label: "Funding Flow" },
+        ].map((mode) => (
+          <button
+            key={mode.key}
+            onClick={() => setViewMode(mode.key as typeof viewMode)}
+            className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+              viewMode === mode.key
+                ? "bg-blue-600 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            {mode.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Cluster Legend */}
+      {viewMode === "clusters" && payload.clusters && payload.clusters.length > 0 && (
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <span className="text-sm font-medium text-slate-500">Clusters:</span>
+          {payload.clusters.map((cluster, idx) => (
+            <button
+              key={cluster.id}
+              onClick={() => setHighlightCluster(highlightCluster === cluster.id ? null : cluster.id)}
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+                highlightCluster === cluster.id
+                  ? "bg-purple-600 text-white"
+                  : "bg-purple-100 text-purple-700 hover:bg-purple-200"
+              }`}
+            >
+              Cluster {idx + 1} ({cluster.nodes.length} nodes, {formatCurrency(cluster.fundingTotal)})
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Centrality Info */}
+      {viewMode === "centrality" && payload.centrality && (
+        <div className="mt-4 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">
+          <strong>Centrality View:</strong> Node size indicates influence based on connections. 
+          Larger nodes have more relationships in the network.
+        </div>
+      )}
+
+      {/* Funding Flow Info */}
+      {viewMode === "funding" && (
+        <div className="mt-4 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-800">
+          <strong>Funding Flow:</strong> Edge thickness indicates funding amount. 
+          Thicker lines represent larger funding relationships.
+        </div>
+      )}
 
       <div className="mt-6 flex gap-4">
         <div className="flex-1 h-[520px] overflow-hidden rounded-2xl border border-slate-200">
