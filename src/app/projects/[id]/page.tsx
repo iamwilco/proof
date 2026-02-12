@@ -6,6 +6,7 @@ import prisma from "../../../lib/prisma";
 import RankingBadge from "../../../components/RankingBadge";
 import VotingStats from "../../../components/VotingStats";
 import FeedbackForm from "./FeedbackForm";
+import FlagSection from "./FlagSection";
 import LeaderResponsePanel from "./LeaderResponsePanel";
 import ReviewSection from "./ReviewSection";
 
@@ -424,6 +425,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               </ul>
             </Section>
           )}
+
+          <FlagSection projectId={project.id} projectTitle={project.title} />
 
           <Section title="Source Provenance">
             <dl className="grid gap-4 sm:grid-cols-3">

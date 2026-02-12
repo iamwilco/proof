@@ -773,6 +773,22 @@
     {
       "id": "PROOF-047",
       "priority": 47,
+      "status": "completed",
+      "title": "Build community flag submission UI",
+      "description": "UI for community members to submit flags",
+      "acceptance_criteria": [
+        "Flag submission form component",
+        "Category selector with descriptions",
+        "Evidence URL input",
+        "Integration on project pages"
+      ],
+      "milestone": 10,
+      "created": "2026-02-12",
+      "completed": "2026-02-12"
+    },
+    {
+      "id": "PROOF-047b",
+      "priority": 47,
       "status": "pending",
       "title": "Implement text similarity detection",
       "description": "Detect similar/duplicate proposals using NLP",

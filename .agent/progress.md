@@ -20,7 +20,7 @@
 | 7 | Community Reviews | ⏳ Pending | 0/6 | 0% |
 | 8 | Accountability Scoring | ⏳ Pending | 0/3 | 0% |
 | 9 | Voting Data | 🔄 In Progress | 4/4 | 100% |
-| 10 | Red Flag Detection | 🔄 In Progress | 2/5 | 40% |
+| 10 | Red Flag Detection | 🔄 In Progress | 3/5 | 60% |
 | 11 | Milestone Tracking | ⏳ Pending | 0/4 | 0% |
 | 12 | Monthly Reports | ⏳ Pending | 0/3 | 0% |
 | 13 | Communities & Groups | ⏳ Pending | 0/3 | 0% |
@@ -38,17 +38,17 @@
 ## Current Task
 
 ```
-ID:          PROOF-047
-Title:       Build community flag submission UI
+ID:          PROOF-048
+Title:       Build flag review dashboard
 Milestone:   10 — Red Flag Detection
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] Flag submission form component
-- [ ] Category selector with descriptions
-- [ ] Evidence URL input
-- [ ] Integration on project pages
+- [ ] List all flags with filters
+- [ ] Flag detail view with evidence
+- [ ] Confirm/dismiss/resolve actions
+- [ ] Link to flagged projects
 
 ---
 
@@ -56,6 +56,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-047 | Build community flag submission UI | 2026-02-12 |
 | PROOF-046 | Implement automated red flag detection | 2026-02-12 |
 | PROOF-045 | Design Flag schema | 2026-02-12 |
 | PROOF-044 | Build Voting UI components | 2026-02-12 |
@@ -120,3 +121,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-044 voting UI components (VotingStats, RankingBadge, analytics dashboard, trends chart)
 - **2026-02-12:** Completed PROOF-045 Flag schema for red flag detection
 - **2026-02-12:** Completed PROOF-046 Automated red flag detectors (repeat delays, ghost projects, overdue milestones, funding clusters)
+- **2026-02-12:** Completed PROOF-047 Community flag submission UI with category selector and evidence input

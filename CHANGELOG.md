@@ -26,6 +26,8 @@ All notable changes to this project will be documented in this file.
 - Flag schema for automated and community red flag detection.
 - Automated red flag detectors: repeat delays, ghost projects, overdue milestones, funding clusters.
 - Flag detection API endpoint with run/list/update operations.
+- Community flag submission UI with category selector and evidence URL input.
+- FlagSection component integrated on project detail pages.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
