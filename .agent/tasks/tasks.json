@@ -787,6 +787,22 @@
       "completed": "2026-02-12"
     },
     {
+      "id": "PROOF-048",
+      "priority": 48,
+      "status": "completed",
+      "title": "Build flag review dashboard",
+      "description": "Dashboard for reviewing and managing flags",
+      "acceptance_criteria": [
+        "List all flags with filters",
+        "Flag detail view with evidence",
+        "Confirm/dismiss/resolve actions",
+        "Link to flagged projects"
+      ],
+      "milestone": 10,
+      "created": "2026-02-12",
+      "completed": "2026-02-12"
+    },
+    {
       "id": "PROOF-047b",
       "priority": 47,
       "status": "pending",

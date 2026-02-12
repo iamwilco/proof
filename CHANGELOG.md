@@ -28,6 +28,8 @@ All notable changes to this project will be documented in this file.
 - Flag detection API endpoint with run/list/update operations.
 - Community flag submission UI with category selector and evidence URL input.
 - FlagSection component integrated on project detail pages.
+- Flag review dashboard with status filters, type filters, and action buttons.
+- FlagActions component for confirm/dismiss/resolve workflows.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

@@ -20,7 +20,7 @@
 | 7 | Community Reviews | ⏳ Pending | 0/6 | 0% |
 | 8 | Accountability Scoring | ⏳ Pending | 0/3 | 0% |
 | 9 | Voting Data | 🔄 In Progress | 4/4 | 100% |
-| 10 | Red Flag Detection | 🔄 In Progress | 3/5 | 60% |
+| 10 | Red Flag Detection | 🔄 In Progress | 4/5 | 80% |
 | 11 | Milestone Tracking | ⏳ Pending | 0/4 | 0% |
 | 12 | Monthly Reports | ⏳ Pending | 0/3 | 0% |
 | 13 | Communities & Groups | ⏳ Pending | 0/3 | 0% |
@@ -38,17 +38,16 @@
 ## Current Task
 
 ```
-ID:          PROOF-048
-Title:       Build flag review dashboard
+ID:          PROOF-049
+Title:       Build flagged projects indicator
 Milestone:   10 — Red Flag Detection
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] List all flags with filters
-- [ ] Flag detail view with evidence
-- [ ] Confirm/dismiss/resolve actions
-- [ ] Link to flagged projects
+- [ ] Flag count badge on project cards
+- [ ] Warning banner on flagged project detail pages
+- [ ] Filter projects by flag status
 
 ---
 
@@ -56,6 +55,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-048 | Build flag review dashboard | 2026-02-12 |
 | PROOF-047 | Build community flag submission UI | 2026-02-12 |
 | PROOF-046 | Implement automated red flag detection | 2026-02-12 |
 | PROOF-045 | Design Flag schema | 2026-02-12 |
@@ -122,3 +122,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-045 Flag schema for red flag detection
 - **2026-02-12:** Completed PROOF-046 Automated red flag detectors (repeat delays, ghost projects, overdue milestones, funding clusters)
 - **2026-02-12:** Completed PROOF-047 Community flag submission UI with category selector and evidence input
+- **2026-02-12:** Completed PROOF-048 Flag review dashboard with filters and action buttons
