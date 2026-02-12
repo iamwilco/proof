@@ -67,6 +67,7 @@ model Project {
   projectPeople   ProjectPerson[]
   projectOrgs     ProjectOrganization[]
   links           Link[]
+  reviews         Review[]
   ratings         Rating[]
   concerns        Concern[]
   claims          ProjectClaim[]
@@ -239,6 +240,8 @@ model User {
   reputation    Reputation?
   reputationEvents ReputationEvent[]
   sessions      Session[]
+  reviews       Review[]
+  reviewVotes   ReviewVote[]
 }
 
 model Session {
@@ -250,6 +253,42 @@ model Session {
   expiresAt DateTime
 
   @@index([userId])
+}
+
+model Review {
+  id                String     @id @default(uuid())
+  projectId         String
+  project           Project    @relation(fields: [projectId], references: [id])
+  userId            String
+  user              User       @relation(fields: [userId], references: [id])
+  rating            Int
+  title             String
+  content           String
+  alignmentScore    Int?
+  feasibilityScore  Int?
+  auditabilityScore Int?
+  helpfulCount      Int        @default(0)
+  notHelpfulCount   Int        @default(0)
+  status            String     @default("published")
+  votes             ReviewVote[]
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  @@index([projectId, createdAt])
+  @@index([userId, createdAt])
+}
+
+model ReviewVote {
+  id        String   @id @default(uuid())
+  reviewId  String
+  review    Review   @relation(fields: [reviewId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  value     Int
+  createdAt DateTime @default(now())
+
+  @@unique([reviewId, userId])
+  @@index([userId, createdAt])
 }
 
 model Rating {

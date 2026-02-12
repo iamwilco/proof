@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Milestone scraping tool for milestones.projectcatalyst.io (`etl/catalyst/scrape_milestones.py`).
 - User/session auth schema for wallet-based authentication.
 - Cardano wallet login endpoints and login UI wiring.
+- Review and review vote schema for community reviews.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

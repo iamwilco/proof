@@ -562,7 +562,7 @@
     {
       "id": "PROOF-034",
       "priority": 34,
-      "status": "pending",
+      "status": "completed",
       "title": "Design Review schema",
       "description": "Create Review, ReviewVote models for community reviews",
       "acceptance_criteria": [
@@ -573,7 +573,7 @@
       ],
       "milestone": 7,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-035",

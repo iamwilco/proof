@@ -38,17 +38,17 @@
 ## Current Task
 
 ```
-ID:          PROOF-034
-Title:       Design Review schema
+ID:          PROOF-035
+Title:       Build Review API endpoints
 Milestone:   7 — Community Reviews
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] Review model with rating, title, content, category scores
-- [ ] ReviewVote model for helpful/not helpful
-- [ ] Relations to Project and User
-- [ ] Indexes for efficient querying
+- [ ] GET /api/reviews?projectId=X returns paginated reviews
+- [ ] POST /api/reviews creates review (auth required)
+- [ ] POST /api/reviews/:id/vote records vote
+- [ ] Aggregates: average rating, vote counts
 
 ---
 
@@ -56,8 +56,8 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-034 | Design Review schema | 2026-02-12 |
 | PROOF-033 | Implement Cardano wallet login | 2026-02-12 |
-| PROOF-032 | Design User authentication schema | 2026-02-12 |
 | — | PRD + Tasks for transparency features | 2026-02-12 |
 
 ---
@@ -67,7 +67,7 @@ Status:      pending
 | Issue | Blocking | Resolution |
 |-------|----------|------------|
 | Catalyst Milestone API requires key | PROOF-051 | Request access or scrape public pages |
-| Full ingestion running | PROOF-034+ | ~84% complete, continuing in background |
+| Full ingestion running | PROOF-035+ | ~84% complete, continuing in background |
 
 ---
 
@@ -104,3 +104,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-031 milestone scrape tooling
 - **2026-02-12:** Completed PROOF-032 user auth schema additions
 - **2026-02-12:** Completed PROOF-033 wallet login endpoints
+- **2026-02-12:** Completed PROOF-034 review schema
