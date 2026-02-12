@@ -28,6 +28,7 @@ model Fund {
   proposalsCount          Int       @default(0)
   fundedProposalsCount    Int       @default(0)
   completedProposalsCount Int       @default(0)
+  votingRecords           VotingRecord[]
   startDate               DateTime?
   endDate                 DateTime?
   projects                Project[]
@@ -72,6 +73,7 @@ model Project {
   concerns        Concern[]
   claims          ProjectClaim[]
   notifications   Notification[]
+  votingRecords   VotingRecord[]
   sourceUrl       String
   sourceType      String
   lastSeenAt      DateTime
@@ -306,6 +308,29 @@ model AccountabilityScore {
   calculatedAt        DateTime @default(now())
 
   @@index([badge])
+}
+
+model VotingRecord {
+  id                 String   @id @default(uuid())
+  projectId          String
+  project            Project  @relation(fields: [projectId], references: [id])
+  fundId             String
+  fund               Fund     @relation(fields: [fundId], references: [id])
+  category           String
+  yesVotes           Int
+  noVotes            Int
+  abstainVotes       Int
+  uniqueWallets      Int
+  approvalRate       Float
+  fundingProbability Float
+  sourceUrl          String
+  sourceType         String
+  capturedAt         DateTime
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([fundId, category])
+  @@index([projectId])
 }
 
 model Rating {

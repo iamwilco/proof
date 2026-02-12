@@ -38,17 +38,16 @@
 ## Current Task
 
 ```
-ID:          PROOF-041
-Title:       Design VotingRecord schema
+ID:          PROOF-042
+Title:       Research and access voting data sources
 Milestone:   9 — Voting Data
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] VotingRecord with yes/no/abstain votes
-- [ ] Unique wallets count
-- [ ] Category and fund rankings
-- [ ] Approval and funding probability
+- [ ] Jörmungandr archive endpoints documented
+- [ ] Catalyst vote data source(s) identified
+- [ ] Example raw payloads captured
 
 ---
 
@@ -56,8 +55,8 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-041 | Design VotingRecord schema | 2026-02-12 |
 | PROOF-040 | Build Accountability API and UI | 2026-02-12 |
-| PROOF-039 | Implement score calculation engine | 2026-02-12 |
 | — | PRD + Tasks for transparency features | 2026-02-12 |
 
 ---
@@ -67,7 +66,7 @@ Status:      pending
 | Issue | Blocking | Resolution |
 |-------|----------|------------|
 | Catalyst Milestone API requires key | PROOF-051 | Request access or scrape public pages |
-| Full ingestion running | PROOF-041+ | ~84% complete, continuing in background |
+| Full ingestion running | PROOF-042+ | ~84% complete, continuing in background |
 
 ---
 
@@ -111,3 +110,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-038 accountability score schema
 - **2026-02-12:** Completed PROOF-039 score calculation engine
 - **2026-02-12:** Completed PROOF-040 accountability API + UI
+- **2026-02-12:** Completed PROOF-041 voting record schema
