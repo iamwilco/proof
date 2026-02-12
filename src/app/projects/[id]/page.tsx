@@ -147,6 +147,18 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         orderBy: { capturedAt: "desc" },
         take: 1,
       },
+      flags: {
+        where: { status: { in: ["pending", "confirmed"] } },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+      },
+      _count: {
+        select: {
+          flags: {
+            where: { status: { in: ["pending", "confirmed"] } },
+          },
+        },
+      },
     },
   });
 
@@ -165,6 +177,35 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             ← Back to Projects
           </Link>
         </div>
+
+        {project._count.flags > 0 && (
+          <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
+            <div className="flex items-start gap-3">
+              <svg className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" />
+              </svg>
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-red-800">
+                  This project has {project._count.flags} active flag{project._count.flags > 1 ? "s" : ""}
+                </h3>
+                <div className="mt-2 space-y-1">
+                  {project.flags.map((flag) => (
+                    <div key={flag.id} className="text-sm text-red-700">
+                      <span className="font-medium">{flag.category.replace(/_/g, " ")}:</span>{" "}
+                      {flag.title}
+                    </div>
+                  ))}
+                </div>
+                <Link
+                  href={`/flags?projectId=${project.id}`}
+                  className="mt-3 inline-block text-sm font-medium text-red-700 hover:underline"
+                >
+                  View all flags →
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
 
         <header className="mb-8 rounded-2xl border border-slate-200 bg-white p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">

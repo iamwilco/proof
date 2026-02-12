@@ -30,6 +30,8 @@ All notable changes to this project will be documented in this file.
 - FlagSection component integrated on project detail pages.
 - Flag review dashboard with status filters, type filters, and action buttons.
 - FlagActions component for confirm/dismiss/resolve workflows.
+- Flagged projects indicator: badge on project cards, warning banner on detail pages.
+- Flag status filter on projects listing page.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

@@ -10,6 +10,7 @@ type SearchParams = {
   fund?: string;
   status?: string;
   category?: string;
+  flagged?: string;
   cursor?: string;
 };
 
@@ -51,6 +52,7 @@ type ProjectCardProps = {
   fundingAmount: number;
   fundName: string;
   fundRank?: number | null;
+  flagCount?: number;
 };
 
 const ProjectCard = ({
@@ -62,16 +64,31 @@ const ProjectCard = ({
   fundingAmount,
   fundName,
   fundRank,
+  flagCount,
 }: ProjectCardProps) => {
   return (
     <Link
       href={`/projects/${id}`}
-      className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+      className={`group flex flex-col rounded-2xl border p-5 shadow-sm transition-shadow hover:shadow-md ${
+        flagCount && flagCount > 0
+          ? "border-red-200 bg-red-50/30"
+          : "border-slate-200 bg-white"
+      }`}
     >
       <div className="flex items-start justify-between gap-3">
-        <h3 className="text-lg font-semibold leading-snug text-slate-900 group-hover:text-blue-600">
-          {title}
-        </h3>
+        <div className="flex items-center gap-2">
+          <h3 className="text-lg font-semibold leading-snug text-slate-900 group-hover:text-blue-600">
+            {title}
+          </h3>
+          {flagCount && flagCount > 0 && (
+            <span className="flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
+              <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" />
+              </svg>
+              {flagCount}
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-2">
           {fundRank && <RankingBadge rank={fundRank} size="sm" />}
           <StatusBadge status={status} />
@@ -104,6 +121,7 @@ export default async function ProjectsPage({
   const fundFilter = params.fund ?? "";
   const statusFilter = params.status ?? "";
   const categoryFilter = params.category ?? "";
+  const flaggedFilter = params.flagged ?? "";
   const cursor = params.cursor ?? "";
 
   const whereClause: Record<string, unknown> = {};
@@ -127,6 +145,12 @@ export default async function ProjectsPage({
     whereClause.category = categoryFilter;
   }
 
+  if (flaggedFilter === "yes") {
+    whereClause.flags = { some: { status: { in: ["pending", "confirmed"] } } };
+  } else if (flaggedFilter === "no") {
+    whereClause.flags = { none: { status: { in: ["pending", "confirmed"] } } };
+  }
+
   const cursorObj = cursor ? { id: cursor } : undefined;
 
   const projects = await prisma.project.findMany({
@@ -139,6 +163,13 @@ export default async function ProjectsPage({
         orderBy: { capturedAt: "desc" },
         take: 1,
         select: { fundRank: true },
+      },
+      _count: {
+        select: {
+          flags: {
+            where: { status: { in: ["pending", "confirmed"] } },
+          },
+        },
       },
     },
     orderBy: { createdAt: "desc" },
@@ -162,6 +193,7 @@ export default async function ProjectsPage({
     if (fundFilter) params.fund = fundFilter;
     if (statusFilter) params.status = statusFilter;
     if (categoryFilter) params.category = categoryFilter;
+    if (flaggedFilter) params.flagged = flaggedFilter;
     if (cursorValue) params.cursor = cursorValue;
     const qs = new URLSearchParams(params).toString();
     return qs ? `/projects?${qs}` : "/projects";
@@ -199,6 +231,16 @@ export default async function ProjectsPage({
 
           <form method="GET" action="/projects" className="flex flex-wrap items-center gap-2">
             <input type="hidden" name="q" value={query} />
+            <select
+              name="flagged"
+              defaultValue={flaggedFilter}
+              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none"
+            >
+              <option value="">All Projects</option>
+              <option value="yes">Flagged Only</option>
+              <option value="no">No Flags</option>
+            </select>
+
             <select
               name="fund"
               defaultValue={fundFilter}
@@ -245,7 +287,7 @@ export default async function ProjectsPage({
               Apply
             </button>
 
-            {(query || fundFilter || statusFilter || categoryFilter) && (
+            {(query || fundFilter || statusFilter || categoryFilter || flaggedFilter) && (
               <Link
                 href="/projects"
                 className="ml-2 text-sm font-medium text-blue-600 hover:underline"
@@ -275,6 +317,7 @@ export default async function ProjectsPage({
                   fundingAmount={Number(project.fundingAmount)}
                   fundName={project.fund.name}
                   fundRank={project.votingRecords[0]?.fundRank}
+                  flagCount={project._count.flags}
                 />
               ))}
             </section>

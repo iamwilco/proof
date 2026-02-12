@@ -803,6 +803,21 @@
       "completed": "2026-02-12"
     },
     {
+      "id": "PROOF-049",
+      "priority": 49,
+      "status": "completed",
+      "title": "Build flagged projects indicator",
+      "description": "Visual indicators for flagged projects",
+      "acceptance_criteria": [
+        "Flag count badge on project cards",
+        "Warning banner on flagged project detail pages",
+        "Filter projects by flag status"
+      ],
+      "milestone": 10,
+      "created": "2026-02-12",
+      "completed": "2026-02-12"
+    },
+    {
       "id": "PROOF-047b",
       "priority": 47,
       "status": "pending",
