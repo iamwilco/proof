@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import prisma from "../../lib/prisma";
+import AccountabilityBadge from "../../components/AccountabilityBadge";
 
 export const revalidate = 60;
 
@@ -33,6 +34,10 @@ type PersonCardProps = {
   fundedProposalsCount: number;
   completedProposalsCount: number;
   totalAmountAwarded: number;
+  accountability?: {
+    badge: string;
+    overallScore: number;
+  } | null;
 };
 
 const PersonCard = ({
@@ -43,6 +48,7 @@ const PersonCard = ({
   fundedProposalsCount,
   completedProposalsCount,
   totalAmountAwarded,
+  accountability,
 }: PersonCardProps) => {
   const completionRate = fundedProposalsCount > 0
     ? completedProposalsCount / fundedProposalsCount
@@ -61,11 +67,20 @@ const PersonCard = ({
             name.charAt(0).toUpperCase()
           )}
         </div>
-        {totalAmountAwarded > 0 && (
-          <span className="text-sm font-semibold text-slate-900">
-            {formatCurrency(totalAmountAwarded)}
-          </span>
-        )}
+        <div className="flex flex-col items-end gap-2">
+          {accountability && (
+            <AccountabilityBadge
+              badge={accountability.badge as "trusted" | "reliable" | "unproven" | "concerning"}
+              score={accountability.overallScore}
+              size="sm"
+            />
+          )}
+          {totalAmountAwarded > 0 && (
+            <span className="text-sm font-semibold text-slate-900">
+              {formatCurrency(totalAmountAwarded)}
+            </span>
+          )}
+        </div>
       </div>
       <h3 className="mt-3 text-base font-semibold text-slate-900 group-hover:text-blue-600">
         {name}
@@ -140,6 +155,12 @@ export default async function PeoplePage({
       fundedProposalsCount: true,
       completedProposalsCount: true,
       totalAmountAwarded: true,
+      accountabilityScore: {
+        select: {
+          badge: true,
+          overallScore: true,
+        },
+      },
     },
     orderBy: { [sortField]: sortDir },
     take: PAGE_SIZE + 1,
@@ -214,6 +235,7 @@ export default async function PeoplePage({
                   fundedProposalsCount={person.fundedProposalsCount}
                   completedProposalsCount={person.completedProposalsCount}
                   totalAmountAwarded={Number(person.totalAmountAwarded)}
+                  accountability={person.accountabilityScore}
                 />
               ))}
             </section>

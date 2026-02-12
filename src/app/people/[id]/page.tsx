@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import prisma from "../../../lib/prisma";
+import AccountabilityBadge from "../../../components/AccountabilityBadge";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -45,6 +46,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
   const person = await prisma.person.findUnique({
     where: { id },
     include: {
+      accountabilityScore: true,
       projectPeople: {
         include: {
           project: {
@@ -96,6 +98,13 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 </p>
               )}
             </div>
+            {person.accountabilityScore && (
+              <AccountabilityBadge
+                badge={person.accountabilityScore.badge as "trusted" | "reliable" | "unproven" | "concerning"}
+                score={person.accountabilityScore.overallScore}
+                breakdown={person.accountabilityScore}
+              />
+            )}
           </div>
 
           <div className="mt-6 grid gap-4 border-t border-slate-100 pt-6 sm:grid-cols-3">
@@ -125,6 +134,62 @@ export default async function PersonDetailPage({ params }: PageProps) {
             </div>
           </div>
         </header>
+
+        {person.accountabilityScore && (
+          <Section title="Accountability Score">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-400">Overall</p>
+                <p className="mt-2 text-3xl font-semibold text-slate-900">
+                  {person.accountabilityScore.overallScore}
+                </p>
+                <p className="mt-2 text-xs text-slate-500">
+                  Badge: {person.accountabilityScore.badge}
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="rounded-lg border border-slate-100 bg-white p-3">
+                  <p className="text-xs text-slate-400">Completion</p>
+                  <p className="mt-1 font-semibold text-slate-900">
+                    {person.accountabilityScore.completionScore}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-slate-100 bg-white p-3">
+                  <p className="text-xs text-slate-400">On-time</p>
+                  <p className="mt-1 font-semibold text-slate-900">
+                    {person.accountabilityScore.deliveryScore}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-slate-100 bg-white p-3">
+                  <p className="text-xs text-slate-400">Community</p>
+                  <p className="mt-1 font-semibold text-slate-900">
+                    {person.accountabilityScore.communityScore}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-slate-100 bg-white p-3">
+                  <p className="text-xs text-slate-400">Efficiency</p>
+                  <p className="mt-1 font-semibold text-slate-900">
+                    {person.accountabilityScore.efficiencyScore}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-slate-100 bg-white p-3">
+                  <p className="text-xs text-slate-400">Communication</p>
+                  <p className="mt-1 font-semibold text-slate-900">
+                    {person.accountabilityScore.communicationScore}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-slate-100 bg-white p-3">
+                  <p className="text-xs text-slate-400">Calculated</p>
+                  <p className="mt-1 font-semibold text-slate-900">
+                    {new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" }).format(
+                      person.accountabilityScore.calculatedAt
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Section>
+        )}
 
         <div className="space-y-6">
           {person.aliases.length > 0 && (

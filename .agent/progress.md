@@ -38,18 +38,17 @@
 ## Current Task
 
 ```
-ID:          PROOF-040
-Title:       Build Accountability API and UI
-Milestone:   8 — Accountability Scoring
+ID:          PROOF-041
+Title:       Design VotingRecord schema
+Milestone:   9 — Voting Data
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] GET /api/accountability/person/:id returns score
-- [ ] GET /api/accountability/leaderboard returns ranked list
-- [ ] AccountabilityBadge component
-- [ ] Score breakdown tooltip
-- [ ] Integration on People page and profile
+- [ ] VotingRecord with yes/no/abstain votes
+- [ ] Unique wallets count
+- [ ] Category and fund rankings
+- [ ] Approval and funding probability
 
 ---
 
@@ -57,8 +56,8 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-040 | Build Accountability API and UI | 2026-02-12 |
 | PROOF-039 | Implement score calculation engine | 2026-02-12 |
-| PROOF-038 | Design AccountabilityScore schema | 2026-02-12 |
 | — | PRD + Tasks for transparency features | 2026-02-12 |
 
 ---
@@ -68,7 +67,7 @@ Status:      pending
 | Issue | Blocking | Resolution |
 |-------|----------|------------|
 | Catalyst Milestone API requires key | PROOF-051 | Request access or scrape public pages |
-| Full ingestion running | PROOF-040+ | ~84% complete, continuing in background |
+| Full ingestion running | PROOF-041+ | ~84% complete, continuing in background |
 
 ---
 
@@ -111,3 +110,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-037 reviewer leaderboard
 - **2026-02-12:** Completed PROOF-038 accountability score schema
 - **2026-02-12:** Completed PROOF-039 score calculation engine
+- **2026-02-12:** Completed PROOF-040 accountability API + UI

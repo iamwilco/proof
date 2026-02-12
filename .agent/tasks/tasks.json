@@ -659,7 +659,7 @@
     {
       "id": "PROOF-040",
       "priority": 40,
-      "status": "pending",
+      "status": "completed",
       "title": "Build Accountability API and UI",
       "description": "API and components to display accountability scores",
       "acceptance_criteria": [
@@ -671,7 +671,7 @@
       ],
       "milestone": 8,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-041",
