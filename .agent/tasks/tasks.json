@@ -756,7 +756,7 @@
     {
       "id": "PROOF-046",
       "priority": 46,
-      "status": "pending",
+      "status": "completed",
       "title": "Implement automated red flag detection",
       "description": "Background jobs to detect concerning patterns",
       "acceptance_criteria": [
@@ -768,7 +768,7 @@
       ],
       "milestone": 10,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-047",

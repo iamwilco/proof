@@ -24,6 +24,8 @@ All notable changes to this project will be documented in this file.
 - Voting analytics dashboard page with fund-wide statistics.
 - Voting data integrated on project detail and list pages.
 - Flag schema for automated and community red flag detection.
+- Automated red flag detectors: repeat delays, ghost projects, overdue milestones, funding clusters.
+- Flag detection API endpoint with run/list/update operations.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
