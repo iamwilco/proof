@@ -151,3 +151,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-054 Design MonthlyReport schema (verified already implemented)
 - **2026-02-12:** Completed PROOF-055 Ingest monthly reports (verified already implemented)
 - **2026-02-12:** Completed PROOF-056 Build MonthlyReport UI (verified already implemented)
+- **2026-02-12:** Completed PROOF-053 Build milestone calendar (calendar view, filters, iCal export)

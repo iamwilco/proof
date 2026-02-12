@@ -42,6 +42,7 @@ All notable changes to this project will be documented in this file.
 - Report moderation export support and status tracking.
 - Similar proposal detection using lightweight text similarity scoring.
 - Community flagging UI completion (button, form, evidence input).
+- Milestone calendar view with month navigation, filters, and iCal export.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

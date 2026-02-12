@@ -1021,7 +1021,7 @@
     {
       "id": "PROOF-053",
       "priority": 53,
-      "status": "pending",
+      "status": "completed",
       "title": "Build milestone calendar",
       "description": "Public calendar of upcoming/overdue milestones",
       "acceptance_criteria": [
@@ -1032,7 +1032,7 @@
       ],
       "milestone": 11,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-054",
