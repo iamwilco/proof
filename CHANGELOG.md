@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - Review UI section for submitting and browsing reviews.
 - Reviewer leaderboard page for top reviewers.
 - Accountability score schema for person reputation.
+- Accountability score calculation engine API.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

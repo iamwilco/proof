@@ -641,7 +641,7 @@
     {
       "id": "PROOF-039",
       "priority": 39,
-      "status": "pending",
+      "status": "completed",
       "title": "Implement score calculation engine",
       "description": "Background job to compute accountability scores",
       "acceptance_criteria": [
@@ -654,7 +654,7 @@
       ],
       "milestone": 8,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-040",

@@ -38,19 +38,18 @@
 ## Current Task
 
 ```
-ID:          PROOF-039
-Title:       Implement score calculation engine
-Milestone:   7 — Community Reviews
+ID:          PROOF-040
+Title:       Build Accountability API and UI
+Milestone:   8 — Accountability Scoring
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] Completion rate calculation (40% weight)
-- [ ] On-time delivery score (20% weight)
-- [ ] Community rating aggregation (20% weight)
-- [ ] Funding efficiency calculation (10% weight)
-- [ ] Communication frequency score (10% weight)
-- [ ] Badge assignment based on thresholds
+- [ ] GET /api/accountability/person/:id returns score
+- [ ] GET /api/accountability/leaderboard returns ranked list
+- [ ] AccountabilityBadge component
+- [ ] Score breakdown tooltip
+- [ ] Integration on People page and profile
 
 ---
 
@@ -58,8 +57,8 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-039 | Implement score calculation engine | 2026-02-12 |
 | PROOF-038 | Design AccountabilityScore schema | 2026-02-12 |
-| PROOF-037 | Build reviewer leaderboard | 2026-02-12 |
 | — | PRD + Tasks for transparency features | 2026-02-12 |
 
 ---
@@ -69,7 +68,7 @@ Status:      pending
 | Issue | Blocking | Resolution |
 |-------|----------|------------|
 | Catalyst Milestone API requires key | PROOF-051 | Request access or scrape public pages |
-| Full ingestion running | PROOF-039+ | ~84% complete, continuing in background |
+| Full ingestion running | PROOF-040+ | ~84% complete, continuing in background |
 
 ---
 
@@ -111,3 +110,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-036 review UI components
 - **2026-02-12:** Completed PROOF-037 reviewer leaderboard
 - **2026-02-12:** Completed PROOF-038 accountability score schema
+- **2026-02-12:** Completed PROOF-039 score calculation engine
