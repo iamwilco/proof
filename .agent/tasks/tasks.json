@@ -1147,7 +1147,7 @@
     {
       "id": "PROOF-061",
       "priority": 61,
-      "status": "pending",
+      "status": "completed",
       "title": "Build proposer leaderboards",
       "description": "Rankings of proposers by various metrics",
       "acceptance_criteria": [
@@ -1158,7 +1158,7 @@
       ],
       "milestone": 14,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-062",

@@ -47,6 +47,7 @@ All notable changes to this project will be documented in this file.
 - Community pages with index listing, detail view, and stats dashboard.
 - Organization profiles with accountability score, team listing, and cross-proposal view.
 - Fund comparison dashboard with multi-fund selector, metrics table, and category breakdown.
+- Proposer leaderboards with sorting by funding, completion rate, and project count.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
