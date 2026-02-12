@@ -20,6 +20,17 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Caching Strategy
+
+We use TanStack Query for client-side caching and synchronization. Default query options are configured in `src/app/providers.tsx`:
+
+- **staleTime:** 60 seconds (fresh data within a minute avoids refetch)
+- **gcTime:** 5 minutes (cache garbage collection window)
+- **refetchOnWindowFocus:** disabled to avoid noisy refetches
+- **retry:** 1 retry on failure
+
+Adjust these defaults per-query as needed when real API endpoints are introduced.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

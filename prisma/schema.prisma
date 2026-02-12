@@ -1,0 +1,299 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Fund {
+  id                      String    @id @default(uuid())
+  externalId              String?   @unique
+  name                    String
+  number                  Int
+  slug                    String?
+  status                  String    @default("active")
+  currency                String    @default("USD")
+  totalBudget             Decimal   @default(0) @db.Decimal(18, 2)
+  totalAwarded            Decimal   @default(0) @db.Decimal(18, 2)
+  totalDistributed        Decimal   @default(0) @db.Decimal(18, 2)
+  proposalsCount          Int       @default(0)
+  fundedProposalsCount    Int       @default(0)
+  completedProposalsCount Int       @default(0)
+  startDate               DateTime?
+  endDate                 DateTime?
+  projects                Project[]
+  sourceUrl               String
+  sourceType              String
+  lastSeenAt              DateTime
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+
+  @@index([externalId])
+  @@index([number])
+}
+
+model Project {
+  id              String        @id @default(uuid())
+  externalId      String?       @unique
+  fundId          String
+  fund            Fund          @relation(fields: [fundId], references: [id])
+  title           String
+  slug            String?
+  description     String
+  problem         String?
+  solution        String?
+  experience      String?
+  category        String
+  status          String
+  fundingStatus   String        @default("pending")
+  fundingAmount   Decimal       @db.Decimal(18, 2)
+  amountReceived  Decimal       @default(0) @db.Decimal(18, 2)
+  currency        String        @default("USD")
+  yesVotes        Int           @default(0)
+  noVotes         Int           @default(0)
+  fundedAt        DateTime?
+  website         String?
+  milestones      Milestone[]
+  deliverables    Deliverable[]
+  projectPeople   ProjectPerson[]
+  projectOrgs     ProjectOrganization[]
+  links           Link[]
+  ratings         Rating[]
+  concerns        Concern[]
+  claims          ProjectClaim[]
+  notifications   Notification[]
+  sourceUrl       String
+  sourceType      String
+  lastSeenAt      DateTime
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([externalId])
+  @@index([fundId, createdAt])
+  @@index([status, createdAt])
+  @@index([fundingStatus])
+  @@index([category, createdAt])
+}
+
+model Milestone {
+  id          String       @id @default(uuid())
+  projectId   String
+  project     Project      @relation(fields: [projectId], references: [id])
+  title       String
+  dueDate     DateTime?
+  status      String
+  deliverables Deliverable[]
+  sourceUrl   String
+  sourceType  String
+  lastSeenAt  DateTime
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Deliverable {
+  id          String     @id @default(uuid())
+  projectId   String
+  milestoneId String?
+  project     Project    @relation(fields: [projectId], references: [id])
+  milestone   Milestone? @relation(fields: [milestoneId], references: [id])
+  title       String
+  description String?
+  status      String
+  sourceUrl   String
+  sourceType  String
+  lastSeenAt  DateTime
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Person {
+  id                      String    @id @default(uuid())
+  externalId              String?   @unique
+  name                    String
+  username                String?
+  bio                     String?
+  aliases                 String[]
+  twitter                 String?
+  linkedin                String?
+  email                   String?
+  heroImgUrl              String?
+  // Funding stats (denormalized for query performance)
+  proposalsCount          Int       @default(0)
+  fundedProposalsCount    Int       @default(0)
+  completedProposalsCount Int       @default(0)
+  totalAmountRequested    Decimal   @default(0) @db.Decimal(18, 2)
+  totalAmountAwarded      Decimal   @default(0) @db.Decimal(18, 2)
+  totalAmountReceived     Decimal   @default(0) @db.Decimal(18, 2)
+  currency                String    @default("USD")
+  // Relationships
+  projectPeople           ProjectPerson[]
+  organizations           PersonOrganization[]
+  sourceUrl               String
+  sourceType              String
+  lastSeenAt              DateTime
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+
+  @@index([name])
+  @@index([externalId])
+}
+
+model Organization {
+  id                      String    @id @default(uuid())
+  externalId              String?   @unique
+  name                    String
+  bio                     String?
+  website                 String?
+  heroImgUrl              String?
+  // Funding stats (denormalized for query performance)
+  proposalsCount          Int       @default(0)
+  fundedProposalsCount    Int       @default(0)
+  completedProposalsCount Int       @default(0)
+  totalAmountAwarded      Decimal   @default(0) @db.Decimal(18, 2)
+  totalAmountReceived     Decimal   @default(0) @db.Decimal(18, 2)
+  currency                String    @default("USD")
+  // Relationships
+  members                 PersonOrganization[]
+  projectOrgs             ProjectOrganization[]
+  sourceUrl               String
+  sourceType              String
+  lastSeenAt              DateTime
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+
+  @@index([externalId])
+}
+
+model ProjectPerson {
+  id        String   @id @default(uuid())
+  projectId String
+  personId  String
+  role      String?
+  isPrimary Boolean  @default(false)
+  project   Project  @relation(fields: [projectId], references: [id])
+  person    Person   @relation(fields: [personId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([projectId, personId])
+  @@index([projectId, createdAt])
+  @@index([personId])
+}
+
+model ProjectOrganization {
+  id             String       @id @default(uuid())
+  projectId      String
+  organizationId String
+  role           String?
+  project        Project      @relation(fields: [projectId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime     @default(now())
+
+  @@unique([projectId, organizationId])
+}
+
+model PersonOrganization {
+  id             String       @id @default(uuid())
+  personId       String
+  organizationId String
+  role           String?
+  person         Person       @relation(fields: [personId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime     @default(now())
+
+  @@unique([personId, organizationId])
+}
+
+model Link {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+  type      String
+  url       String
+  sourceUrl String
+  sourceType String
+  lastSeenAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Rating {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+  userId    String
+  score     Int
+  comment   String?
+  createdAt DateTime @default(now())
+}
+
+model Concern {
+  id          String   @id @default(uuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id])
+  userId      String
+  category    String
+  description String
+  evidenceUrl String?
+  status      String   @default("pending")
+  responses   ConcernResponse[]
+  createdAt   DateTime @default(now())
+
+  @@index([projectId, status])
+}
+
+model ProjectClaim {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+  userId    String
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+}
+
+model ConcernResponse {
+  id        String   @id @default(uuid())
+  concernId String
+  concern   Concern  @relation(fields: [concernId], references: [id])
+  userId    String
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+  concernId String?
+  type      String
+  payload   Json
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+}
+
+model Reputation {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  score     Int      @default(0)
+  tier      String   @default("bronze")
+  updatedAt DateTime @updatedAt
+  history   ReputationEvent[]
+}
+
+model ReputationEvent {
+  id           String   @id @default(uuid())
+  reputationId String
+  reputation   Reputation @relation(fields: [reputationId], references: [id])
+  userId       String
+  change       Int
+  reason       String
+  createdAt    DateTime @default(now())
+}

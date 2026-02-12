@@ -1,0 +1,1394 @@
+{
+  "project": "PROOF",
+  "version": "1.0",
+  "lastUpdated": "2026-02-11",
+  "currentMilestone": 1,
+  "tasks": [
+    {
+      "id": "PROOF-001",
+      "priority": 1,
+      "status": "completed",
+      "title": "Initialize Next.js project with App Router",
+      "description": "Create the Next.js project with TypeScript, Tailwind CSS, and basic folder structure",
+      "acceptance_criteria": [
+        "Next.js 14+ project created with App Router",
+        "TypeScript configured",
+        "Tailwind CSS installed and configured",
+        "ESLint configured",
+        "Basic folder structure: src/app, src/components, src/lib, src/types",
+        "Project runs with npm run dev"
+      ],
+      "milestone": 1,
+      "created": "2026-02-10",
+      "completed": "2026-02-10"
+    },
+    {
+      "id": "PROOF-002",
+      "priority": 2,
+      "status": "completed",
+      "title": "Set up Supabase and Prisma",
+      "description": "Configure database connection with Supabase and Prisma ORM",
+      "acceptance_criteria": [
+        "Supabase project created (or local PostgreSQL for dev)",
+        "Prisma installed and configured",
+        "Database connection working",
+        "prisma generate runs successfully"
+      ],
+      "milestone": 1,
+      "created": "2026-02-10",
+      "completed": null
+    },
+    {
+      "id": "PROOF-003",
+      "priority": 3,
+      "status": "completed",
+      "title": "Design core database schema",
+      "description": "Create Prisma schema for Fund, Project, Milestone, Deliverable, Person, Organization entities",
+      "acceptance_criteria": [
+        "Fund model with id, name, number, start_date, end_date",
+        "Project model with funding, status, category, description",
+        "Milestone model linked to Project",
+        "Deliverable model linked to Milestone",
+        "Person model with canonical identity and aliases",
+        "Organization model",
+        "Link model (typed: github, youtube, website, etc.)",
+        "All models include source_url, source_type, last_seen_at",
+        "All models include created_at, updated_at",
+        "Schema validates with prisma validate"
+      ],
+      "milestone": 1,
+      "created": "2026-02-10",
+      "completed": "2026-02-10"
+    },
+    {
+      "id": "PROOF-004",
+      "priority": 4,
+      "status": "completed",
+      "title": "Create Python ETL project structure",
+      "description": "Set up Python project for data ingestion pipelines",
+      "acceptance_criteria": [
+        "etl/ folder created with proper structure",
+        "requirements.txt with dependencies",
+        "Basic configuration for database connection",
+        "Folder structure: etl/catalyst, etl/metrics, etl/graph"
+      ],
+      "milestone": 1,
+      "created": "2026-02-10",
+      "completed": "2026-02-10"
+    },
+    {
+      "id": "PROOF-005",
+      "priority": 5,
+      "status": "completed",
+      "title": "Research and document Catalyst API",
+      "description": "Document available Catalyst API endpoints and data structures",
+      "acceptance_criteria": [
+        "API endpoints documented",
+        "Data structures mapped to our schema",
+        "Rate limits and authentication documented",
+        "Sample responses saved for testing"
+      ],
+      "milestone": 1,
+      "created": "2026-02-10",
+      "completed": "2026-02-10"
+    },
+    {
+      "id": "PROOF-006",
+      "priority": 6,
+      "status": "blocked",
+      "title": "Build Catalyst proposal ingestion",
+      "description": "ETL pipeline to ingest Catalyst proposals into database",
+      "acceptance_criteria": [
+        "Fetches proposals from Catalyst API",
+        "Transforms data to match our schema",
+        "Loads data into PostgreSQL",
+        "Tracks source provenance",
+        "Handles errors gracefully with logging"
+      ],
+      "milestone": 1,
+      "created": "2026-02-10",
+      "completed": null
+    },
+    {
+      "id": "PROOF-007",
+      "priority": 7,
+      "status": "blocked",
+      "title": "Build milestone/deliverable ingestion",
+      "description": "ETL pipeline for milestone and deliverable data",
+      "acceptance_criteria": [
+        "Fetches milestone data from Catalyst",
+        "Links milestones to projects",
+        "Extracts deliverables",
+        "Tracks status and completion"
+      ],
+      "milestone": 1,
+      "created": "2026-02-10",
+      "completed": null
+    },
+    {
+      "id": "PROOF-008",
+      "priority": 8,
+      "status": "completed",
+      "title": "Implement identity resolution",
+      "description": "Create Person entities with alias matching and confidence scores",
+      "acceptance_criteria": [
+        "Extract person names from proposals",
+        "Fuzzy matching for duplicate detection",
+        "Confidence score per match",
+        "Canonical Person with linked aliases",
+        "Team/Organization extraction"
+      ],
+      "milestone": 1,
+      "created": "2026-02-10",
+      "completed": "2026-02-10"
+    },
+    {
+      "id": "PROOF-009",
+      "priority": 9,
+      "status": "completed",
+      "title": "Extract and normalize external links",
+      "description": "Parse proposal content for GitHub, YouTube, website links",
+      "acceptance_criteria": [
+        "Extract URLs from proposal descriptions",
+        "Classify link types (github_repo, youtube_video, website, etc.)",
+        "Normalize URLs (remove tracking params, etc.)",
+        "Store with Link model"
+      ],
+      "milestone": 1,
+      "created": "2026-02-10",
+      "completed": "2026-02-10"
+    },
+    {
+      "id": "PROOF-010",
+      "priority": 10,
+      "status": "completed",
+      "title": "Build basic admin data health view",
+      "description": "Simple admin page showing ingestion status and data quality",
+      "acceptance_criteria": [
+        "Protected admin route",
+        "Shows count of funds, projects, people ingested",
+        "Shows last ingestion time",
+        "Shows any ingestion errors"
+      ],
+      "milestone": 1,
+      "created": "2026-02-10",
+      "completed": "2026-02-10"
+    },
+    {
+      "id": "PROOF-011",
+      "priority": 11,
+      "status": "completed",
+      "title": "Build projects directory page with search",
+      "description": "Create the main projects listing page with search and filter functionality",
+      "acceptance_criteria": [
+        "Projects list page at /projects",
+        "Server-side data fetching with Prisma",
+        "Search by project title/description",
+        "Filter by fund, status, category",
+        "Pagination with cursor-based approach",
+        "Responsive card grid layout"
+      ],
+      "milestone": 2,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-012",
+      "priority": 12,
+      "status": "completed",
+      "title": "Build project detail page",
+      "description": "Individual project view with all related data",
+      "acceptance_criteria": [
+        "Dynamic route /projects/[id]",
+        "Project metadata display",
+        "Milestones and deliverables list",
+        "Team members with links to profiles",
+        "External links section (GitHub, YouTube, etc.)",
+        "Source provenance display"
+      ],
+      "milestone": 2,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-013",
+      "priority": 13,
+      "status": "completed",
+      "title": "Build people/team profiles page",
+      "description": "Person profile pages showing their projects and contributions",
+      "acceptance_criteria": [
+        "People list page at /people",
+        "Person detail page at /people/[id]",
+        "Shows all projects person is associated with",
+        "Displays aliases with confidence scores",
+        "Links to organizations"
+      ],
+      "milestone": 2,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-014",
+      "priority": 14,
+      "status": "completed",
+      "title": "Build basic rankings page",
+      "description": "Simple rankings view for projects and people",
+      "acceptance_criteria": [
+        "Rankings page at /rankings",
+        "Sort projects by funding amount",
+        "Sort by milestone completion rate",
+        "Top contributors list",
+        "Filter by fund"
+      ],
+      "milestone": 2,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-015",
+      "priority": 15,
+      "status": "completed",
+      "title": "Install and configure TanStack Query",
+      "description": "Set up client-side state management with TanStack Query",
+      "acceptance_criteria": [
+        "TanStack Query installed",
+        "QueryClientProvider configured",
+        "Basic query hooks created for projects/people",
+        "Caching strategy defined"
+      ],
+      "milestone": 2,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-016",
+      "priority": 16,
+      "status": "completed",
+      "title": "Build GitHub metrics fetcher",
+      "description": "Python ETL to fetch GitHub repo metrics for linked projects",
+      "acceptance_criteria": [
+        "GitHub API integration with auth",
+        "Fetch stars, forks, commits, contributors",
+        "Store metrics with timestamp",
+        "Rate limiting and error handling",
+        "Link metrics to Project via Link model"
+      ],
+      "milestone": 3,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-017",
+      "priority": 17,
+      "status": "completed",
+      "title": "Build YouTube metrics fetcher",
+      "description": "Python ETL to fetch YouTube video metrics for linked projects",
+      "acceptance_criteria": [
+        "YouTube Data API integration",
+        "Fetch views, likes, comments for videos",
+        "Store metrics with timestamp",
+        "Handle channel vs video links",
+        "Rate limiting and error handling"
+      ],
+      "milestone": 3,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-018",
+      "priority": 18,
+      "status": "completed",
+      "title": "Design and implement impact scoring engine",
+      "description": "Create scoring system with category-specific KPIs",
+      "acceptance_criteria": [
+        "Define KPIs per project category",
+        "Weighted scoring formula",
+        "Confidence level calculation",
+        "Methodology documentation",
+        "Score recalculation pipeline"
+      ],
+      "milestone": 3,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-019",
+      "priority": 19,
+      "status": "completed",
+      "title": "Build network graph visualization",
+      "description": "Interactive Cytoscape.js graph showing project-people-fund relationships",
+      "acceptance_criteria": [
+        "Cytoscape.js installed and configured",
+        "Graph data API endpoint",
+        "Nodes: Projects, People, Funds",
+        "Edges: associations with types",
+        "Zoom, pan, click interactions",
+        "Node filtering by type"
+      ],
+      "milestone": 3,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-020",
+      "priority": 20,
+      "status": "completed",
+      "title": "Implement magic link authentication",
+      "description": "Passwordless auth with email magic links via Supabase Auth",
+      "acceptance_criteria": [
+        "Supabase Auth configured",
+        "Magic link email flow",
+        "User session management",
+        "Protected routes for authenticated features",
+        "Sign out functionality"
+      ],
+      "milestone": 4,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-021",
+      "priority": 21,
+      "status": "completed",
+      "title": "Build ratings and concerns submission",
+      "description": "Allow authenticated users to rate projects and flag concerns",
+      "acceptance_criteria": [
+        "Rating model in Prisma schema",
+        "Concern model with categories",
+        "Rating submission UI on project page",
+        "Concern submission with evidence upload",
+        "Moderation queue for new concerns"
+      ],
+      "milestone": 4,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-022",
+      "priority": 22,
+      "status": "completed",
+      "title": "Build project leader response system",
+      "description": "Allow project leaders to claim and respond to concerns",
+      "acceptance_criteria": [
+        "Project claim workflow",
+        "Response model linked to concerns",
+        "Response submission UI",
+        "Email notifications for new concerns",
+        "Response visible on project page"
+      ],
+      "milestone": 4,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-023",
+      "priority": 23,
+      "status": "completed",
+      "title": "Implement reputation system",
+      "description": "Track user reputation based on contributions and accuracy",
+      "acceptance_criteria": [
+        "Reputation score per user",
+        "Points for valid concerns",
+        "Penalties for rejected concerns",
+        "Reputation tiers with privileges",
+        "Reputation history visible on profile"
+      ],
+      "milestone": 4,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-024",
+      "priority": 24,
+      "status": "completed",
+      "title": "Implement rate limiting and anti-abuse",
+      "description": "Protect API and forms from abuse",
+      "acceptance_criteria": [
+        "Rate limiting middleware",
+        "IP-based and user-based limits",
+        "Captcha on sensitive forms",
+        "Abuse detection logging",
+        "Block list management"
+      ],
+      "milestone": 5,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-025",
+      "priority": 25,
+      "status": "completed",
+      "title": "Performance optimization pass",
+      "description": "Optimize database queries and frontend performance",
+      "acceptance_criteria": [
+        "Add database indexes for common queries",
+        "Implement query result caching",
+        "Lazy load heavy components",
+        "Image optimization",
+        "Lighthouse score > 90"
+      ],
+      "milestone": 5,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-026",
+      "priority": 26,
+      "status": "completed",
+      "title": "Build shareable DOGE View cards",
+      "description": "Generate social sharing cards for projects",
+      "acceptance_criteria": [
+        "OG image generation API",
+        "Dynamic card with project stats",
+        "Score and ranking display",
+        "Proper meta tags for sharing",
+        "Twitter/LinkedIn card formats"
+      ],
+      "milestone": 5,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-027",
+      "priority": 27,
+      "status": "completed",
+      "title": "Set up monitoring and alerting",
+      "description": "Production monitoring and error alerting",
+      "acceptance_criteria": [
+        "Error tracking (Sentry or similar)",
+        "Uptime monitoring",
+        "Database performance alerts",
+        "ETL job failure alerts",
+        "Dashboard for system health"
+      ],
+      "milestone": 5,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-028",
+      "priority": 28,
+      "status": "completed",
+      "title": "Ship real homepage + setup checklist",
+      "description": "Replace default Next.js landing page and document local setup steps",
+      "acceptance_criteria": [
+        "Homepage with navigation to core sections",
+        "CTA for login + projects",
+        "Setup checklist file with env vars and steps"
+      ],
+      "milestone": 6,
+      "created": "2026-02-11",
+      "completed": "2026-02-11"
+    },
+    {
+      "id": "PROOF-029",
+      "priority": 29,
+      "status": "completed",
+      "title": "Build Catalyst proposal scraper",
+      "description": "Scrape projectcatalyst.io proposals into raw ingestion tables",
+      "acceptance_criteria": [
+        "Scrape fund listing pages",
+        "Scrape proposal detail pages (read more content)",
+        "Persist raw proposal payloads",
+        "Handle pagination and retries"
+      ],
+      "milestone": 6,
+      "created": "2026-02-11",
+      "completed": "2026-02-12"
+    },
+    {
+      "id": "PROOF-030",
+      "priority": 30,
+      "status": "completed",
+      "title": "Ingest scraped proposals into core schema",
+      "description": "Transform scraped Catalyst data into Fund/Project/People tables",
+      "acceptance_criteria": [
+        "Map scraped proposals to Project records",
+        "Extract team/organization data when available",
+        "Upsert Fund data from Catalyst",
+        "Track source provenance"
+      ],
+      "milestone": 6,
+      "created": "2026-02-11",
+      "completed": "2026-02-12"
+    },
+    {
+      "id": "PROOF-031",
+      "priority": 31,
+      "status": "completed",
+      "title": "Scrape milestone reports",
+      "description": "Collect milestones from milestones.projectcatalyst.io",
+      "acceptance_criteria": [
+        "Scrape project milestone pages",
+        "Persist milestone payloads",
+        "Link milestones to projects",
+        "Handle pagination and retries"
+      ],
+      "milestone": 6,
+      "created": "2026-02-11",
+      "completed": "2026-02-12"
+    },
+    {
+      "id": "PROOF-032",
+      "priority": 32,
+      "status": "pending",
+      "title": "Design User authentication schema",
+      "description": "Add User model with wallet-based authentication support",
+      "acceptance_criteria": [
+        "User model with walletAddress, email, displayName",
+        "Session management schema",
+        "Wallet signature verification logic documented"
+      ],
+      "milestone": 7,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-033",
+      "priority": 33,
+      "status": "pending",
+      "title": "Implement Cardano wallet login",
+      "description": "Enable users to sign in with Cardano wallets (Nami, Eternl, etc.)",
+      "acceptance_criteria": [
+        "CIP-30 wallet connection implemented",
+        "Message signing for authentication",
+        "Session creation on successful auth",
+        "Logout functionality"
+      ],
+      "milestone": 7,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-034",
+      "priority": 34,
+      "status": "pending",
+      "title": "Design Review schema",
+      "description": "Create Review, ReviewVote models for community reviews",
+      "acceptance_criteria": [
+        "Review model with rating, title, content, category scores",
+        "ReviewVote model for helpful/not helpful",
+        "Relations to Project and User",
+        "Indexes for efficient querying"
+      ],
+      "milestone": 7,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-035",
+      "priority": 35,
+      "status": "pending",
+      "title": "Build Review API endpoints",
+      "description": "CRUD API for reviews with voting",
+      "acceptance_criteria": [
+        "GET /api/reviews?projectId=X returns paginated reviews",
+        "POST /api/reviews creates review (auth required)",
+        "POST /api/reviews/:id/vote records vote",
+        "Aggregates: average rating, vote counts"
+      ],
+      "milestone": 7,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-036",
+      "priority": 36,
+      "status": "pending",
+      "title": "Build Review UI components",
+      "description": "Frontend components for viewing and submitting reviews",
+      "acceptance_criteria": [
+        "ReviewCard component with rating stars",
+        "ReviewForm component with validation",
+        "Vote buttons with optimistic updates",
+        "Reviews section on project detail page"
+      ],
+      "milestone": 7,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-037",
+      "priority": 37,
+      "status": "pending",
+      "title": "Build reviewer leaderboard",
+      "description": "Display top reviewers by helpful votes",
+      "acceptance_criteria": [
+        "Leaderboard page with top 100 reviewers",
+        "Reviewer stats: reviews count, helpful ratio",
+        "Link to reviewer profile"
+      ],
+      "milestone": 7,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-038",
+      "priority": 38,
+      "status": "pending",
+      "title": "Design AccountabilityScore schema",
+      "description": "Create AccountabilityScore model for person reputation",
+      "acceptance_criteria": [
+        "AccountabilityScore model with component scores",
+        "Badge enum: trusted, reliable, unproven, concerning",
+        "Relation to Person",
+        "calculatedAt timestamp for refresh tracking"
+      ],
+      "milestone": 8,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-039",
+      "priority": 39,
+      "status": "pending",
+      "title": "Implement score calculation engine",
+      "description": "Background job to compute accountability scores",
+      "acceptance_criteria": [
+        "Completion rate calculation (40% weight)",
+        "On-time delivery score (20% weight)",
+        "Community rating aggregation (20% weight)",
+        "Funding efficiency calculation (10% weight)",
+        "Communication frequency score (10% weight)",
+        "Badge assignment based on thresholds"
+      ],
+      "milestone": 8,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-040",
+      "priority": 40,
+      "status": "pending",
+      "title": "Build Accountability API and UI",
+      "description": "API and components to display accountability scores",
+      "acceptance_criteria": [
+        "GET /api/accountability/person/:id returns score",
+        "GET /api/accountability/leaderboard returns ranked list",
+        "AccountabilityBadge component",
+        "Score breakdown tooltip",
+        "Integration on People page and profile"
+      ],
+      "milestone": 8,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-041",
+      "priority": 41,
+      "status": "pending",
+      "title": "Design VotingRecord schema",
+      "description": "Create VotingRecord model for proposal voting data",
+      "acceptance_criteria": [
+        "VotingRecord with yes/no/abstain votes",
+        "Unique wallets count",
+        "Category and fund rankings",
+        "Approval and funding probability"
+      ],
+      "milestone": 9,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-042",
+      "priority": 42,
+      "status": "pending",
+      "title": "Research and access voting data sources",
+      "description": "Identify and document sources for historical voting data",
+      "acceptance_criteria": [
+        "Jörmungandr archive endpoints documented",
+        "CatalystExplorer tally data analyzed",
+        "Data gaps identified and documented",
+        "Sample data extracted for testing"
+      ],
+      "milestone": 9,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-043",
+      "priority": 43,
+      "status": "pending",
+      "title": "Build voting data ingestion",
+      "description": "ETL pipeline to import historical voting data",
+      "acceptance_criteria": [
+        "Ingest voting records per proposal",
+        "Calculate rankings from vote tallies",
+        "Handle multiple funds/voting rounds",
+        "Track data freshness"
+      ],
+      "milestone": 9,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-044",
+      "priority": 44,
+      "status": "pending",
+      "title": "Build Voting UI components",
+      "description": "Display voting data on proposals and analytics pages",
+      "acceptance_criteria": [
+        "VotingStats component showing yes/no breakdown",
+        "Ranking badge on proposal cards",
+        "Fund-wide voting analytics dashboard",
+        "Historical voting trends chart"
+      ],
+      "milestone": 9,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-045",
+      "priority": 45,
+      "status": "pending",
+      "title": "Design Flag schema",
+      "description": "Create Flag model for automated and community flags",
+      "acceptance_criteria": [
+        "Flag model with type (automated/community)",
+        "Category enum: repeat_delays, similar, abandoned, plagiarism, etc.",
+        "Status: pending, confirmed, dismissed",
+        "Relations to Project and optional User"
+      ],
+      "milestone": 10,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-046",
+      "priority": 46,
+      "status": "pending",
+      "title": "Implement automated red flag detection",
+      "description": "Background jobs to detect concerning patterns",
+      "acceptance_criteria": [
+        "Repeat delays detector: >2 incomplete projects",
+        "Ghost project detector: no updates in 90 days",
+        "Overdue milestone detector: >30 days past due",
+        "Funding cluster detector: same team, multiple funds",
+        "Flags created automatically with evidence"
+      ],
+      "milestone": 10,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-047",
+      "priority": 47,
+      "status": "pending",
+      "title": "Implement text similarity detection",
+      "description": "Detect similar/duplicate proposals using NLP",
+      "acceptance_criteria": [
+        "Text embedding generation for proposals",
+        "Cosine similarity calculation",
+        "Threshold-based duplicate detection",
+        "Similar proposal linking"
+      ],
+      "milestone": 10,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-048",
+      "priority": 48,
+      "status": "pending",
+      "title": "Build community flagging UI",
+      "description": "Allow users to flag proposals with reasons",
+      "acceptance_criteria": [
+        "Flag button on proposal pages",
+        "Flag form with category selection and reason",
+        "Flag display on flagged proposals",
+        "User flag history"
+      ],
+      "milestone": 10,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-049",
+      "priority": 49,
+      "status": "pending",
+      "title": "Build Flag dashboard",
+      "description": "Admin/public view of flagged proposals",
+      "acceptance_criteria": [
+        "Flagged proposals list with filters",
+        "Flag statistics summary",
+        "Resolution workflow for moderators",
+        "Public flag stats on project pages"
+      ],
+      "milestone": 10,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-050",
+      "priority": 50,
+      "status": "pending",
+      "title": "Design Milestone schema",
+      "description": "Create Milestone model for project milestones",
+      "acceptance_criteria": [
+        "Milestone with title, description, dueDate, completedAt",
+        "Status: pending, in_progress, completed, overdue",
+        "Proof of Achievement (PoA) URL",
+        "Budget and disbursed amounts"
+      ],
+      "milestone": 11,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-051",
+      "priority": 51,
+      "status": "pending",
+      "title": "Ingest milestone data",
+      "description": "Import milestones from available sources",
+      "acceptance_criteria": [
+        "Scrape milestones.projectcatalyst.io if accessible",
+        "Parse milestone PDFs if needed",
+        "Link milestones to projects",
+        "Calculate completion percentages"
+      ],
+      "milestone": 11,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-052",
+      "priority": 52,
+      "status": "pending",
+      "title": "Build Milestone UI components",
+      "description": "Timeline and progress views for milestones",
+      "acceptance_criteria": [
+        "MilestoneTimeline component",
+        "Progress bar with milestone markers",
+        "Overdue milestone highlighting",
+        "PoA links display"
+      ],
+      "milestone": 11,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-053",
+      "priority": 53,
+      "status": "pending",
+      "title": "Build milestone calendar",
+      "description": "Public calendar of upcoming/overdue milestones",
+      "acceptance_criteria": [
+        "Calendar view of milestone deadlines",
+        "Filter by fund, status, proposer",
+        "Export to iCal/Google Calendar",
+        "Overdue highlight"
+      ],
+      "milestone": 11,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-054",
+      "priority": 54,
+      "status": "pending",
+      "title": "Design MonthlyReport schema",
+      "description": "Create MonthlyReport model for proposer updates",
+      "acceptance_criteria": [
+        "MonthlyReport with title, content, reportDate",
+        "Relation to Project",
+        "Content length and quality metrics"
+      ],
+      "milestone": 12,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-055",
+      "priority": 55,
+      "status": "pending",
+      "title": "Ingest monthly reports",
+      "description": "Import monthly reports from available sources",
+      "acceptance_criteria": [
+        "Scrape report data from CatalystExplorer",
+        "Link reports to projects",
+        "Extract submission dates",
+        "Calculate reporting frequency"
+      ],
+      "milestone": 12,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-056",
+      "priority": 56,
+      "status": "pending",
+      "title": "Build MonthlyReport UI",
+      "description": "Display reports on project pages",
+      "acceptance_criteria": [
+        "Reports list on project detail",
+        "Report content viewer",
+        "Reporting frequency indicator",
+        "Gap detection highlighting"
+      ],
+      "milestone": 12,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-057",
+      "priority": 57,
+      "status": "pending",
+      "title": "Design Community schema",
+      "description": "Create Community model for topic-based groupings",
+      "acceptance_criteria": [
+        "Community with name, slug, description",
+        "CommunityProject join table",
+        "createdBy relation to User"
+      ],
+      "milestone": 13,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-058",
+      "priority": 58,
+      "status": "pending",
+      "title": "Build Community pages",
+      "description": "Community listing and detail pages",
+      "acceptance_criteria": [
+        "Communities index page",
+        "Community detail with proposals",
+        "Community stats dashboard",
+        "Join/create community for users"
+      ],
+      "milestone": 13,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-059",
+      "priority": 59,
+      "status": "pending",
+      "title": "Build Organization profiles",
+      "description": "Team/company profile pages",
+      "acceptance_criteria": [
+        "Organization detail page",
+        "Cross-proposal team view",
+        "Organization accountability score",
+        "Team member listing"
+      ],
+      "milestone": 13,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-060",
+      "priority": 60,
+      "status": "pending",
+      "title": "Build fund comparison dashboard",
+      "description": "Compare funds side-by-side",
+      "acceptance_criteria": [
+        "Multi-fund selector",
+        "Comparison charts: completion, funding, categories",
+        "Trend analysis over time",
+        "Export comparison data"
+      ],
+      "milestone": 14,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-061",
+      "priority": 61,
+      "status": "pending",
+      "title": "Build proposer leaderboards",
+      "description": "Rankings of proposers by various metrics",
+      "acceptance_criteria": [
+        "Leaderboard by total funding",
+        "Leaderboard by completion rate",
+        "Leaderboard by community rating",
+        "Filter by fund, time period"
+      ],
+      "milestone": 14,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-062",
+      "priority": 62,
+      "status": "pending",
+      "title": "Enhance knowledge graph",
+      "description": "Advanced network analysis features",
+      "acceptance_criteria": [
+        "Cluster detection algorithm",
+        "Influence/centrality metrics",
+        "Funding flow visualization",
+        "Time-based graph animation"
+      ],
+      "milestone": 14,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-063",
+      "priority": 63,
+      "status": "pending",
+      "title": "Build predictive analytics",
+      "description": "ML-based predictions for proposals",
+      "acceptance_criteria": [
+        "Funding success predictor model",
+        "Completion probability estimator",
+        "Risk assessment score",
+        "Model accuracy tracking"
+      ],
+      "milestone": 14,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-064",
+      "priority": 64,
+      "status": "pending",
+      "title": "GitHub integration",
+      "description": "Link proposals to GitHub repos and track activity",
+      "acceptance_criteria": [
+        "Repo URL linking on projects",
+        "GitHub API integration",
+        "Commit activity tracking",
+        "Activity score calculation"
+      ],
+      "milestone": 15,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-065",
+      "priority": 65,
+      "status": "pending",
+      "title": "Build GitHub activity dashboard",
+      "description": "Display GitHub activity for open source projects",
+      "acceptance_criteria": [
+        "Commit frequency chart",
+        "Contributor count",
+        "Issue/PR metrics",
+        "Last activity indicator"
+      ],
+      "milestone": 15,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-066",
+      "priority": 66,
+      "status": "pending",
+      "title": "Design Completion NFT schema",
+      "description": "Schema for on-chain completion proofs",
+      "acceptance_criteria": [
+        "NFT metadata schema",
+        "Minting transaction tracking",
+        "Verification status"
+      ],
+      "milestone": 16,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-067",
+      "priority": 67,
+      "status": "pending",
+      "title": "Implement NFT minting",
+      "description": "Cardano NFT minting for completed projects",
+      "acceptance_criteria": [
+        "NMKR or direct minting integration",
+        "Community verification workflow",
+        "NFT display on project page",
+        "Proposer wallet verification"
+      ],
+      "milestone": 16,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-068",
+      "priority": 68,
+      "status": "pending",
+      "title": "Set up AI/LLM infrastructure",
+      "description": "Configure LLM backend for AI-powered features",
+      "acceptance_criteria": [
+        "OpenAI or local LLM integration",
+        "Embedding model for proposal text",
+        "Vector database for similarity search (Pinecone/pgvector)",
+        "Rate limiting and cost controls"
+      ],
+      "milestone": 17,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-069",
+      "priority": 69,
+      "status": "pending",
+      "title": "Build AI proposal comparison",
+      "description": "AI-powered side-by-side proposal comparison",
+      "acceptance_criteria": [
+        "Compare any two proposals",
+        "Highlight similarities and differences",
+        "Identify overlapping scope",
+        "Generate comparison summary"
+      ],
+      "milestone": 17,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-070",
+      "priority": 70,
+      "status": "pending",
+      "title": "Build AI natural language search",
+      "description": "Ask questions about proposals in natural language",
+      "acceptance_criteria": [
+        "Chat interface for questions",
+        "Search across all funds or filtered",
+        "Return relevant proposals with explanations",
+        "Support follow-up questions"
+      ],
+      "milestone": 17,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-071",
+      "priority": 71,
+      "status": "pending",
+      "title": "Build AI recommendation engine",
+      "description": "Personalized proposal recommendations based on preferences",
+      "acceptance_criteria": [
+        "Learn from user interactions (views, bookmarks, votes)",
+        "Generate personalized feed",
+        "Collaborative filtering",
+        "Explain why proposal is recommended"
+      ],
+      "milestone": 17,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-072",
+      "priority": 72,
+      "status": "pending",
+      "title": "Design bookmark schema",
+      "description": "Create Bookmark and BookmarkList models",
+      "acceptance_criteria": [
+        "Bookmark model with user, project, action (like/skip)",
+        "BookmarkList for named collections",
+        "Export functionality"
+      ],
+      "milestone": 18,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-073",
+      "priority": 73,
+      "status": "pending",
+      "title": "Build Proposal Tinder swipe UI",
+      "description": "Card-based swipe interface for proposal discovery",
+      "acceptance_criteria": [
+        "Mobile-friendly card presentation",
+        "Swipe gestures (right=bookmark, left=skip)",
+        "Quick proposal info display",
+        "Keyboard shortcuts for desktop"
+      ],
+      "milestone": 18,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-074",
+      "priority": 74,
+      "status": "pending",
+      "title": "Build bookmark management UI",
+      "description": "View and manage bookmarked proposals",
+      "acceptance_criteria": [
+        "Bookmarks list page",
+        "Create/rename/delete lists",
+        "Export bookmarks to CSV",
+        "Share bookmark lists"
+      ],
+      "milestone": 18,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-075",
+      "priority": 75,
+      "status": "pending",
+      "title": "Design FundingTransaction schema",
+      "description": "Create model for on-chain funding transactions",
+      "acceptance_criteria": [
+        "FundingTransaction with txHash, amount, date, address",
+        "Relation to Project",
+        "USD value at transaction time",
+        "Link to external explorer"
+      ],
+      "milestone": 19,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-076",
+      "priority": 76,
+      "status": "pending",
+      "title": "Build funding transaction ingestion",
+      "description": "Ingest historical Catalyst funding transactions from mainnet",
+      "acceptance_criteria": [
+        "Connect to Cardano indexer (Blockfrost/Koios)",
+        "Identify Catalyst treasury addresses",
+        "Link transactions to proposals",
+        "Historical data back to Fund 2"
+      ],
+      "milestone": 19,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-077",
+      "priority": 77,
+      "status": "pending",
+      "title": "Build USD conversion service",
+      "description": "Convert ADA amounts to USD at transaction time",
+      "acceptance_criteria": [
+        "Historical ADA/USD price data",
+        "Real-time price feed",
+        "Store USD value per transaction",
+        "Display both ADA and USD"
+      ],
+      "milestone": 19,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-078",
+      "priority": 78,
+      "status": "pending",
+      "title": "Build team address tagging",
+      "description": "Allow proposers to claim and tag their wallet addresses",
+      "acceptance_criteria": [
+        "Wallet address claiming via signature",
+        "Link addresses to team/person",
+        "Display tagged addresses on project page",
+        "Address ownership verification"
+      ],
+      "milestone": 19,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-079",
+      "priority": 79,
+      "status": "pending",
+      "title": "Build funding transaction explorer UI",
+      "description": "Interactive UI for exploring funding transactions",
+      "acceptance_criteria": [
+        "Transaction list per project",
+        "Links to CardanoScan/Cexplorer",
+        "Distribution timeline chart",
+        "Fund-wide transaction analytics"
+      ],
+      "milestone": 19,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-080",
+      "priority": 80,
+      "status": "pending",
+      "title": "Generate OpenAPI V3 specification",
+      "description": "Create OpenAPI 3.0 spec for all public APIs",
+      "acceptance_criteria": [
+        "OpenAPI 3.0 YAML/JSON spec",
+        "All endpoints documented",
+        "Request/response schemas",
+        "Authentication documented"
+      ],
+      "milestone": 20,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-081",
+      "priority": 81,
+      "status": "pending",
+      "title": "Build API documentation UI",
+      "description": "Interactive API documentation with Swagger UI",
+      "acceptance_criteria": [
+        "Swagger UI integration",
+        "Try-it-out functionality",
+        "Code examples in multiple languages",
+        "Versioned documentation"
+      ],
+      "milestone": 20,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-082",
+      "priority": 82,
+      "status": "pending",
+      "title": "Design Reviewer/Moderator schema",
+      "description": "Extend User model for reviewer and moderator roles",
+      "acceptance_criteria": [
+        "ReviewerProfile with participation history",
+        "ModeratorProfile with moderation stats",
+        "Link to Ideascale account",
+        "Role badges"
+      ],
+      "milestone": 21,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-083",
+      "priority": 83,
+      "status": "pending",
+      "title": "Build reviewer profile pages",
+      "description": "Profile pages for community reviewers",
+      "acceptance_criteria": [
+        "Reviewer profile page",
+        "Review history across funds",
+        "Review outcomes display",
+        "Claim profile workflow"
+      ],
+      "milestone": 21,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-084",
+      "priority": 84,
+      "status": "pending",
+      "title": "Build moderator profile pages",
+      "description": "Profile pages for moderators",
+      "acceptance_criteria": [
+        "Moderator profile page",
+        "Moderation history",
+        "Fund/category assignments",
+        "Participation statistics"
+      ],
+      "milestone": 21,
+      "created": "2026-02-12",
+      "completed": null
+    },
+    {
+      "id": "PROOF-085",
+      "priority": 85,
+      "status": "pending",
+      "title": "Ingest reviewer/moderator data",
+      "description": "Import reviewer and moderator participation data",
+      "acceptance_criteria": [
+        "Scrape reviewer assignments from available sources",
+        "Link reviews to reviewers",
+        "Calculate review outcomes",
+        "Track moderation history"
+      ],
+      "milestone": 21,
+      "created": "2026-02-12",
+      "completed": null
+    }
+  ]
+}
