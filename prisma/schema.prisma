@@ -76,6 +76,7 @@ model Project {
   votingRecords   VotingRecord[]
   flags           Flag[]
   reports         MonthlyReport[]
+  communityProjects CommunityProject[]
   sourceUrl       String
   sourceType      String
   lastSeenAt      DateTime
@@ -279,6 +280,7 @@ model User {
   reviews       Review[]
   reviewVotes   ReviewVote[]
   flags         Flag[]
+  communities   Community[]
 }
 
 model Session {
@@ -472,4 +474,32 @@ model Flag {
   @@index([type, status])
   @@index([category])
   @@index([createdAt])
+}
+
+model Community {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String?
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  projects    CommunityProject[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([createdById])
+}
+
+model CommunityProject {
+  id          String    @id @default(uuid())
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id])
+  projectId   String
+  project     Project   @relation(fields: [projectId], references: [id])
+  addedAt     DateTime  @default(now())
+
+  @@unique([communityId, projectId])
+  @@index([communityId])
+  @@index([projectId])
 }

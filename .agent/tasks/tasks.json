@@ -1084,7 +1084,7 @@
     {
       "id": "PROOF-057",
       "priority": 57,
-      "status": "pending",
+      "status": "completed",
       "title": "Design Community schema",
       "description": "Create Community model for topic-based groupings",
       "acceptance_criteria": [
@@ -1094,7 +1094,7 @@
       ],
       "milestone": 13,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-058",

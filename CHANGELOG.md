@@ -43,6 +43,7 @@ All notable changes to this project will be documented in this file.
 - Similar proposal detection using lightweight text similarity scoring.
 - Community flagging UI completion (button, form, evidence input).
 - Milestone calendar view with month navigation, filters, and iCal export.
+- Community schema with Community and CommunityProject join table models.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
