@@ -146,3 +146,8 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-047b Text similarity detection for similar proposals
 - **2026-02-12:** Completed PROOF-049 Flag dashboard (verified all criteria already implemented)
 - **2026-02-12:** Completed PROOF-050 Design Milestone schema (verified already implemented)
+- **2026-02-12:** Completed PROOF-051 Ingest milestone data (verified already implemented)
+- **2026-02-12:** Completed PROOF-052 Build Milestone UI components (verified already implemented)
+- **2026-02-12:** Completed PROOF-054 Design MonthlyReport schema (verified already implemented)
+- **2026-02-12:** Completed PROOF-055 Ingest monthly reports (verified already implemented)
+- **2026-02-12:** Completed PROOF-056 Build MonthlyReport UI (verified already implemented)

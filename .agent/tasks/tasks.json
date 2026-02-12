@@ -989,7 +989,7 @@
     {
       "id": "PROOF-051",
       "priority": 51,
-      "status": "pending",
+      "status": "completed",
       "title": "Ingest milestone data",
       "description": "Import milestones from available sources",
       "acceptance_criteria": [
@@ -1000,12 +1000,12 @@
       ],
       "milestone": 11,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-052",
       "priority": 52,
-      "status": "pending",
+      "status": "completed",
       "title": "Build Milestone UI components",
       "description": "Timeline and progress views for milestones",
       "acceptance_criteria": [
@@ -1016,7 +1016,7 @@
       ],
       "milestone": 11,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-053",
@@ -1037,7 +1037,7 @@
     {
       "id": "PROOF-054",
       "priority": 54,
-      "status": "pending",
+      "status": "completed",
       "title": "Design MonthlyReport schema",
       "description": "Create MonthlyReport model for proposer updates",
       "acceptance_criteria": [
@@ -1047,12 +1047,12 @@
       ],
       "milestone": 12,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-055",
       "priority": 55,
-      "status": "pending",
+      "status": "completed",
       "title": "Ingest monthly reports",
       "description": "Import monthly reports from available sources",
       "acceptance_criteria": [
@@ -1063,12 +1063,12 @@
       ],
       "milestone": 12,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-056",
       "priority": 56,
-      "status": "pending",
+      "status": "completed",
       "title": "Build MonthlyReport UI",
       "description": "Display reports on project pages",
       "acceptance_criteria": [
@@ -1079,7 +1079,7 @@
       ],
       "milestone": 12,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-057",
