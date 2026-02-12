@@ -38,17 +38,16 @@
 ## Current Task
 
 ```
-ID:          PROOF-036
-Title:       Build Review UI components
+ID:          PROOF-037
+Title:       Build reviewer leaderboard
 Milestone:   7 — Community Reviews
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] ReviewCard component with rating stars
-- [ ] ReviewForm component with validation
-- [ ] Vote buttons with optimistic updates
-- [ ] Reviews section on project detail page
+- [ ] Leaderboard page with top 100 reviewers
+- [ ] Reviewer stats: reviews count, helpful ratio
+- [ ] Link to reviewer profile
 
 ---
 
@@ -56,8 +55,8 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-036 | Build Review UI components | 2026-02-12 |
 | PROOF-035 | Build Review API endpoints | 2026-02-12 |
-| PROOF-034 | Design Review schema | 2026-02-12 |
 | — | PRD + Tasks for transparency features | 2026-02-12 |
 
 ---
@@ -67,7 +66,7 @@ Status:      pending
 | Issue | Blocking | Resolution |
 |-------|----------|------------|
 | Catalyst Milestone API requires key | PROOF-051 | Request access or scrape public pages |
-| Full ingestion running | PROOF-036+ | ~84% complete, continuing in background |
+| Full ingestion running | PROOF-037+ | ~84% complete, continuing in background |
 
 ---
 
@@ -106,3 +105,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-033 wallet login endpoints
 - **2026-02-12:** Completed PROOF-034 review schema
 - **2026-02-12:** Completed PROOF-035 review API endpoints
+- **2026-02-12:** Completed PROOF-036 review UI components

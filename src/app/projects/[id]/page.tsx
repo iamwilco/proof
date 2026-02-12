@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import prisma from "../../../lib/prisma";
 import FeedbackForm from "./FeedbackForm";
 import LeaderResponsePanel from "./LeaderResponsePanel";
+import ReviewSection from "./ReviewSection";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -202,17 +203,21 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         </header>
 
         <div className="space-y-6">
-          <FeedbackForm projectId={project.id} />
-          <LeaderResponsePanel
-            projectId={project.id}
-            concerns={project.concerns.map((concern) => ({
-              id: concern.id,
-              description: concern.description,
-              category: concern.category,
-              status: concern.status,
-            }))}
-          />
-
+          <Section title="Feedback">
+            <FeedbackForm projectId={project.id} />
+          </Section>
+          <ReviewSection projectId={project.id} />
+          <Section title="Leader responses">
+            <LeaderResponsePanel
+              projectId={project.id}
+              concerns={project.concerns.map((concern) => ({
+                id: concern.id,
+                description: concern.description,
+                category: concern.category,
+                status: concern.status,
+              }))}
+            />
+          </Section>
           {project.concerns.length > 0 && (
             <Section title="Concerns & Responses">
               <div className="space-y-4">

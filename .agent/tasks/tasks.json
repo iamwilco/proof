@@ -594,7 +594,7 @@
     {
       "id": "PROOF-036",
       "priority": 36,
-      "status": "pending",
+      "status": "completed",
       "title": "Build Review UI components",
       "description": "Frontend components for viewing and submitting reviews",
       "acceptance_criteria": [
@@ -605,7 +605,7 @@
       ],
       "milestone": 7,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-037",
