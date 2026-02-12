@@ -708,7 +708,7 @@
     {
       "id": "PROOF-043",
       "priority": 43,
-      "status": "pending",
+      "status": "completed",
       "title": "Build voting data ingestion",
       "description": "ETL pipeline to import historical voting data",
       "acceptance_criteria": [
@@ -719,7 +719,7 @@
       ],
       "milestone": 9,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-044",

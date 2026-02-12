@@ -323,6 +323,8 @@ model VotingRecord {
   uniqueWallets      Int
   approvalRate       Float
   fundingProbability Float
+  fundRank           Int?
+  categoryRank       Int?
   sourceUrl          String
   sourceType         String
   capturedAt         DateTime

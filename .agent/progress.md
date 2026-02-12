@@ -38,17 +38,17 @@
 ## Current Task
 
 ```
-ID:          PROOF-043
-Title:       Build voting data ingestion
+ID:          PROOF-044
+Title:       Build voting analytics UI
 Milestone:   9 — Voting Data
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] Ingest voting records per proposal
-- [ ] Calculate rankings from vote tallies
-- [ ] Handle multiple funds/voting rounds
-- [ ] Track data freshness
+- [ ] Voting analytics dashboard
+- [ ] Fund/category rankings
+- [ ] Proposal-level vote breakdowns
+- [ ] Data freshness indicators
 
 ---
 
@@ -56,8 +56,8 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-043 | Build voting data ingestion | 2026-02-12 |
 | PROOF-042 | Research and access voting data sources | 2026-02-12 |
-| PROOF-041 | Design VotingRecord schema | 2026-02-12 |
 | — | PRD + Tasks for transparency features | 2026-02-12 |
 
 ---
@@ -67,7 +67,7 @@ Status:      pending
 | Issue | Blocking | Resolution |
 |-------|----------|------------|
 | Catalyst Milestone API requires key | PROOF-051 | Request access or scrape public pages |
-| Full ingestion running | PROOF-043+ | ~84% complete, continuing in background |
+| Full ingestion running | PROOF-044+ | ~84% complete, continuing in background |
 
 ---
 
@@ -113,3 +113,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-040 accountability API + UI
 - **2026-02-12:** Completed PROOF-041 voting record schema
 - **2026-02-12:** Completed PROOF-042 voting data source research
+- **2026-02-12:** Completed PROOF-043 voting data ingestion

@@ -1,12 +1,99 @@
-# PROOF Agent Control Layer
+# 📚 PROOF Agent Documentation Index
 
-> **Humans own strategy. Agents own execution.**
+> **For AI Agents:** Read this file first to understand available documentation and when to reference each resource.
 
-This directory contains the control system for AI agent operations on the PROOF project.
+This folder contains all the documentation needed for AI agents to effectively assist with development on the PROOF project.
 
 ---
 
-## The Agent Loop
+## 🗺️ Quick Navigation
+
+| Folder | Purpose | When to Read |
+|--------|---------|--------------|
+| [`/system`](./system/) | Architecture, schemas, API endpoints | **First**, for any architectural decisions or understanding system design |
+| [`/prd`](./prd/) | Product requirements and feature roadmaps | When implementing new features or understanding objectives |
+| [`/tasks`](./tasks/) | Execution queue (atomic tasks) | When finding the next task to execute |
+| [`/SOPs`](./SOPs/) | Standard Operating Procedures | When encountering known issues or following established patterns |
+| [`/skills`](./skills/) | Agent skills and operators | When a task matches a supported skill |
+| [`/workflows`](./workflows/) | Step-by-step development workflows | When executing specific development tasks |
+
+---
+
+## 📁 Folder Details
+
+### `/system` — Architecture & Schemas
+
+**The source of truth for major architectural decisions.**
+
+Read these files to understand:
+- Overall system architecture and component relationships
+- Database schemas and entity relationships
+- API endpoints and contracts
+- Integration patterns with external services
+
+Files:
+- `architecture.md` — System overview, module dependencies, data flow, Cardano integration
+- `database-schema.md` — Database entities, relationships, provenance tracking
+- `api-endpoints.md` — REST endpoints, request/response formats, rate limiting
+
+---
+
+### `/prd` — Product Requirements
+
+**Source of truth for what we're building.**
+
+Files:
+- `core.md` — Core PRD with objectives, invariants, constraints
+- `transparency-features.md` — Feature roadmap for transparency system
+
+---
+
+### `/tasks` — Execution Queue
+
+The task queue contains atomic units of work:
+- **id** — Unique identifier (PROOF-XXX)
+- **priority** — Execution order (1 = highest)
+- **status** — `pending`, `in_progress`, `completed`, `blocked`
+- **acceptance_criteria** — How to know it's done
+
+---
+
+### `/SOPs` — Standard Operating Procedures
+
+**Learnings from resolved issues and best practices.**
+
+When an issue is resolved or a complex integration succeeds:
+1. Document the step-by-step solution
+2. Include common pitfalls and how to avoid them
+3. Reference related code or configuration
+
+**To create a new SOP**, ask the agent:
+> "Generate SOP for [task/integration name]"
+
+---
+
+### `/skills` — Agent Skills
+
+**Reusable, task-specific playbooks and operators.**
+
+| Skill | Description |
+|-------|-------------|
+| [`git-commit-formatter`](./skills/git-commit-formatter/skill.md) | Conventional commit formatting |
+
+---
+
+### `/workflows` — Development Workflows
+
+**Step-by-step guides for common development tasks.**
+
+| Workflow | Description | Trigger |
+|----------|-------------|---------|
+| [`test.md`](./workflows/test.md) | Run test suites | `/test` |
+| [`ci.md`](./workflows/ci.md) | CI philosophy and quality gates | `/ci` |
+
+---
+
+## 🔄 The Agent Loop
 
 Every agent session follows this exact sequence:
 
@@ -42,55 +129,29 @@ Every agent session follows this exact sequence:
 
 ---
 
-## Directory Structure
+## 📂 Directory Structure
 
 ```
 .agent/
-├── README.md           # This file — agent control layer
+├── readme.md           # This file — agent documentation index
 ├── progress.md         # Milestone tracker and session notes
+├── system/
+│   ├── architecture.md # System overview, data flow
+│   ├── database-schema.md # Entity relationships
+│   └── api-endpoints.md # REST API documentation
 ├── prd/
 │   ├── core.md         # Core PRD (source of truth)
 │   └── transparency-features.md  # Feature roadmap PRD
 ├── tasks/
 │   └── tasks.json      # Execution queue (atomic tasks)
+├── SOPs/
+│   └── readme.md       # SOP template and index
+├── skills/
+│   └── git-commit-formatter/ # Conventional commits skill
 └── workflows/
-    ├── test.md         # Testing workflow (must pass before completion)
+    ├── test.md         # Testing workflow
     └── ci.md           # CI philosophy and quality gates
 ```
-
----
-
-## File Purposes
-
-### `prd/core.md` — Source of Truth
-
-The PRD contains:
-- **Objective** — What we're building
-- **Invariants** — Rules that must never break
-- **Non-goals** — What we're explicitly not doing
-- **Constraints** — Technical and process limitations
-- **Status** — Current progress
-
-**Read this first. Always.**
-
-### `tasks/tasks.json` — Execution Queue
-
-The task queue contains atomic units of work:
-- **id** — Unique identifier (PROOF-XXX)
-- **priority** — Execution order (1 = highest)
-- **status** — `pending`, `in_progress`, `completed`, `blocked`
-- **description** — What needs to be done
-- **acceptance_criteria** — How to know it's done
-
-**Pick the highest-priority pending task. Execute only that task.**
-
-### `workflows/` — Quality Gates
-
-Workflows define procedures that must pass before any task is complete:
-- **test.md** — Install, lint, test, build
-- **ci.md** — CI philosophy and gates
-
-**If any workflow step fails, the task is NOT complete.**
 
 ---
 
@@ -171,11 +232,54 @@ Read these files in order:
 
 ---
 
-## Quick Commands
+## ⚡ Quick Commands
 
 | Command | Action |
-|---------|--------|
+|---------|---------|
 | `continue` / `next` | Execute next pending task |
 | `status` | Show current progress and blockers |
 | `skip PROOF-XXX` | Mark task as blocked, move to next |
 | `focus milestone N` | Prioritize tasks from milestone N |
+
+---
+
+## 🏗️ Project Overview
+
+**PROOF** (Public Registry of Outcomes & On-chain Funding) is a transparency platform for Cardano treasury/grant funding.
+
+### Technology Stack
+
+| Layer | Technology | Key Modules |
+|-------|------------|-------------|
+| **Frontend** | Next.js 14+, React, TypeScript | `src/app/` |
+| **Styling** | Tailwind CSS | Utility classes |
+| **Database** | PostgreSQL via Supabase | Prisma ORM |
+| **ETL** | Python (SQLAlchemy) | `etl/` |
+| **Auth** | Supabase + CIP-30 Wallets | Wallet signatures |
+
+### Quick Commands
+
+```bash
+# Development
+npm run dev
+
+# Build
+npm run build
+
+# Lint
+npm run lint
+
+# Database
+npx prisma generate
+npx prisma db push
+
+# ETL (Python)
+cd etl && python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python catalyst/ingest_proposals.py
+```
+
+---
+
+**Created:** 2026-02-10  
+**Last Updated:** 2026-02-12
