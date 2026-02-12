@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 - Flagged projects indicator: badge on project cards, warning banner on detail pages.
 - Flag status filter on projects listing page.
 - Milestone data sources research documentation.
+- Extended Milestone schema with Catalyst SoM/PoA fields and evidence tracking.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

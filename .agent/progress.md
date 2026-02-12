@@ -21,7 +21,7 @@
 | 8 | Accountability Scoring | ⏳ Pending | 0/3 | 0% |
 | 9 | Voting Data | 🔄 In Progress | 4/4 | 100% |
 | 10 | Red Flag Detection | ✅ Complete | 5/5 | 100% |
-| 11 | Milestone Tracking | 🔄 In Progress | 1/4 | 25% |
+| 11 | Milestone Tracking | 🔄 In Progress | 2/4 | 50% |
 | 12 | Monthly Reports | ⏳ Pending | 0/3 | 0% |
 | 13 | Communities & Groups | ⏳ Pending | 0/3 | 0% |
 | 14 | Advanced Analytics | ⏳ Pending | 0/4 | 0% |
@@ -38,16 +38,16 @@
 ## Current Task
 
 ```
-ID:          PROOF-051
-Title:       Extend Milestone schema with Catalyst fields
+ID:          PROOF-052
+Title:       Build milestone sync mechanism
 Milestone:   11 — Milestone Tracking
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] Add SoM/PoA status fields to Milestone model
-- [ ] Add payment tracking fields
-- [ ] Add evidence URLs array field
+- [ ] Create ingestion workflow for milestone data
+- [ ] Map milestone data to schema fields
+- [ ] Store evidence URLs and status history
 
 ---
 
@@ -55,6 +55,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-051 | Extend Milestone schema with Catalyst fields | 2026-02-12 |
 | PROOF-050 | Research milestone data sources | 2026-02-12 |
 | PROOF-049 | Build flagged projects indicator | 2026-02-12 |
 | PROOF-048 | Build flag review dashboard | 2026-02-12 |
@@ -127,3 +128,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-048 Flag review dashboard with filters and action buttons
 - **2026-02-12:** Completed PROOF-049 Flagged projects indicator (badges, warning banner, filter)
 - **2026-02-12:** Completed PROOF-050 Milestone data sources research (Milestone Module, LidoNation API)
+- **2026-02-12:** Completed PROOF-051 Milestone schema extensions for SoM/PoA fields

@@ -95,6 +95,15 @@ model Milestone {
   title       String
   dueDate     DateTime?
   status      String
+  catalystMilestoneId String?
+  somStatus   String?
+  poaStatus   String?
+  poaSubmittedAt DateTime?
+  poaApprovedAt DateTime?
+  reviewerFeedback String?
+  paymentStatus String?
+  paymentTxHash String?
+  evidenceUrls String[]
   deliverables Deliverable[]
   sourceUrl   String
   sourceType  String

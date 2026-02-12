@@ -818,6 +818,21 @@
       "completed": "2026-02-12"
     },
     {
+      "id": "PROOF-051",
+      "priority": 51,
+      "status": "completed",
+      "title": "Extend Milestone schema with Catalyst fields",
+      "description": "Add SoM/PoA status, evidence, and payment tracking fields",
+      "acceptance_criteria": [
+        "Add SoM/PoA status fields to Milestone model",
+        "Add payment tracking fields",
+        "Add evidence URLs array field"
+      ],
+      "milestone": 11,
+      "created": "2026-02-12",
+      "completed": "2026-02-12"
+    },
+    {
       "id": "PROOF-049",
       "priority": 49,
       "status": "completed",
