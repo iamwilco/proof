@@ -1179,7 +1179,7 @@
     {
       "id": "PROOF-063",
       "priority": 63,
-      "status": "pending",
+      "status": "completed",
       "title": "Build predictive analytics",
       "description": "ML-based predictions for proposals",
       "acceptance_criteria": [
@@ -1190,7 +1190,7 @@
       ],
       "milestone": 14,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-064",

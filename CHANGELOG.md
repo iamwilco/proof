@@ -49,6 +49,7 @@ All notable changes to this project will be documented in this file.
 - Fund comparison dashboard with multi-fund selector, metrics table, and category breakdown.
 - Proposer leaderboards with sorting by funding, completion rate, and project count.
 - Enhanced knowledge graph with view modes (default, centrality, clusters, funding flow).
+- Predictive analytics with funding success, completion probability, and risk assessment.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
