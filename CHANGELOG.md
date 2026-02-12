@@ -41,6 +41,7 @@ All notable changes to this project will be documented in this file.
 - Monthly reports moderation dashboard with approve/flag actions.
 - Report moderation export support and status tracking.
 - Similar proposal detection using lightweight text similarity scoring.
+- Community flagging UI completion (button, form, evidence input).
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

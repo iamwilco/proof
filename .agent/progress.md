@@ -65,6 +65,7 @@ Status:      pending
 | PROOF-050 | Research milestone data sources | 2026-02-12 |
 | PROOF-049 | Build flagged projects indicator | 2026-02-12 |
 | PROOF-048 | Build flag review dashboard | 2026-02-12 |
+| PROOF-048 | Build community flagging UI | 2026-02-12 |
 | PROOF-047 | Build community flag submission UI | 2026-02-12 |
 | PROOF-046 | Implement automated red flag detection | 2026-02-12 |
 | PROOF-045 | Design Flag schema | 2026-02-12 |
@@ -131,6 +132,7 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-045 Flag schema for red flag detection
 - **2026-02-12:** Completed PROOF-046 Automated red flag detectors (repeat delays, ghost projects, overdue milestones, funding clusters)
 - **2026-02-12:** Completed PROOF-047 Community flag submission UI with category selector and evidence input
+- **2026-02-12:** Completed PROOF-048 Community flagging UI
 - **2026-02-12:** Completed PROOF-048 Flag review dashboard with filters and action buttons
 - **2026-02-12:** Completed PROOF-049 Flagged projects indicator (badges, warning banner, filter)
 - **2026-02-12:** Completed PROOF-050 Milestone data sources research (Milestone Module, LidoNation API)

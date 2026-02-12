@@ -36,7 +36,7 @@
       ],
       "milestone": 1,
       "created": "2026-02-10",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-003",
@@ -107,7 +107,7 @@
       ],
       "milestone": 1,
       "created": "2026-02-10",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-007",
@@ -941,7 +941,7 @@
     {
       "id": "PROOF-048",
       "priority": 48,
-      "status": "pending",
+      "status": "completed",
       "title": "Build community flagging UI",
       "description": "Allow users to flag proposals with reasons",
       "acceptance_criteria": [
@@ -952,7 +952,7 @@
       ],
       "milestone": 10,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-049",
