@@ -692,7 +692,7 @@
     {
       "id": "PROOF-042",
       "priority": 42,
-      "status": "pending",
+      "status": "completed",
       "title": "Research and access voting data sources",
       "description": "Identify and document sources for historical voting data",
       "acceptance_criteria": [
@@ -703,7 +703,7 @@
       ],
       "milestone": 9,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-043",

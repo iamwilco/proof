@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - Accountability score calculation engine API.
 - Accountability API endpoints and UI badge for people profiles.
 - Voting record schema for proposal voting data.
+- Voting data source research notes for Catalyst and Jörmungandr.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
