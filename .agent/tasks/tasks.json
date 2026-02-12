@@ -1099,7 +1099,7 @@
     {
       "id": "PROOF-058",
       "priority": 58,
-      "status": "pending",
+      "status": "completed",
       "title": "Build Community pages",
       "description": "Community listing and detail pages",
       "acceptance_criteria": [
@@ -1110,7 +1110,7 @@
       ],
       "milestone": 13,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-059",

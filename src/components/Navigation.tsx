@@ -12,6 +12,7 @@ const navItems = [
   { href: "/reports", label: "Reports" },
   { href: "/voting", label: "Voting" },
   { href: "/flags", label: "Flags" },
+  { href: "/communities", label: "Communities" },
   { href: "/graph", label: "Graph" },
   { href: "/rankings", label: "Rankings" },
   { href: "/export", label: "Export" },

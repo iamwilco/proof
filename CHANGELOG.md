@@ -44,6 +44,7 @@ All notable changes to this project will be documented in this file.
 - Community flagging UI completion (button, form, evidence input).
 - Milestone calendar view with month navigation, filters, and iCal export.
 - Community schema with Community and CommunityProject join table models.
+- Community pages with index listing, detail view, and stats dashboard.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
