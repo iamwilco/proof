@@ -22,7 +22,7 @@
 | 9 | Voting Data | 🔄 In Progress | 4/4 | 100% |
 | 10 | Red Flag Detection | ✅ Complete | 5/5 | 100% |
 | 11 | Milestone Tracking | ✅ Complete | 4/4 | 100% |
-| 12 | Monthly Reports | 🔄 In Progress | 1/3 | 33% |
+| 12 | Monthly Reports | 🔄 In Progress | 2/3 | 66% |
 | 13 | Communities & Groups | ⏳ Pending | 0/3 | 0% |
 | 14 | Advanced Analytics | ⏳ Pending | 0/4 | 0% |
 | 15 | GitHub Integration | ⏳ Pending | 0/2 | 0% |
@@ -38,16 +38,16 @@
 ## Current Task
 
 ```
-ID:          PROOF-055
-Title:       Build monthly report templates
+ID:          PROOF-056
+Title:       Add monthly reports moderation dashboard
 Milestone:   12 — Monthly Reports
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] Define monthly report schema
-- [ ] Create submission form
-- [ ] Render report history
+- [ ] Review reports by project
+- [ ] Approve or flag reports
+- [ ] Export report summaries
 
 ---
 
@@ -55,6 +55,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-055 | Build monthly report templates | 2026-02-12 |
 | PROOF-054 | Add milestone status dashboard | 2026-02-12 |
 | PROOF-053 | Create milestone tracking UI | 2026-02-12 |
 | PROOF-052 | Build milestone sync mechanism | 2026-02-12 |
@@ -135,3 +136,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-052 Milestone ingestion script and payload format
 - **2026-02-12:** Completed PROOF-053 Milestone tracking UI (SoM/PoA badges, evidence links)
 - **2026-02-12:** Completed PROOF-054 Milestone status dashboard with filters and export
+- **2026-02-12:** Completed PROOF-055 Monthly reports schema + submission UI

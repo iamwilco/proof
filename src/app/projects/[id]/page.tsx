@@ -8,6 +8,7 @@ import VotingStats from "../../../components/VotingStats";
 import FeedbackForm from "./FeedbackForm";
 import FlagSection from "./FlagSection";
 import LeaderResponsePanel from "./LeaderResponsePanel";
+import ReportSection from "./ReportSection";
 import ReviewSection from "./ReviewSection";
 
 type PageProps = {
@@ -147,6 +148,9 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         orderBy: { capturedAt: "desc" },
         take: 1,
       },
+      reports: {
+        orderBy: [{ year: "desc" }, { month: "desc" }],
+      },
       flags: {
         where: { status: { in: ["pending", "confirmed"] } },
         orderBy: { createdAt: "desc" },
@@ -181,7 +185,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         {project._count.flags > 0 && (
           <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
             <div className="flex items-start gap-3">
-              <svg className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="mt-0.5 h-5 w-5 shrink-0 text-red-600" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" />
               </svg>
               <div className="flex-1">
@@ -368,6 +372,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               </ul>
             </Section>
           )}
+
+          <ReportSection projectId={project.id} initialReports={project.reports} />
 
           {project.milestones.length > 0 && (
             <Section title="Milestones">

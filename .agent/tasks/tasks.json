@@ -878,6 +878,21 @@
       "completed": "2026-02-12"
     },
     {
+      "id": "PROOF-055",
+      "priority": 55,
+      "status": "completed",
+      "title": "Build monthly report templates",
+      "description": "Monthly report schema, submission form, and history list",
+      "acceptance_criteria": [
+        "Define monthly report schema",
+        "Create submission form",
+        "Render report history"
+      ],
+      "milestone": 12,
+      "created": "2026-02-12",
+      "completed": "2026-02-12"
+    },
+    {
       "id": "PROOF-049",
       "priority": 49,
       "status": "completed",

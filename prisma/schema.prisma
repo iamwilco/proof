@@ -75,6 +75,7 @@ model Project {
   notifications   Notification[]
   votingRecords   VotingRecord[]
   flags           Flag[]
+  reports         MonthlyReport[]
   sourceUrl       String
   sourceType      String
   lastSeenAt      DateTime
@@ -110,6 +111,25 @@ model Milestone {
   lastSeenAt  DateTime
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+}
+
+model MonthlyReport {
+  id            String   @id @default(uuid())
+  projectId     String
+  project       Project  @relation(fields: [projectId], references: [id])
+  month         Int
+  year          Int
+  reporterName  String
+  summary       String
+  progress      String?
+  blockers      String?
+  nextSteps     String?
+  evidenceUrls  String[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([projectId, year, month])
+  @@index([year, month])
 }
 
 model Deliverable {
