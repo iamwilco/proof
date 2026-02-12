@@ -1195,7 +1195,7 @@
     {
       "id": "PROOF-064",
       "priority": 64,
-      "status": "pending",
+      "status": "completed",
       "title": "GitHub integration",
       "description": "Link proposals to GitHub repos and track activity",
       "acceptance_criteria": [
@@ -1206,7 +1206,7 @@
       ],
       "milestone": 15,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-065",

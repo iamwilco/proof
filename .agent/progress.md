@@ -159,3 +159,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-13:** Completed PROOF-061 Build proposer leaderboards (funding, completion, projects, fund filter)
 - **2026-02-13:** Completed PROOF-062 Enhance knowledge graph (view modes, cluster legend, centrality info)
 - **2026-02-13:** Completed PROOF-063 Build predictive analytics (funding success, completion probability, risk score)
+- **2026-02-13:** Completed PROOF-064 GitHub integration (repo linking, API integration, activity score)

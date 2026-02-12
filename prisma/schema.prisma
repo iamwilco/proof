@@ -63,6 +63,11 @@ model Project {
   noVotes         Int           @default(0)
   fundedAt        DateTime?
   website         String?
+  githubUrl       String?
+  githubOwner     String?
+  githubRepo      String?
+  githubActivityScore Int?
+  githubLastSync  DateTime?
   milestones      Milestone[]
   deliverables    Deliverable[]
   projectPeople   ProjectPerson[]

@@ -50,6 +50,7 @@ All notable changes to this project will be documented in this file.
 - Proposer leaderboards with sorting by funding, completion rate, and project count.
 - Enhanced knowledge graph with view modes (default, centrality, clusters, funding flow).
 - Predictive analytics with funding success, completion probability, and risk assessment.
+- GitHub integration with repo linking, API integration, and activity score calculation.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
