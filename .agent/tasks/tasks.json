@@ -531,7 +531,7 @@
     {
       "id": "PROOF-032",
       "priority": 32,
-      "status": "pending",
+      "status": "completed",
       "title": "Design User authentication schema",
       "description": "Add User model with wallet-based authentication support",
       "acceptance_criteria": [
@@ -541,7 +541,7 @@
       ],
       "milestone": 7,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-033",

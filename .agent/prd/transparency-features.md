@@ -41,6 +41,7 @@ PROOF aims to become the definitive community-centered transparency tool for Pro
 - Wallet-based login (Cardano wallet signature)
 - Optional email verification
 - Profile creation with display name
+  - Verification flow: server issues nonce, wallet signs nonce, server verifies signature against wallet address before creating session
 
 #### 1.2 Proposal Reviews
 - Star rating (1-5) for proposals

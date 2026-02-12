@@ -38,16 +38,17 @@
 ## Current Task
 
 ```
-ID:          PROOF-032
-Title:       Design User authentication schema
+ID:          PROOF-033
+Title:       Implement Cardano wallet login
 Milestone:   7 — Community Reviews
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] User model with walletAddress, email, displayName
-- [ ] Session management schema
-- [ ] Wallet signature verification logic documented
+- [ ] CIP-30 wallet connection implemented
+- [ ] Message signing for authentication
+- [ ] Session creation on successful auth
+- [ ] Logout functionality
 
 ---
 
@@ -55,8 +56,8 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-032 | Design User authentication schema | 2026-02-12 |
 | PROOF-031 | Scrape milestone reports | 2026-02-12 |
-| PROOF-030 | Ingest scraped proposals into core schema | 2026-02-12 |
 | — | PRD + Tasks for transparency features | 2026-02-12 |
 
 ---
@@ -66,7 +67,7 @@ Status:      pending
 | Issue | Blocking | Resolution |
 |-------|----------|------------|
 | Catalyst Milestone API requires key | PROOF-051 | Request access or scrape public pages |
-| Full ingestion running | PROOF-032+ | ~84% complete, continuing in background |
+| Full ingestion running | PROOF-033+ | ~84% complete, continuing in background |
 
 ---
 
@@ -101,3 +102,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-029 proposal scraper enhancements
 - **2026-02-12:** Completed PROOF-030 scraped proposal ingestion script
 - **2026-02-12:** Completed PROOF-031 milestone scrape tooling
+- **2026-02-12:** Completed PROOF-032 user auth schema additions

@@ -225,11 +225,39 @@ model Link {
   updatedAt DateTime @updatedAt
 }
 
+model User {
+  id            String    @id @default(uuid())
+  walletAddress String?   @unique
+  email         String?   @unique
+  displayName   String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  ratings       Rating[]
+  concerns      Concern[]
+  claims        ProjectClaim[]
+  responses     ConcernResponse[]
+  reputation    Reputation?
+  reputationEvents ReputationEvent[]
+  sessions      Session[]
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([userId])
+}
+
 model Rating {
   id        String   @id @default(uuid())
   projectId String
   project   Project  @relation(fields: [projectId], references: [id])
   userId    String
+  user      User     @relation(fields: [userId], references: [id])
   score     Int
   comment   String?
   createdAt DateTime @default(now())
@@ -240,6 +268,7 @@ model Concern {
   projectId   String
   project     Project  @relation(fields: [projectId], references: [id])
   userId      String
+  user        User     @relation(fields: [userId], references: [id])
   category    String
   description String
   evidenceUrl String?
@@ -255,6 +284,7 @@ model ProjectClaim {
   projectId String
   project   Project  @relation(fields: [projectId], references: [id])
   userId    String
+  user      User     @relation(fields: [userId], references: [id])
   status    String   @default("pending")
   createdAt DateTime @default(now())
 }
@@ -264,6 +294,7 @@ model ConcernResponse {
   concernId String
   concern   Concern  @relation(fields: [concernId], references: [id])
   userId    String
+  user      User     @relation(fields: [userId], references: [id])
   message   String
   createdAt DateTime @default(now())
 }
@@ -282,6 +313,7 @@ model Notification {
 model Reputation {
   id        String   @id @default(uuid())
   userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
   score     Int      @default(0)
   tier      String   @default("bronze")
   updatedAt DateTime @updatedAt
@@ -293,6 +325,7 @@ model ReputationEvent {
   reputationId String
   reputation   Reputation @relation(fields: [reputationId], references: [id])
   userId       String
+  user         User     @relation(fields: [userId], references: [id])
   change       Int
   reason       String
   createdAt    DateTime @default(now())

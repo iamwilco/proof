@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Agent session prompt updates to include feature PRD and progress tracking.
 - Scraped proposal ingestion script for projectcatalyst.io (`etl/catalyst/ingest_scraped_proposals.py`).
 - Milestone scraping tool for milestones.projectcatalyst.io (`etl/catalyst/scrape_milestones.py`).
+- User/session auth schema for wallet-based authentication.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
