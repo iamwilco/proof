@@ -546,7 +546,7 @@
     {
       "id": "PROOF-033",
       "priority": 33,
-      "status": "pending",
+      "status": "completed",
       "title": "Implement Cardano wallet login",
       "description": "Enable users to sign in with Cardano wallets (Nami, Eternl, etc.)",
       "acceptance_criteria": [
@@ -557,7 +557,7 @@
       ],
       "milestone": 7,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-034",
