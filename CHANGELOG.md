@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - Voting UI components: VotingStats, RankingBadge, VotingTrendsChart.
 - Voting analytics dashboard page with fund-wide statistics.
 - Voting data integrated on project detail and list pages.
+- Flag schema for automated and community red flag detection.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

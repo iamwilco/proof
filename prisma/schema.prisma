@@ -74,6 +74,7 @@ model Project {
   claims          ProjectClaim[]
   notifications   Notification[]
   votingRecords   VotingRecord[]
+  flags           Flag[]
   sourceUrl       String
   sourceType      String
   lastSeenAt      DateTime
@@ -245,6 +246,7 @@ model User {
   sessions      Session[]
   reviews       Review[]
   reviewVotes   ReviewVote[]
+  flags         Flag[]
 }
 
 model Session {
@@ -412,4 +414,30 @@ model ReputationEvent {
   change       Int
   reason       String
   createdAt    DateTime @default(now())
+}
+
+model Flag {
+  id          String   @id @default(uuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id])
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+  type        String   // "automated" or "community"
+  category    String   // repeat_delays, similar_proposal, abandoned, plagiarism, ghost_project, overdue_milestone, funding_cluster, other
+  severity    String   @default("medium") // low, medium, high, critical
+  status      String   @default("pending") // pending, confirmed, dismissed, resolved
+  title       String
+  description String
+  evidenceUrl String?
+  metadata    Json?    // Additional data for automated flags (e.g., similarity scores, related projects)
+  reviewedBy  String?  // Admin/moderator who reviewed the flag
+  reviewedAt  DateTime?
+  resolvedAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([projectId, status])
+  @@index([type, status])
+  @@index([category])
+  @@index([createdAt])
 }

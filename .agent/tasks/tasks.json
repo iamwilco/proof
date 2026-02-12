@@ -740,7 +740,7 @@
     {
       "id": "PROOF-045",
       "priority": 45,
-      "status": "pending",
+      "status": "completed",
       "title": "Design Flag schema",
       "description": "Create Flag model for automated and community flags",
       "acceptance_criteria": [
@@ -751,7 +751,7 @@
       ],
       "milestone": 10,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-046",
