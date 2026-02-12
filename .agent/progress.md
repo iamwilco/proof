@@ -3,7 +3,7 @@
 > Quick-glance milestone status and current work
 
 **Last Updated:** 2026-02-12  
-**Current Focus:** Milestone 6 — Data Accessibility + Acquisition
+**Current Focus:** Milestone 7 — Community Reviews
 
 ---
 
