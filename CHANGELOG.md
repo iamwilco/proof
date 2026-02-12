@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - User/session auth schema for wallet-based authentication.
 - Cardano wallet login endpoints and login UI wiring.
 - Review and review vote schema for community reviews.
+- Review API endpoints for list/create/vote.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

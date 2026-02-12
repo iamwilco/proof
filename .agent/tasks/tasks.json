@@ -578,7 +578,7 @@
     {
       "id": "PROOF-035",
       "priority": 35,
-      "status": "pending",
+      "status": "completed",
       "title": "Build Review API endpoints",
       "description": "CRUD API for reviews with voting",
       "acceptance_criteria": [
@@ -589,7 +589,7 @@
       ],
       "milestone": 7,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-036",
