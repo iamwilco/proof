@@ -1227,7 +1227,7 @@
     {
       "id": "PROOF-066",
       "priority": 66,
-      "status": "pending",
+      "status": "completed",
       "title": "Design Completion NFT schema",
       "description": "Schema for on-chain completion proofs",
       "acceptance_criteria": [
@@ -1237,7 +1237,7 @@
       ],
       "milestone": 16,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-067",

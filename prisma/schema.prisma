@@ -82,6 +82,7 @@ model Project {
   flags           Flag[]
   reports         MonthlyReport[]
   communityProjects CommunityProject[]
+  completionNFT   CompletionNFT?
   sourceUrl       String
   sourceType      String
   lastSeenAt      DateTime
@@ -507,4 +508,39 @@ model CommunityProject {
   @@unique([communityId, projectId])
   @@index([communityId])
   @@index([projectId])
+}
+
+model CompletionNFT {
+  id              String   @id @default(uuid())
+  projectId       String   @unique
+  project         Project  @relation(fields: [projectId], references: [id])
+  
+  // NFT metadata
+  policyId        String?
+  assetId         String?
+  assetName       String?
+  metadataJson    Json?
+  imageUrl        String?
+  
+  // Minting transaction
+  mintTxHash      String?
+  mintedAt        DateTime?
+  mintStatus      String   @default("pending") // pending, minting, minted, failed
+  mintError       String?
+  
+  // Verification
+  verificationStatus String @default("unverified") // unverified, pending, verified, rejected
+  verifiedAt      DateTime?
+  verifiedBy      String?
+  verifierWallet  String?
+  
+  // Proposer wallet
+  proposerWallet  String?
+  walletVerified  Boolean  @default(false)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([mintStatus])
+  @@index([verificationStatus])
 }

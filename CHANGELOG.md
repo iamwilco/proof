@@ -52,6 +52,7 @@ All notable changes to this project will be documented in this file.
 - Predictive analytics with funding success, completion probability, and risk assessment.
 - GitHub integration with repo linking, API integration, and activity score calculation.
 - GitHub activity dashboard with activity distribution chart and project listing.
+- Completion NFT schema with metadata, minting tracking, and verification status.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
