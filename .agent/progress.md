@@ -38,16 +38,17 @@
 ## Current Task
 
 ```
-ID:          PROOF-037
-Title:       Build reviewer leaderboard
+ID:          PROOF-038
+Title:       Design AccountabilityScore schema
 Milestone:   7 — Community Reviews
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] Leaderboard page with top 100 reviewers
-- [ ] Reviewer stats: reviews count, helpful ratio
-- [ ] Link to reviewer profile
+- [ ] AccountabilityScore model with component scores
+- [ ] Badge enum: trusted, reliable, unproven, concerning
+- [ ] Relation to Person
+- [ ] calculatedAt timestamp for refresh tracking
 
 ---
 
@@ -55,8 +56,8 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-037 | Build reviewer leaderboard | 2026-02-12 |
 | PROOF-036 | Build Review UI components | 2026-02-12 |
-| PROOF-035 | Build Review API endpoints | 2026-02-12 |
 | — | PRD + Tasks for transparency features | 2026-02-12 |
 
 ---
@@ -66,7 +67,7 @@ Status:      pending
 | Issue | Blocking | Resolution |
 |-------|----------|------------|
 | Catalyst Milestone API requires key | PROOF-051 | Request access or scrape public pages |
-| Full ingestion running | PROOF-037+ | ~84% complete, continuing in background |
+| Full ingestion running | PROOF-038+ | ~84% complete, continuing in background |
 
 ---
 
@@ -106,3 +107,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-12:** Completed PROOF-034 review schema
 - **2026-02-12:** Completed PROOF-035 review API endpoints
 - **2026-02-12:** Completed PROOF-036 review UI components
+- **2026-02-12:** Completed PROOF-037 reviewer leaderboard

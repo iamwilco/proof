@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Review and review vote schema for community reviews.
 - Review API endpoints for list/create/vote.
 - Review UI section for submitting and browsing reviews.
+- Reviewer leaderboard page for top reviewers.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

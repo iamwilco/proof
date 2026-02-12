@@ -610,7 +610,7 @@
     {
       "id": "PROOF-037",
       "priority": 37,
-      "status": "pending",
+      "status": "completed",
       "title": "Build reviewer leaderboard",
       "description": "Display top reviewers by helpful votes",
       "acceptance_criteria": [
@@ -620,7 +620,7 @@
       ],
       "milestone": 7,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-038",
