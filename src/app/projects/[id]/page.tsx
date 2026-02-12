@@ -388,8 +388,42 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                           </p>
                         )}
                       </div>
-                      <StatusBadge status={milestone.status} />
+                      <div className="flex flex-wrap items-center justify-end gap-2">
+                        <StatusBadge status={milestone.status} />
+                        {milestone.somStatus && (
+                          <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
+                            SoM: {milestone.somStatus.replace(/_/g, " ")}
+                          </span>
+                        )}
+                        {milestone.poaStatus && (
+                          <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700">
+                            PoA: {milestone.poaStatus.replace(/_/g, " ")}
+                          </span>
+                        )}
+                      </div>
                     </div>
+
+                    {milestone.evidenceUrls.length > 0 && (
+                      <div className="mt-3 border-t border-slate-200 pt-3">
+                        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400">
+                          Evidence
+                        </p>
+                        <ul className="space-y-1 text-sm">
+                          {milestone.evidenceUrls.map((url) => (
+                            <li key={url} className="truncate">
+                              <a
+                                href={url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-blue-600 hover:underline"
+                              >
+                                {url}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
                     {milestone.deliverables.length > 0 && (
                       <div className="mt-3 border-t border-slate-200 pt-3">

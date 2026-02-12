@@ -848,6 +848,21 @@
       "completed": "2026-02-12"
     },
     {
+      "id": "PROOF-053",
+      "priority": 53,
+      "status": "completed",
+      "title": "Create milestone tracking UI",
+      "description": "Show milestone status, SoM/PoA badges, and evidence links",
+      "acceptance_criteria": [
+        "Milestone list on project detail page",
+        "Status badges for SoM/PoA status",
+        "Evidence link display"
+      ],
+      "milestone": 11,
+      "created": "2026-02-12",
+      "completed": "2026-02-12"
+    },
+    {
       "id": "PROOF-049",
       "priority": 49,
       "status": "completed",
