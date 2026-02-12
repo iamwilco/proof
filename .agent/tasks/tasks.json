@@ -957,7 +957,7 @@
     {
       "id": "PROOF-049",
       "priority": 49,
-      "status": "pending",
+      "status": "completed",
       "title": "Build Flag dashboard",
       "description": "Admin/public view of flagged proposals",
       "acceptance_criteria": [
@@ -968,7 +968,7 @@
       ],
       "milestone": 10,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-12"
     },
     {
       "id": "PROOF-050",
