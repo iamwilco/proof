@@ -55,6 +55,7 @@ All notable changes to this project will be documented in this file.
 - Completion NFT schema with metadata, minting tracking, and verification status.
 - NFT minting library with verification workflow, wallet verification, and stats.
 - AI/LLM infrastructure with OpenAI integration, embeddings, vector store, and rate limiting.
+- AI proposal comparison with side-by-side view, similarity analysis, and overlap detection.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

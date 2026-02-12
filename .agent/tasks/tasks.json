@@ -1274,7 +1274,7 @@
     {
       "id": "PROOF-069",
       "priority": 69,
-      "status": "pending",
+      "status": "completed",
       "title": "Build AI proposal comparison",
       "description": "AI-powered side-by-side proposal comparison",
       "acceptance_criteria": [
@@ -1285,7 +1285,7 @@
       ],
       "milestone": 17,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-070",
