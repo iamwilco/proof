@@ -1,0 +1,23 @@
+[
+  {
+    "project_external_id": "1234",
+    "milestone_id": "milestone_1234_1",
+    "catalyst_milestone_id": "CAT-1234-1",
+    "title": "Deliver prototype",
+    "due_date": "2025-06-30T00:00:00Z",
+    "status": "in_progress",
+    "som_status": "approved",
+    "poa_status": "pending",
+    "poa_submitted_at": "2025-06-15T12:00:00Z",
+    "poa_approved_at": null,
+    "reviewer_feedback": "Needs clearer acceptance criteria",
+    "payment_status": "pending",
+    "payment_tx_hash": null,
+    "evidence_urls": [
+      "https://example.com/demo",
+      "https://github.com/org/repo/releases/tag/v1"
+    ],
+    "source_url": "https://milestones.projectcatalyst.io/",
+    "source_type": "catalyst_milestone_manual"
+  }
+]

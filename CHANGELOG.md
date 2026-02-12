@@ -34,6 +34,7 @@ All notable changes to this project will be documented in this file.
 - Flag status filter on projects listing page.
 - Milestone data sources research documentation.
 - Extended Milestone schema with Catalyst SoM/PoA fields and evidence tracking.
+- Milestone ingestion script and payload example for manual sync.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

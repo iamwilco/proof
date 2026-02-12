@@ -833,6 +833,21 @@
       "completed": "2026-02-12"
     },
     {
+      "id": "PROOF-052",
+      "priority": 52,
+      "status": "completed",
+      "title": "Build milestone sync mechanism",
+      "description": "Manual milestone ingestion script and payload format",
+      "acceptance_criteria": [
+        "Create ingestion workflow for milestone data",
+        "Map milestone data to schema fields",
+        "Store evidence URLs and status history"
+      ],
+      "milestone": 11,
+      "created": "2026-02-12",
+      "completed": "2026-02-12"
+    },
+    {
       "id": "PROOF-049",
       "priority": 49,
       "status": "completed",
