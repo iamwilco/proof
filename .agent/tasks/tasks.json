@@ -1242,7 +1242,7 @@
     {
       "id": "PROOF-067",
       "priority": 67,
-      "status": "pending",
+      "status": "completed",
       "title": "Implement NFT minting",
       "description": "Cardano NFT minting for completed projects",
       "acceptance_criteria": [
@@ -1253,7 +1253,7 @@
       ],
       "milestone": 16,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-068",
