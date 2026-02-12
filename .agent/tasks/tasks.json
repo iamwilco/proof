@@ -1131,7 +1131,7 @@
     {
       "id": "PROOF-060",
       "priority": 60,
-      "status": "pending",
+      "status": "completed",
       "title": "Build fund comparison dashboard",
       "description": "Compare funds side-by-side",
       "acceptance_criteria": [
@@ -1142,7 +1142,7 @@
       ],
       "milestone": 14,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-061",
