@@ -38,17 +38,17 @@
 ## Current Task
 
 ```
-ID:          PROOF-105
-Title:       Automated Red Flag Detection
+ID:          PROOF-106
+Title:       Community Flag System
 Milestone:   29 — Red Flag System
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] Repeat incomplete pattern detection
-- [ ] Ghost project identification
-- [ ] Overdue milestone alerts
-- [ ] Duplicate effort detection
+- [ ] Flag submission form with reason and evidence
+- [ ] Anonymous reporting with abuse prevention
+- [ ] Moderator review queue at /admin/flags
+- [ ] Proposer response workflow
 
 ---
 
@@ -56,6 +56,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-105 | Automated Red Flag Detection | 2026-02-13 |
 | PROOF-104 | ROI Dashboard | 2026-02-13 |
 | PROOF-103 | ROI Calculation Engine | 2026-02-13 |
 | PROOF-102 | On-Chain Metrics Integration | 2026-02-13 |

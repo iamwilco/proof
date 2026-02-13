@@ -345,14 +345,44 @@ async function detectFundingClusters(): Promise<DetectionResult[]> {
 }
 
 /**
+ * Notify admins about new automated flags
+ */
+async function notifyAdminsOfNewFlags(flagCount: number, categories: string[]): Promise<void> {
+  if (flagCount === 0) return;
+
+  // Get admin users
+  const admins = await prisma.user.findMany({
+    where: { role: "admin" },
+    select: { id: true },
+  });
+
+  const categoryList = [...new Set(categories)].join(", ");
+  
+  // Create notifications for each admin
+  for (const admin of admins) {
+    await prisma.notification.create({
+      data: {
+        userId: admin.id,
+        type: "flag_alert",
+        title: `${flagCount} new automated flag${flagCount > 1 ? "s" : ""} detected`,
+        message: `Automated detection found ${flagCount} new flag${flagCount > 1 ? "s" : ""} requiring review. Categories: ${categoryList}`,
+        read: false,
+      },
+    });
+  }
+}
+
+/**
  * Run all detectors and create flags in database
  */
 export async function runAllDetectors(): Promise<{
   created: number;
   skipped: number;
   errors: string[];
+  byCategory: Record<string, number>;
 }> {
-  const stats = { created: 0, skipped: 0, errors: [] as string[] };
+  const stats = { created: 0, skipped: 0, errors: [] as string[], byCategory: {} as Record<string, number> };
+  const createdCategories: string[] = [];
 
   const detectors = [
     { name: "repeat_delays", fn: detectRepeatDelays },
@@ -365,6 +395,7 @@ export async function runAllDetectors(): Promise<{
   for (const detector of detectors) {
     try {
       const results = await detector.fn();
+      stats.byCategory[detector.name] = 0;
 
       for (const result of results) {
         // Check if flag already exists (avoid duplicates)
@@ -395,10 +426,17 @@ export async function runAllDetectors(): Promise<{
           },
         });
         stats.created++;
+        stats.byCategory[detector.name]++;
+        createdCategories.push(detector.name);
       }
     } catch (error) {
       stats.errors.push(`${detector.name}: ${error instanceof Error ? error.message : String(error)}`);
     }
+  }
+
+  // Notify admins if new flags were created
+  if (stats.created > 0) {
+    await notifyAdminsOfNewFlags(stats.created, createdCategories);
   }
 
   return stats;
