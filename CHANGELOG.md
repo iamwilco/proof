@@ -71,6 +71,7 @@ All notable changes to this project will be documented in this file.
 - Reviewer/Moderator schema with profiles, Ideascale integration, and badges.
 - Reviewer profile pages with review history, badges, and claim workflow.
 - Moderator profile pages with scope assignments, stats, and activity summary.
+- Reviewer/moderator data ingestion with linking, outcomes, and batch import.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

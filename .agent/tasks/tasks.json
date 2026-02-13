@@ -1529,7 +1529,7 @@
     {
       "id": "PROOF-085",
       "priority": 85,
-      "status": "pending",
+      "status": "completed",
       "title": "Ingest reviewer/moderator data",
       "description": "Import reviewer and moderator participation data",
       "acceptance_criteria": [
@@ -1540,7 +1540,7 @@
       ],
       "milestone": 21,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     }
   ]
 }

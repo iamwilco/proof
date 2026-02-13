@@ -180,3 +180,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-13:** Completed PROOF-082 Design Reviewer/Moderator schema (profiles, Ideascale, badges)
 - **2026-02-13:** Completed PROOF-083 Build reviewer profile pages (profile detail, history, claim workflow)
 - **2026-02-13:** Completed PROOF-084 Build moderator profile pages (profile, scope, stats)
+- **2026-02-13:** Completed PROOF-085 Ingest reviewer/moderator data (linking, outcomes, batch import)
