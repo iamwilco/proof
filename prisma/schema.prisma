@@ -84,6 +84,7 @@ model Project {
   communityProjects CommunityProject[]
   completionNFT   CompletionNFT?
   bookmarks       Bookmark[]
+  fundingTransactions FundingTransaction[]
   sourceUrl       String
   sourceType      String
   lastSeenAt      DateTime
@@ -582,4 +583,46 @@ model BookmarkList {
   @@unique([userId, name])
   @@index([userId])
   @@index([isPublic])
+}
+
+model FundingTransaction {
+  id              String   @id @default(uuid())
+  projectId       String
+  project         Project  @relation(fields: [projectId], references: [id])
+  
+  // Transaction details
+  txHash          String   @unique
+  amount          Decimal  @db.Decimal(20, 6)
+  currency        String   @default("ADA")
+  usdValueAtTime  Decimal? @db.Decimal(20, 2)
+  adaPrice        Decimal? @db.Decimal(10, 4)
+  
+  // Addresses
+  fromAddress     String?
+  toAddress       String
+  
+  // Timing
+  txDate          DateTime
+  blockHeight     Int?
+  epoch           Int?
+  slot            Int?
+  
+  // Transaction type
+  txType          String   @default("funding") // funding, milestone, refund
+  milestoneId     String?
+  
+  // Verification
+  verified        Boolean  @default(false)
+  verifiedAt      DateTime?
+  
+  // External links
+  explorerUrl     String?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([txDate])
+  @@index([txType])
+  @@index([toAddress])
 }

@@ -1369,7 +1369,7 @@
     {
       "id": "PROOF-075",
       "priority": 75,
-      "status": "pending",
+      "status": "completed",
       "title": "Design FundingTransaction schema",
       "description": "Create model for on-chain funding transactions",
       "acceptance_criteria": [
@@ -1380,7 +1380,7 @@
       ],
       "milestone": 19,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-076",
