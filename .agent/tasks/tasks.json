@@ -1694,7 +1694,8 @@
       "id": "PROOF-094",
       "title": "Connection Explorer & Hover Cards",
       "description": "Make entity relationships instantly visible. Hover cards with key stats, one-click graph view, shared proposals display.",
-      "status": "pending",
+      "status": "completed",
+      "completed": "2026-02-13",
       "priority": "medium",
       "labels": ["discovery", "connections", "ux"],
       "acceptance_criteria": [

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import prisma from "../../../lib/prisma";
 import RankingBadge from "../../../components/RankingBadge";
 import VotingStats from "../../../components/VotingStats";
+import ConnectionHoverCard from "../../../components/ConnectionHoverCard";
 import FeedbackForm from "./FeedbackForm";
 import FlagSection from "./FlagSection";
 import LeaderResponsePanel from "./LeaderResponsePanel";
@@ -258,6 +259,22 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </div>
           </div>
         </header>
+
+        <Section title="Connections">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <p className="text-sm text-slate-600">
+              Hover to preview the strongest relationships around this proposal.
+            </p>
+            <ConnectionHoverCard entityType="project" entityId={project.id} href={`/projects/${project.id}`}>
+              <button
+                type="button"
+                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              >
+                Open connection explorer
+              </button>
+            </ConnectionHoverCard>
+          </div>
+        </Section>
 
         <div className="space-y-6">
           {project.votingRecords.length > 0 && (

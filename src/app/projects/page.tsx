@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import prisma from "../../lib/prisma";
 import RankingBadge from "../../components/RankingBadge";
+import ConnectionHoverCard from "../../components/ConnectionHoverCard";
 
 export const revalidate = 60;
 
@@ -67,47 +68,49 @@ const ProjectCard = ({
   flagCount,
 }: ProjectCardProps) => {
   return (
-    <Link
-      href={`/projects/${id}`}
-      className={`group flex flex-col rounded-2xl border p-5 shadow-sm transition-shadow hover:shadow-md ${
-        flagCount && flagCount > 0
-          ? "border-red-200 bg-red-50/30"
-          : "border-slate-200 bg-white"
-      }`}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <h3 className="text-lg font-semibold leading-snug text-slate-900 group-hover:text-blue-600">
-            {title}
-          </h3>
-          {flagCount && flagCount > 0 && (
-            <span className="flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
-              <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" />
-              </svg>
-              {flagCount}
-            </span>
-          )}
+    <ConnectionHoverCard entityType="project" entityId={id} href={`/projects/${id}`}>
+      <Link
+        href={`/projects/${id}`}
+        className={`group flex flex-col rounded-2xl border p-5 shadow-sm transition-shadow hover:shadow-md ${
+          flagCount && flagCount > 0
+            ? "border-red-200 bg-red-50/30"
+            : "border-slate-200 bg-white"
+        }`}
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <h3 className="text-lg font-semibold leading-snug text-slate-900 group-hover:text-blue-600">
+              {title}
+            </h3>
+            {flagCount && flagCount > 0 && (
+              <span className="flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
+                <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" />
+                </svg>
+                {flagCount}
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            {fundRank && <RankingBadge rank={fundRank} size="sm" />}
+            <StatusBadge status={status} />
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          {fundRank && <RankingBadge rank={fundRank} size="sm" />}
-          <StatusBadge status={status} />
-        </div>
-      </div>
-      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-600">
-        {description}
-      </p>
-      <div className="mt-auto pt-4">
-        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-          <span className="rounded bg-slate-100 px-2 py-0.5">{category}</span>
-          <span>•</span>
-          <span>{fundName}</span>
-        </div>
-        <p className="mt-2 text-base font-semibold text-slate-900">
-          {formatCurrency(fundingAmount)}
+        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-600">
+          {description}
         </p>
-      </div>
-    </Link>
+        <div className="mt-auto pt-4">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+            <span className="rounded bg-slate-100 px-2 py-0.5">{category}</span>
+            <span>•</span>
+            <span>{fundName}</span>
+          </div>
+          <p className="mt-2 text-base font-semibold text-slate-900">
+            {formatCurrency(fundingAmount)}
+          </p>
+        </div>
+      </Link>
+    </ConnectionHoverCard>
   );
 };
 

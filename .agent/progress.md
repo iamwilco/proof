@@ -2,8 +2,8 @@
 
 > Quick-glance milestone status and current work
 
-**Last Updated:** 2026-02-12  
-**Current Focus:** Milestone 7 — Community Reviews
+**Last Updated:** 2026-02-13  
+**Current Focus:** Milestone 25 — Enhanced Discovery UX
 
 ---
 
@@ -41,15 +41,15 @@
 ID:          PROOF-094
 Title:       Connection Explorer & Hover Cards
 Milestone:   25 — Enhanced Discovery UX
-Status:      pending
+Status:      completed
 ```
 
 ### Acceptance Criteria
-- [ ] Hover card component for Person, Org, Project
-- [ ] Key stats in hover card (score, projects, funding)
-- [ ] Show connections button opening mini-graph
-- [ ] Shared proposals section
-- [ ] Admin connections integrated
+- [x] Hover card component for Person, Org, Project
+- [x] Key stats in hover card (score, projects, funding)
+- [x] Show connections button opening mini-graph
+- [x] Shared proposals section
+- [x] Admin connections integrated
 
 ---
 
@@ -57,6 +57,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-094 | Connection Explorer & Hover Cards | 2026-02-13 |
 | PROOF-047b | Implement text similarity detection | 2026-02-12 |
 | PROOF-056 | Add monthly reports moderation dashboard | 2026-02-12 |
 | PROOF-055 | Build monthly report templates | 2026-02-12 |
@@ -218,6 +219,10 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-13:** Completed PROOF-091 User Profile System
   - Created /my/settings page with profile editing
   - Connected accounts display (wallet, Google)
+ - **2026-02-13:** Completed PROOF-094 Connection Explorer & Hover Cards
+  - Added hover card previews for people, orgs, and projects
+  - Added mini graph explorer modal and shared proposals list
+  - Integrated admin connections into hover card data
   - Profile API route for PATCH updates
 - **2026-02-13:** Completed PROOF-097 Person Accountability Score Calculation
   - Created lib/accountability/scoring.ts with weighted factors

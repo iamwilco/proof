@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import prisma from "../../lib/prisma";
 import AccountabilityBadge from "../../components/AccountabilityBadge";
+import ConnectionHoverCard from "../../components/ConnectionHoverCard";
 
 export const revalidate = 60;
 
@@ -55,69 +56,71 @@ const PersonCard = ({
     : 0;
 
   return (
-    <Link
-      href={`/people/${id}`}
-      className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
-    >
-      <div className="flex items-start justify-between">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-lg font-bold text-blue-600">
-          {heroImgUrl ? (
-            <Image src={heroImgUrl} alt={name} width={48} height={48} className="h-12 w-12 rounded-full object-cover" />
-          ) : (
-            name.charAt(0).toUpperCase()
-          )}
+    <ConnectionHoverCard entityType="person" entityId={id} href={`/people/${id}`}>
+      <Link
+        href={`/people/${id}`}
+        className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+      >
+        <div className="flex items-start justify-between">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-lg font-bold text-blue-600">
+            {heroImgUrl ? (
+              <Image src={heroImgUrl} alt={name} width={48} height={48} className="h-12 w-12 rounded-full object-cover" />
+            ) : (
+              name.charAt(0).toUpperCase()
+            )}
+          </div>
+          <div className="flex flex-col items-end gap-2">
+            {accountability && (
+              <AccountabilityBadge
+                badge={accountability.badge as "trusted" | "reliable" | "unproven" | "concerning"}
+                score={accountability.overallScore}
+                size="sm"
+              />
+            )}
+            {totalAmountAwarded > 0 && (
+              <span className="text-sm font-semibold text-slate-900">
+                {formatCurrency(totalAmountAwarded)}
+              </span>
+            )}
+          </div>
         </div>
-        <div className="flex flex-col items-end gap-2">
-          {accountability && (
-            <AccountabilityBadge
-              badge={accountability.badge as "trusted" | "reliable" | "unproven" | "concerning"}
-              score={accountability.overallScore}
-              size="sm"
-            />
-          )}
-          {totalAmountAwarded > 0 && (
-            <span className="text-sm font-semibold text-slate-900">
-              {formatCurrency(totalAmountAwarded)}
-            </span>
-          )}
+        <h3 className="mt-3 text-base font-semibold text-slate-900 group-hover:text-blue-600">
+          {name}
+        </h3>
+        
+        <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+          <div>
+            <p className="text-lg font-semibold text-slate-900">{proposalsCount}</p>
+            <p className="text-xs text-slate-500">Proposals</p>
+          </div>
+          <div>
+            <p className="text-lg font-semibold text-emerald-600">{fundedProposalsCount}</p>
+            <p className="text-xs text-slate-500">Funded</p>
+          </div>
+          <div>
+            <p className="text-lg font-semibold text-blue-600">{completedProposalsCount}</p>
+            <p className="text-xs text-slate-500">Completed</p>
+          </div>
         </div>
-      </div>
-      <h3 className="mt-3 text-base font-semibold text-slate-900 group-hover:text-blue-600">
-        {name}
-      </h3>
-      
-      <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-        <div>
-          <p className="text-lg font-semibold text-slate-900">{proposalsCount}</p>
-          <p className="text-xs text-slate-500">Proposals</p>
-        </div>
-        <div>
-          <p className="text-lg font-semibold text-emerald-600">{fundedProposalsCount}</p>
-          <p className="text-xs text-slate-500">Funded</p>
-        </div>
-        <div>
-          <p className="text-lg font-semibold text-blue-600">{completedProposalsCount}</p>
-          <p className="text-xs text-slate-500">Completed</p>
-        </div>
-      </div>
 
-      {fundedProposalsCount > 0 && (
-        <div className="mt-3">
-          <div className="flex justify-between text-xs mb-1">
-            <span className="text-slate-500">Completion</span>
-            <span className={completionRate >= 0.8 ? "text-emerald-600" : completionRate >= 0.5 ? "text-amber-600" : "text-red-600"}>
-              {formatPercent(completionRate)}
-            </span>
+        {fundedProposalsCount > 0 && (
+          <div className="mt-3">
+            <div className="flex justify-between text-xs mb-1">
+              <span className="text-slate-500">Completion</span>
+              <span className={completionRate >= 0.8 ? "text-emerald-600" : completionRate >= 0.5 ? "text-amber-600" : "text-red-600"}>
+                {formatPercent(completionRate)}
+              </span>
+            </div>
+            <div className="h-1.5 w-full rounded-full bg-slate-200">
+              <div
+                className={`h-1.5 rounded-full ${completionRate >= 0.8 ? "bg-emerald-500" : completionRate >= 0.5 ? "bg-amber-500" : "bg-red-500"}`}
+                style={{ width: `${completionRate * 100}%` }}
+              />
+            </div>
           </div>
-          <div className="h-1.5 w-full rounded-full bg-slate-200">
-            <div
-              className={`h-1.5 rounded-full ${completionRate >= 0.8 ? "bg-emerald-500" : completionRate >= 0.5 ? "bg-amber-500" : "bg-red-500"}`}
-              style={{ width: `${completionRate * 100}%` }}
-            />
-          </div>
-        </div>
-      )}
-    </Link>
+        )}
+      </Link>
+    </ConnectionHoverCard>
   );
 };
 

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import prisma from "../../../lib/prisma";
 import AccountabilityBadge from "../../../components/AccountabilityBadge";
+import ConnectionHoverCard from "../../../components/ConnectionHoverCard";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -134,6 +135,22 @@ export default async function PersonDetailPage({ params }: PageProps) {
             </div>
           </div>
         </header>
+
+        <Section title="Connections">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <p className="text-sm text-slate-600">
+              Preview related projects and organizations, then open a mini graph.
+            </p>
+            <ConnectionHoverCard entityType="person" entityId={person.id} href={`/people/${person.id}`}>
+              <button
+                type="button"
+                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              >
+                Open connection explorer
+              </button>
+            </ConnectionHoverCard>
+          </div>
+        </Section>
 
         {person.accountabilityScore && (
           <Section title="Accountability Score">

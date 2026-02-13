@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import prisma from "../../../lib/prisma";
+import ConnectionHoverCard from "../../../components/ConnectionHoverCard";
 
 export const revalidate = 300;
 
@@ -197,6 +198,31 @@ export default async function OrganizationDetailPage({ params }: PageProps) {
             >
               {accountabilityScore}/100
             </p>
+          </div>
+        </div>
+
+        <div className="mb-8 rounded-2xl border border-slate-200 bg-white p-5">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                Connections
+              </p>
+              <p className="mt-2 text-sm text-slate-600">
+                Preview linked people and projects, then open a mini graph.
+              </p>
+            </div>
+            <ConnectionHoverCard
+              entityType="organization"
+              entityId={organization.id}
+              href={`/organizations/${organization.id}`}
+            >
+              <button
+                type="button"
+                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              >
+                Open connection explorer
+              </button>
+            </ConnectionHoverCard>
           </div>
         </div>
 
