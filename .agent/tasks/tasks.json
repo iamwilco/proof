@@ -1322,7 +1322,7 @@
     {
       "id": "PROOF-072",
       "priority": 72,
-      "status": "pending",
+      "status": "completed",
       "title": "Design bookmark schema",
       "description": "Create Bookmark and BookmarkList models",
       "acceptance_criteria": [
@@ -1332,7 +1332,7 @@
       ],
       "milestone": 18,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-073",
