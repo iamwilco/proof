@@ -103,6 +103,19 @@ python metrics/impact_scoring.py
 **Cause:** CatalystExplorer API may not have 100% complete data, or there are edge cases with status values  
 **Note:** Typical variance is ~5 proposals per fund. This is a data source limitation, not a bug.
 
+### ⚠️ Database Schema Drift (Tables/Columns Missing)
+**Problem:** Pages crash with "The table `public.X` does not exist" or "column does not exist"  
+**Root Cause:** `schema.prisma` was modified but `npx prisma migrate dev` was never run to generate migrations  
+**Symptoms:**
+- `prisma migrate status` says "up to date" but tables are missing
+- Affected pages: `/projects`, `/people`, `/milestones`, `/reports`, `/voting`, `/flags`, `/communities`, `/rankings`
+**Solution:**
+```bash
+npx prisma migrate dev --name <descriptive_name>
+npx prisma generate
+```
+**Prevention:** ALWAYS run `npx prisma migrate dev` after modifying `schema.prisma`
+
 ## Verification
 
 Check ingestion results:

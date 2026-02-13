@@ -1541,6 +1541,24 @@
       "milestone": 21,
       "created": "2026-02-12",
       "completed": "2026-02-13"
+    },
+    {
+      "id": "PROOF-086",
+      "title": "Fix database schema drift - missing tables and columns",
+      "description": "Multiple pages crashed because 17 tables and many columns defined in schema.prisma were never migrated to the database. Generated and applied migration to create all missing tables (Flag, AccountabilityScore, VotingRecord, User, Session, Review, Community, etc.) and columns (Milestone.catalystMilestoneId, etc.).",
+      "status": "completed",
+      "priority": "critical",
+      "labels": ["bug", "database", "prisma"],
+      "acceptance_criteria": [
+        "All 17 missing tables created in database",
+        "All missing columns added to existing tables",
+        "/projects, /people, /milestones load without errors",
+        "/reports, /voting, /flags, /communities, /rankings load without errors",
+        "SOP updated with schema drift prevention guidance"
+      ],
+      "milestone": 21,
+      "created": "2026-02-13",
+      "completed": "2026-02-13"
     }
   ]
 }
