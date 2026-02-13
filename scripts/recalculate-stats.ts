@@ -32,6 +32,10 @@ async function computeFundStats(): Promise<void> {
       where: { fundId: fund.id, status: "complete" },
     });
 
+    // Determine currency based on fund number (F2-9 = USD, F10+ = ADA)
+    const fundNumber = parseInt(fund.name.replace(/\D/g, "") || "0", 10);
+    const currency = fundNumber >= 10 ? "ADA" : "USD";
+
     // totalAwarded = sum of fundingAmount for FUNDED projects only
     // totalDistributed = sum of amountReceived (actual disbursements)
     await prisma.fund.update({
@@ -42,11 +46,12 @@ async function computeFundStats(): Promise<void> {
         completedProposalsCount: completed,
         totalAwarded: fundedStats._sum.fundingAmount || 0,
         totalDistributed: fundedStats._sum.amountReceived || 0,
-        currency: "ADA",
+        currency,
       },
     });
 
-    console.log(`  ${fund.name}: ${fundedStats._count} funded, ₳${fundedStats._sum.fundingAmount || 0} awarded`);
+    const symbol = currency === "ADA" ? "₳" : "$";
+    console.log(`  ${fund.name}: ${fundedStats._count} funded, ${symbol}${(fundedStats._sum.fundingAmount || 0).toLocaleString()} awarded`);
   }
 }
 

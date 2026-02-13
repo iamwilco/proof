@@ -8,10 +8,16 @@ interface PageProps {
   searchParams: Promise<{ funds?: string }>;
 }
 
-const formatADA = (value: number) =>
-  `₳${new Intl.NumberFormat("en-US", {
+const formatCurrency = (value: number, currency: string = "USD") => {
+  if (currency === "ADA") {
+    return `₳${new Intl.NumberFormat("en-US", { notation: "compact" }).format(value)}`;
+  }
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
     notation: "compact",
-  }).format(value)}`;
+  }).format(value);
+};
 
 const formatPercent = (value: number) => `${value.toFixed(1)}%`;
 
@@ -26,6 +32,7 @@ export default async function FundComparisonPage({ searchParams }: PageProps) {
       id: true,
       name: true,
       number: true,
+      currency: true,
       totalBudget: true,
       totalAwarded: true,
       totalDistributed: true,
@@ -183,7 +190,7 @@ export default async function FundComparisonPage({ searchParams }: PageProps) {
                     </td>
                     {metrics.map((m) => (
                       <td key={m.fund.id} className="px-6 py-4 text-right text-sm text-slate-900">
-                        {formatADA(Number(m.fund.totalBudget))}
+                        {formatCurrency(Number(m.fund.totalBudget), m.fund.currency)}
                       </td>
                     ))}
                   </tr>
@@ -193,7 +200,7 @@ export default async function FundComparisonPage({ searchParams }: PageProps) {
                     </td>
                     {metrics.map((m) => (
                       <td key={m.fund.id} className="px-6 py-4 text-right text-sm text-slate-900">
-                        {formatADA(Number(m.fund.totalAwarded))}
+                        {formatCurrency(Number(m.fund.totalAwarded), m.fund.currency)}
                       </td>
                     ))}
                   </tr>
@@ -203,7 +210,7 @@ export default async function FundComparisonPage({ searchParams }: PageProps) {
                     </td>
                     {metrics.map((m) => (
                       <td key={m.fund.id} className="px-6 py-4 text-right text-sm text-emerald-600 font-medium">
-                        {formatADA(Number(m.fund.totalDistributed))}
+                        {formatCurrency(Number(m.fund.totalDistributed), m.fund.currency)}
                       </td>
                     ))}
                   </tr>
@@ -272,7 +279,7 @@ export default async function FundComparisonPage({ searchParams }: PageProps) {
                     </td>
                     {metrics.map((m) => (
                       <td key={m.fund.id} className="px-6 py-4 text-right text-sm text-slate-900">
-                        {formatADA(m.avgProjectSize)}
+                        {formatCurrency(m.avgProjectSize, m.fund.currency)}
                       </td>
                     ))}
                   </tr>
@@ -322,7 +329,7 @@ export default async function FundComparisonPage({ searchParams }: PageProps) {
                                 {cat?.count || 0}
                               </td>
                               <td className="px-4 py-3 text-right text-sm text-slate-600">
-                                {cat ? formatADA(cat.funding) : "-"}
+                                {cat ? formatCurrency(cat.funding, m.fund.currency) : "-"}
                               </td>
                             </React.Fragment>
                           );

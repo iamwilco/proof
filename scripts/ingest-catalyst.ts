@@ -165,7 +165,7 @@ async function upsertFund(fund: CatalystFund): Promise<string> {
         name: fund.title,
         slug: fund.slug,
         status: fund.status || "active",
-        currency: "ADA",  // CatalystExplorer returns ADA amounts
+        currency: fund.currency || "USD",  // Use API-provided currency (USD for F2-9, ADA for F10+)
         totalBudget: fund.amount || 0,
         lastSeenAt: now,
       },
@@ -181,7 +181,7 @@ async function upsertFund(fund: CatalystFund): Promise<string> {
       number: fundNumber,
       slug: fund.slug,
       status: fund.status || "active",
-      currency: "ADA",  // CatalystExplorer returns ADA amounts
+      currency: fund.currency || "USD",  // Use API-provided currency (USD for F2-9, ADA for F10+)
       totalBudget: fund.amount || 0,
       startDate: fund.launched_at ? new Date(fund.launched_at) : null,
       sourceUrl: `${CATALYST_EXPLORER_API}/funds/${fund.id}`,
@@ -353,7 +353,7 @@ async function computeFundStats(): Promise<void> {
         completedProposalsCount: completed,
         totalAwarded: fundedStats._sum.fundingAmount || 0,
         totalDistributed: fundedStats._sum.amountReceived || 0,
-        currency: "ADA",  // CatalystExplorer returns ADA amounts
+        // Don't override currency here - it's set correctly during fund upsert
       },
     });
   }

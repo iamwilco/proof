@@ -4,10 +4,15 @@ import prisma from "../../../lib/prisma";
 
 export const revalidate = 60;
 
-const formatADA = (amount: number) => {
-  return `₳${new Intl.NumberFormat("en-US", {
+const formatCurrency = (amount: number, currency: string = "USD") => {
+  if (currency === "ADA") {
+    return `₳${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(amount)}`;
+  }
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
     maximumFractionDigits: 0,
-  }).format(amount)}`;
+  }).format(amount);
 };
 
 const formatPercent = (value: number) => {
@@ -121,7 +126,7 @@ export default async function FundDetailPage({
             </div>
             <div className="text-right">
               <p className="text-3xl font-bold text-slate-900">
-                {formatADA(Number(fund.totalAwarded))}
+                {formatCurrency(Number(fund.totalAwarded), fund.currency)}
               </p>
               <p className="text-sm text-slate-500">Total Awarded</p>
             </div>
@@ -152,7 +157,7 @@ export default async function FundDetailPage({
           </div>
           <div className="rounded-xl border border-slate-200 bg-white p-4">
             <p className="text-2xl font-bold text-slate-900">
-              {formatADA(Number(fund.totalDistributed))}
+              {formatCurrency(Number(fund.totalDistributed), fund.currency)}
             </p>
             <p className="text-xs text-slate-500">Distributed</p>
           </div>
@@ -189,7 +194,7 @@ export default async function FundDetailPage({
                         </div>
                         <div className="text-right">
                           <p className="font-semibold text-slate-900">
-                            {formatADA(Number(project.fundingAmount))}
+                            {formatCurrency(Number(project.fundingAmount), fund.currency)}
                           </p>
                           {project.projectPeople.length > 0 && (
                             <div className="mt-1 flex -space-x-2">
@@ -242,7 +247,7 @@ export default async function FundDetailPage({
                           </p>
                         </div>
                         <p className="font-semibold text-slate-900">
-                          {formatADA(Number(person.totalFunding))}
+                          {formatCurrency(Number(person.totalFunding), fund.currency)}
                         </p>
                       </Link>
                     </li>
