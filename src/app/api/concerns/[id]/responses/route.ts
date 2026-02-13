@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import prisma from "../../../../../lib/prisma";
 import { createSupabaseServerClient } from "../../../../../lib/supabase/server";
@@ -8,7 +8,12 @@ type ResponsePayload = {
   message: string;
 };
 
-export async function POST(request: Request, context: { params: { id: string } }) {
+interface RouteParams {
+  params: Promise<{ id: string }>;
+}
+
+export async function POST(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
   const forwarded = request.headers.get("x-forwarded-for") ?? "unknown";
   const ip = forwarded.split(",")[0]?.trim() || "unknown";
   if (rateLimit({ key: `responses:${ip}`, limit: 8, windowMs: 60_000 })) {
@@ -29,7 +34,7 @@ export async function POST(request: Request, context: { params: { id: string } }
   }
 
   const concern = await prisma.concern.findUnique({
-    where: { id: context.params.id },
+    where: { id },
     select: { id: true, projectId: true },
   });
 

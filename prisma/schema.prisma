@@ -331,6 +331,7 @@ model User {
   walletAddresses WalletAddress[] @relation("UserWallets")
   reviewerProfile ReviewerProfile?
   moderatorProfile ModeratorProfile?
+  notifications   Notification[]
 }
 
 model Session {
@@ -532,13 +533,20 @@ model ConcernResponse {
 
 model Notification {
   id        String   @id @default(uuid())
-  projectId String
-  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String?
+  project   Project?  @relation(fields: [projectId], references: [id])
+  userId    String?
+  user      User?     @relation(fields: [userId], references: [id])
   concernId String?
   type      String
-  payload   Json
+  title     String?
+  message   String?
+  read      Boolean  @default(false)
+  payload   Json?
   status    String   @default("pending")
   createdAt DateTime @default(now())
+
+  @@index([userId, read])
 }
 
 model Reputation {

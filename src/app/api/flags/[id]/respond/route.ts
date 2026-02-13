@@ -57,7 +57,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
   // Notify admins about the response
   const admins = await prisma.user.findMany({
-    where: { role: "admin" },
+    where: { role: "ADMIN" },
     select: { id: true },
   });
 

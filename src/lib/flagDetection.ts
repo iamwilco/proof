@@ -352,7 +352,7 @@ async function notifyAdminsOfNewFlags(flagCount: number, categories: string[]): 
 
   // Get admin users
   const admins = await prisma.user.findMany({
-    where: { role: "admin" },
+    where: { role: "ADMIN" },
     select: { id: true },
   });
 

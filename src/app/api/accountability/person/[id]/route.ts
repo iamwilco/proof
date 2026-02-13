@@ -1,14 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import prisma from "../../../../../lib/prisma";
 
-type Params = {
-  params: { id: string };
-};
+interface RouteParams {
+  params: Promise<{ id: string }>;
+}
 
-export async function GET(_: Request, { params }: Params) {
+export async function GET(_: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
   const score = await prisma.accountabilityScore.findUnique({
-    where: { personId: params.id },
+    where: { personId: id },
     include: { person: { select: { id: true, name: true } } },
   });
 

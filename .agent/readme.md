@@ -200,8 +200,9 @@ Use this prompt to begin each agent session:
 Read these files in order:
 1. `.agent/prd/core.md` — Core requirements
 2. `.agent/prd/transparency-features.md` — Feature roadmap
-3. `.agent/tasks/tasks.json` — Task backlog
-4. `.agent/progress.md` — Current status
+3. `.agent/prd/phase2-ux-overhaul.md` — Phase 2 UX overhaul
+4. `.agent/tasks/tasks.json` — Task backlog
+5. `.agent/progress.md` — Current status
 
 ## Execution Rules
 

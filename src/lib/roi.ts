@@ -245,7 +245,7 @@ export async function storeProjectROI(result: ProjectROIResult): Promise<void> {
       outcomeScore: result.outcomeScore,
       fundingAmount: result.fundingAmount,
       roiScore: result.roiScore,
-      breakdown: result.breakdown,
+      breakdown: JSON.parse(JSON.stringify(result.breakdown)),
     },
   });
 }

@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - Community flag system with submission form, moderator review queue at /admin/flags, and proposer response workflow.
 - Flag impact on accountability scores: severity-weighted penalties (low=3, medium=7, high=15, critical=25 points), capped at 50.
 - Enhanced knowledge graph with search, score filters, flagged-only filter, builder/grifter color coding, and organization nodes.
+- Code quality: Fixed TypeScript errors in route handlers (Next.js 15 Promise params), updated Notification schema with user notifications support.
 - Milestone progress tracker for transparency roadmap.
 - Agent session prompt updates to include feature PRD and progress tracking.
 - Scraped proposal ingestion script for projectcatalyst.io (`etl/catalyst/ingest_scraped_proposals.py`).
