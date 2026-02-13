@@ -177,3 +177,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-13:** Completed PROOF-079 Build funding transaction explorer UI (timeline chart, filters, explorer links)
 - **2026-02-13:** Completed PROOF-080 Generate OpenAPI V3 specification (endpoints, schemas, auth)
 - **2026-02-13:** Completed PROOF-081 Build API documentation UI (endpoints list, code examples, versioned)
+- **2026-02-13:** Completed PROOF-082 Design Reviewer/Moderator schema (profiles, Ideascale, badges)

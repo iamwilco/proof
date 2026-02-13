@@ -1481,7 +1481,7 @@
     {
       "id": "PROOF-082",
       "priority": 82,
-      "status": "pending",
+      "status": "completed",
       "title": "Design Reviewer/Moderator schema",
       "description": "Extend User model for reviewer and moderator roles",
       "acceptance_criteria": [
@@ -1492,7 +1492,7 @@
       ],
       "milestone": 21,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-083",

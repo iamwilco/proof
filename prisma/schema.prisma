@@ -293,6 +293,8 @@ model User {
   bookmarks     Bookmark[] @relation("UserBookmarks")
   bookmarkLists BookmarkList[] @relation("UserBookmarkLists")
   walletAddresses WalletAddress[] @relation("UserWallets")
+  reviewerProfile ReviewerProfile?
+  moderatorProfile ModeratorProfile?
 }
 
 model Session {
@@ -663,4 +665,64 @@ model WalletAddress {
   @@index([ownerId])
   @@index([personId])
   @@index([verified])
+}
+
+model ReviewerProfile {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id])
+  
+  // Ideascale integration
+  ideascaleId         String?  @unique
+  ideascaleUsername   String?
+  
+  // Participation stats
+  fundsParticipated   String[] // Fund IDs
+  proposalsReviewed   Int      @default(0)
+  averageScore        Decimal? @db.Decimal(3, 2)
+  
+  // Badges and status
+  isActive            Boolean  @default(true)
+  isVeteran           Boolean  @default(false) // 3+ funds
+  badges              String[] // veteran, top_reviewer, etc.
+  
+  // Quality metrics
+  reviewQualityScore  Decimal? @db.Decimal(3, 2)
+  flaggedReviews      Int      @default(0)
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([isVeteran])
+}
+
+model ModeratorProfile {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id])
+  
+  // Role and scope
+  role                String   @default("moderator") // moderator, senior_moderator, admin
+  scope               String[] // fund IDs or "global"
+  
+  // Moderation stats
+  actionsCount        Int      @default(0)
+  flagsResolved       Int      @default(0)
+  reportsHandled      Int      @default(0)
+  warningsIssued      Int      @default(0)
+  
+  // Status
+  isActive            Boolean  @default(true)
+  appointedAt         DateTime @default(now())
+  appointedBy         String?
+  
+  // Badges
+  badges              String[] // veteran_mod, top_mod, etc.
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([role])
+  @@index([isActive])
 }
