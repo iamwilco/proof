@@ -64,6 +64,7 @@ All notable changes to this project will be documented in this file.
 - FundingTransaction schema for on-chain transaction tracking with USD values.
 - Funding transaction ingestion via Blockfrost API with treasury address tracking.
 - USD conversion service with CoinGecko API, historical prices, and formatting utilities.
+- Team address tagging with wallet claiming, signature verification, and person linking.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

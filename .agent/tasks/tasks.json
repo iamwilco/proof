@@ -1417,7 +1417,7 @@
     {
       "id": "PROOF-078",
       "priority": 78,
-      "status": "pending",
+      "status": "completed",
       "title": "Build team address tagging",
       "description": "Allow proposers to claim and tag their wallet addresses",
       "acceptance_criteria": [
@@ -1428,7 +1428,7 @@
       ],
       "milestone": 19,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-079",

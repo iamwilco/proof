@@ -183,6 +183,7 @@ model Person {
   projectPeople           ProjectPerson[]
   organizations           PersonOrganization[]
   accountabilityScore     AccountabilityScore?
+  walletAddresses         WalletAddress[]
   sourceUrl               String
   sourceType              String
   lastSeenAt              DateTime
@@ -291,6 +292,7 @@ model User {
   communities   Community[]
   bookmarks     Bookmark[] @relation("UserBookmarks")
   bookmarkLists BookmarkList[] @relation("UserBookmarkLists")
+  walletAddresses WalletAddress[] @relation("UserWallets")
 }
 
 model Session {
@@ -625,4 +627,40 @@ model FundingTransaction {
   @@index([txDate])
   @@index([txType])
   @@index([toAddress])
+}
+
+model WalletAddress {
+  id              String   @id @default(uuid())
+  address         String   @unique
+  
+  // Ownership
+  ownerId         String?
+  owner           User?    @relation("UserWallets", fields: [ownerId], references: [id])
+  personId        String?
+  person          Person?  @relation(fields: [personId], references: [id])
+  organizationId  String?
+  
+  // Verification
+  verified        Boolean  @default(false)
+  verifiedAt      DateTime?
+  signatureHash   String?
+  signatureNonce  String?
+  
+  // Metadata
+  label           String?
+  description     String?
+  isPrimary       Boolean  @default(false)
+  isPublic        Boolean  @default(true)
+  
+  // Stats
+  totalReceived   Decimal? @db.Decimal(20, 6)
+  totalSent       Decimal? @db.Decimal(20, 6)
+  lastActivity    DateTime?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([ownerId])
+  @@index([personId])
+  @@index([verified])
 }
