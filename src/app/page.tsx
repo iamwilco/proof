@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-slate-950 text-white">
@@ -14,24 +16,24 @@ export default function Home() {
             outcomes across Project Catalyst.
           </p>
           <div className="flex flex-wrap gap-3">
-            <a
+            <Link
               href="/projects"
               className="rounded-full bg-emerald-400 px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-emerald-300"
             >
               Browse projects
-            </a>
-            <a
+            </Link>
+            <Link
               href="/rankings"
               className="rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white hover:border-white/40"
             >
               View rankings
-            </a>
-            <a
+            </Link>
+            <Link
               href="/login"
               className="rounded-full border border-emerald-400/40 px-6 py-3 text-sm font-semibold text-emerald-200 hover:border-emerald-300"
             >
               Sign in
-            </a>
+            </Link>
           </div>
         </header>
 

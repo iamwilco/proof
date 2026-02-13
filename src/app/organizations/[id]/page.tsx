@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import prisma from "../../../lib/prisma";
 
@@ -109,9 +110,11 @@ export default async function OrganizationDetailPage({ params }: PageProps) {
         {/* Header */}
         <header className="mb-8 flex items-start gap-6">
           {organization.heroImgUrl ? (
-            <img
+            <Image
               src={organization.heroImgUrl}
               alt={organization.name}
+              width={80}
+              height={80}
               className="h-20 w-20 rounded-2xl object-cover"
             />
           ) : (
@@ -284,9 +287,11 @@ export default async function OrganizationDetailPage({ params }: PageProps) {
                       className="flex items-center gap-3 rounded-lg p-2 hover:bg-slate-50"
                     >
                       {member.person.heroImgUrl ? (
-                        <img
+                        <Image
                           src={member.person.heroImgUrl}
                           alt={member.person.name}
+                          width={40}
+                          height={40}
                           className="h-10 w-10 rounded-full object-cover"
                         />
                       ) : (

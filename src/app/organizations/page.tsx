@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import prisma from "../../lib/prisma";
 
 export const revalidate = 300;
@@ -152,9 +153,11 @@ export default async function OrganizationsPage({ searchParams }: PageProps) {
               >
                 <div className="flex items-start gap-4">
                   {org.heroImgUrl ? (
-                    <img
+                    <Image
                       src={org.heroImgUrl}
                       alt={org.name}
+                      width={48}
+                      height={48}
                       className="h-12 w-12 rounded-lg object-cover"
                     />
                   ) : (

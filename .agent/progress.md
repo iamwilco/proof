@@ -38,16 +38,18 @@
 ## Current Task
 
 ```
-ID:          PROOF-057
-Title:       Build report exports + insights
-Milestone:   13 — Communities & Groups
+ID:          PROOF-094
+Title:       Connection Explorer & Hover Cards
+Milestone:   25 — Enhanced Discovery UX
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] Export report summaries by fund
-- [ ] Highlight reports with blockers
-- [ ] Add report stats widget
+- [ ] Hover card component for Person, Org, Project
+- [ ] Key stats in hover card (score, projects, funding)
+- [ ] Show connections button opening mini-graph
+- [ ] Shared proposals section
+- [ ] Admin connections integrated
 
 ---
 
@@ -222,6 +224,10 @@ _Use this section for important notes that should persist across sessions._
   - Completion (35%), On-time (20%), Quality (15%), Communication (15%), Community (10%), Response (5%)
   - Badge assignment: TRUSTED (80+), RELIABLE (60+), UNPROVEN (40+), CONCERNING (<40)
   - API endpoints for score retrieval and admin recalculation
+- **2026-02-13:** Completed PROOF-093 Proposal Tinder 2.0 - Accountability Overlays
+  - Added proposer hover card with accountability breakdown
+  - Added completion/on-time stats and red flag indicators
+  - Added spacebar shortcut and smart ordering in /api/discover
 - **2026-02-13:** Completed PROOF-095 Enhanced Search with Faceted Filters
   - Created GlobalSearch component with autocomplete and keyboard navigation
   - Created /api/search route for cross-entity search (projects, people, orgs, funds)

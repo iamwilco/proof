@@ -11,6 +11,15 @@ interface Project {
   fundingAmount: number;
   status: string;
   fund: { name: string };
+  primaryPerson: null | {
+    id: string;
+    name: string;
+    completionRate: number;
+    accountabilityScore: number | null;
+    onTimeDelivery: number | null;
+    badge: string | null;
+  };
+  flagCount: number;
 }
 
 const formatCurrency = (amount: number) => {
@@ -25,6 +34,7 @@ export default function DiscoverPage() {
   const [loading, setLoading] = useState(true);
   const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | null>(null);
   const [stats, setStats] = useState({ liked: 0, skipped: 0 });
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     async function fetchProjects() {
@@ -73,7 +83,7 @@ export default function DiscoverPage() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft" || e.key === "j") {
         handleSwipe("left");
-      } else if (e.key === "ArrowRight" || e.key === "k") {
+      } else if (e.key === "ArrowRight" || e.key === "k" || e.key === " ") {
         handleSwipe("right");
       }
     };
@@ -84,6 +94,12 @@ export default function DiscoverPage() {
 
   const currentProject = projects[currentIndex];
   const isFinished = currentIndex >= projects.length;
+  const badgeColors: Record<string, string> = {
+    TRUSTED: "bg-emerald-100 text-emerald-700",
+    RELIABLE: "bg-blue-100 text-blue-700",
+    UNPROVEN: "bg-slate-100 text-slate-600",
+    CONCERNING: "bg-red-100 text-red-700",
+  };
 
   if (loading) {
     return (
@@ -182,9 +198,16 @@ export default function DiscoverPage() {
                       <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
                         {currentProject.category}
                       </span>
-                      <span className="text-xs text-slate-400">
-                        {currentProject.fund.name}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        {currentProject.flagCount > 0 && (
+                          <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">
+                            {currentProject.flagCount} flag{currentProject.flagCount > 1 ? "s" : ""}
+                          </span>
+                        )}
+                        <span className="text-xs text-slate-400">
+                          {currentProject.fund.name}
+                        </span>
+                      </div>
                     </div>
 
                     {/* Title */}
@@ -192,20 +215,91 @@ export default function DiscoverPage() {
                       {currentProject.title}
                     </h2>
 
+                    {currentProject.primaryPerson && (
+                      <div className="mt-3 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                        <div>
+                          <p className="text-xs text-slate-500">Proposer</p>
+                          <div
+                            className="relative inline-flex items-center gap-2"
+                            onMouseEnter={() => setIsHovering(true)}
+                            onMouseLeave={() => setIsHovering(false)}
+                          >
+                            <Link
+                              href={`/people/${currentProject.primaryPerson.id}`}
+                              className="text-sm font-semibold text-slate-900 hover:underline"
+                            >
+                              {currentProject.primaryPerson.name}
+                            </Link>
+                            {currentProject.primaryPerson.badge && (
+                              <span
+                                className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                                  badgeColors[currentProject.primaryPerson.badge] ??
+                                  "bg-slate-100 text-slate-600"
+                                }`}
+                              >
+                                {currentProject.primaryPerson.badge.toLowerCase()}
+                              </span>
+                            )}
+                            {isHovering && (
+                              <div className="absolute left-0 top-full z-20 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-3 shadow-lg">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                                  Track record
+                                </p>
+                                <div className="mt-2 grid grid-cols-2 gap-3 text-sm">
+                                  <div>
+                                    <p className="text-slate-500">Score</p>
+                                    <p className="font-semibold text-slate-900">
+                                      {currentProject.primaryPerson.accountabilityScore ?? "—"}
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <p className="text-slate-500">Completion</p>
+                                    <p className="font-semibold text-slate-900">
+                                      {currentProject.primaryPerson.completionRate}%
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <p className="text-slate-500">On-time</p>
+                                    <p className="font-semibold text-slate-900">
+                                      {currentProject.primaryPerson.onTimeDelivery ?? "—"}%
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <p className="text-slate-500">Flags</p>
+                                    <p className="font-semibold text-slate-900">
+                                      {currentProject.flagCount}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        {currentProject.primaryPerson.accountabilityScore !== null && (
+                          <div className="text-right">
+                            <p className="text-xs text-slate-500">Accountability</p>
+                            <p className="text-lg font-semibold text-slate-900">
+                              {currentProject.primaryPerson.accountabilityScore}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     {/* Description */}
                     <p className="mt-3 flex-1 overflow-y-auto text-sm text-slate-600 line-clamp-6">
                       {currentProject.description}
                     </p>
 
                     {/* Stats */}
-                    <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
+                    <div className="mt-4 grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 text-sm">
                       <div>
                         <p className="text-xs text-slate-400">Funding</p>
                         <p className="font-semibold text-slate-900">
                           {formatCurrency(currentProject.fundingAmount)} ADA
                         </p>
                       </div>
-                      <div className="text-right">
+                      <div>
                         <p className="text-xs text-slate-400">Status</p>
                         <span
                           className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${
@@ -218,6 +312,18 @@ export default function DiscoverPage() {
                         >
                           {currentProject.status}
                         </span>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-400">Completion</p>
+                        <p className="font-semibold text-slate-900">
+                          {currentProject.primaryPerson?.completionRate ?? "—"}%
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-400">On-time delivery</p>
+                        <p className="font-semibold text-slate-900">
+                          {currentProject.primaryPerson?.onTimeDelivery ?? "—"}%
+                        </p>
                       </div>
                     </div>
 
@@ -248,7 +354,7 @@ export default function DiscoverPage() {
             <button
               onClick={() => handleSwipe("right")}
               className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500 text-2xl text-white shadow-lg hover:bg-emerald-600 transition active:scale-95"
-              title="Like (→ or K)"
+              title="Like (→ or K or Space)"
             >
               ♥
             </button>
@@ -261,6 +367,8 @@ export default function DiscoverPage() {
           <span className="mx-2">Skip</span>
           <span className="rounded bg-slate-700 px-2 py-1 text-slate-300">→</span>
           <span className="mx-2">Like</span>
+          <span className="rounded bg-slate-700 px-2 py-1 text-slate-300">Space</span>
+          <span className="mx-2">Bookmark</span>
         </div>
       </div>
     </div>

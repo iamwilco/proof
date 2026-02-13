@@ -373,7 +373,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </Section>
           )}
 
-          <ReportSection projectId={project.id} initialReports={project.reports} />
+          <ReportSection
+            projectId={project.id}
+            initialReports={project.reports.map((report) => ({
+              ...report,
+              createdAt: report.createdAt.toISOString(),
+            }))}
+          />
 
           {project.milestones.length > 0 && (
             <Section title="Milestones">

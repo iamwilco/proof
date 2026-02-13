@@ -9,8 +9,6 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const searchTerm = `%${query}%`;
-
     const [projects, people, organizations, funds] = await Promise.all([
       prisma.project.findMany({
         where: {
