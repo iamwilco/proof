@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - GitHub metrics integration and activity snapshots on projects and organizations.
 - On-chain metrics integration with optional manual address entry and Blockfrost sync.
 - ROI calculation engine with outcome scoring (GitHub, deliverables, on-chain) and percentile rankings.
+- ROI dashboard at /analytics/roi with fund comparison, category benchmarks, top/bottom tables, and CSV export.
 - Milestone progress tracker for transparency roadmap.
 - Agent session prompt updates to include feature PRD and progress tracking.
 - Scraped proposal ingestion script for projectcatalyst.io (`etl/catalyst/ingest_scraped_proposals.py`).

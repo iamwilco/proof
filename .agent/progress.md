@@ -38,19 +38,17 @@
 ## Current Task
 
 ```
-ID:          PROOF-104
-Title:       ROI Dashboard
-Milestone:   28 — ROI Dashboard
+ID:          PROOF-105
+Title:       Automated Red Flag Detection
+Milestone:   29 — Red Flag System
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] /analytics/roi page
-- [ ] Fund-level ROI comparison chart
-- [ ] Category ROI benchmarks
-- [ ] Top 10 / Bottom 10 performers tables
-- [ ] Time-to-delivery analysis
-- [ ] Export to CSV for researchers
+- [ ] Repeat incomplete pattern detection
+- [ ] Ghost project identification
+- [ ] Overdue milestone alerts
+- [ ] Duplicate effort detection
 
 ---
 
@@ -58,6 +56,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-104 | ROI Dashboard | 2026-02-13 |
 | PROOF-103 | ROI Calculation Engine | 2026-02-13 |
 | PROOF-102 | On-Chain Metrics Integration | 2026-02-13 |
 | PROOF-101 | GitHub Metrics Integration | 2026-02-13 |

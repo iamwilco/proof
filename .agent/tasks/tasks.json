@@ -1885,7 +1885,8 @@
       "id": "PROOF-104",
       "title": "ROI Dashboard",
       "description": "Dashboard showing ROI metrics. Fund-level comparison, category benchmarks, top/bottom performers.",
-      "status": "pending",
+      "status": "completed",
+      "completed": "2026-02-13",
       "priority": "medium",
       "labels": ["roi", "dashboard", "analytics"],
       "acceptance_criteria": [
