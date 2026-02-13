@@ -2,6 +2,8 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import { SessionProvider } from "@/components/auth";
+import { ToastProvider } from "@/components/ui";
 
 type ProvidersProps = {
   children: React.ReactNode;
@@ -22,5 +24,13 @@ export default function Providers({ children }: ProvidersProps) {
       })
   );
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <SessionProvider>
+        <ToastProvider>
+          {children}
+        </ToastProvider>
+      </SessionProvider>
+    </QueryClientProvider>
+  );
 }

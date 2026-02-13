@@ -272,11 +272,23 @@ model Link {
   updatedAt DateTime @updatedAt
 }
 
+enum UserRole {
+  MEMBER
+  PROPOSER
+  REVIEWER
+  MODERATOR
+  ADMIN
+}
+
 model User {
   id            String    @id @default(uuid())
   walletAddress String?   @unique
   email         String?   @unique
+  googleId      String?   @unique
   displayName   String?
+  avatarUrl     String?
+  bio           String?
+  role          UserRole  @default(MEMBER)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   ratings       Rating[]
@@ -725,4 +737,93 @@ model ModeratorProfile {
 
   @@index([role])
   @@index([isActive])
+}
+
+// Authentication nonce for replay attack prevention
+model AuthNonce {
+  id           String   @id @default(uuid())
+  nonce        String   @unique
+  stakeAddress String
+  usedAt       DateTime @default(now())
+  
+  @@index([stakeAddress])
+}
+
+// Magic link tokens for email authentication
+model MagicLinkToken {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  
+  @@index([token])
+}
+
+// Admin-created connections between entities
+enum EntityType {
+  PERSON
+  ORGANIZATION
+  PROJECT
+}
+
+enum ConnectionType {
+  TEAM_MEMBER
+  FOUNDER
+  ADVISOR
+  EMPLOYEE
+  PARTNER
+  CONTRACTOR
+  INVESTOR
+  OTHER
+}
+
+model AdminConnection {
+  id             String         @id @default(uuid())
+  sourceType     EntityType
+  sourceId       String
+  targetType     EntityType
+  targetId       String
+  connectionType ConnectionType
+  evidence       String?
+  notes          String?
+  createdById    String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  
+  @@unique([sourceType, sourceId, targetType, targetId, connectionType])
+  @@index([sourceType, sourceId])
+  @@index([targetType, targetId])
+}
+
+// Feature roadmap and voting
+enum FeatureStatus {
+  CONSIDERING
+  PLANNED
+  IN_PROGRESS
+  SHIPPED
+}
+
+model Feature {
+  id          String        @id @default(uuid())
+  title       String
+  description String
+  status      FeatureStatus @default(CONSIDERING)
+  category    String
+  votes       FeatureVote[]
+  createdAt   DateTime      @default(now())
+  releasedAt  DateTime?
+  
+  @@index([status])
+}
+
+model FeatureVote {
+  id        String   @id @default(uuid())
+  featureId String
+  feature   Feature  @relation(fields: [featureId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+  
+  @@unique([featureId, userId])
+  @@index([userId])
 }
