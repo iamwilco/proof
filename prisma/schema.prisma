@@ -66,6 +66,16 @@ model Project {
   githubUrl       String?
   githubOwner     String?
   githubRepo      String?
+  githubStars     Int?
+  githubForks     Int?
+  githubWatchers  Int?
+  githubOpenIssues Int?
+  githubLastPush  DateTime?
+  githubLastCommit DateTime?
+  githubContributors Int?
+  githubIssueCloseRate Float?
+  githubPrMergeRate Float?
+  githubCommitCount Int?
   githubActivityScore Int?
   githubLastSync  DateTime?
   milestones      Milestone[]

@@ -11,11 +11,94 @@ interface GitHubRepoStats {
   defaultBranch: string;
 }
 
+async function fetchSearchCount(
+  query: string,
+  token?: string
+): Promise<number> {
+  const headers: Record<string, string> = {
+    Accept: "application/vnd.github.v3+json",
+    "User-Agent": "PROOF-Catalyst-Transparency",
+  };
+
+  if (token) {
+    headers.Authorization = `token ${token}`;
+  }
+
+  const response = await fetch(
+    `https://api.github.com/search/issues?q=${encodeURIComponent(query)}`,
+    { headers, next: { revalidate: 3600 } }
+  );
+
+  if (!response.ok) {
+    return 0;
+  }
+
+  const data = await response.json();
+  return typeof data.total_count === "number" ? data.total_count : 0;
+}
+
+export async function fetchIssueStats(
+  owner: string,
+  repo: string,
+  token?: string
+): Promise<GitHubIssueStats | null> {
+  try {
+    const [openIssues, closedIssues] = await Promise.all([
+      fetchSearchCount(`repo:${owner}/${repo} type:issue state:open`, token),
+      fetchSearchCount(`repo:${owner}/${repo} type:issue state:closed`, token),
+    ]);
+
+    const total = openIssues + closedIssues;
+    return {
+      openIssues,
+      closedIssues,
+      closeRate: total > 0 ? closedIssues / total : null,
+    };
+  } catch (error) {
+    console.error("Failed to fetch issue stats:", error);
+    return null;
+  }
+}
+
+export async function fetchPullRequestStats(
+  owner: string,
+  repo: string,
+  token?: string
+): Promise<GitHubPullRequestStats | null> {
+  try {
+    const [totalPRs, mergedPRs] = await Promise.all([
+      fetchSearchCount(`repo:${owner}/${repo} type:pr`, token),
+      fetchSearchCount(`repo:${owner}/${repo} type:pr is:merged`, token),
+    ]);
+
+    return {
+      totalPRs,
+      mergedPRs,
+      mergeRate: totalPRs > 0 ? mergedPRs / totalPRs : null,
+    };
+  } catch (error) {
+    console.error("Failed to fetch PR stats:", error);
+    return null;
+  }
+}
+
 interface GitHubCommitActivity {
   totalCommits: number;
   lastCommitDate: Date | null;
   commitsByWeek: number[];
   contributors: number;
+}
+
+interface GitHubIssueStats {
+  openIssues: number;
+  closedIssues: number;
+  closeRate: number | null;
+}
+
+interface GitHubPullRequestStats {
+  totalPRs: number;
+  mergedPRs: number;
+  mergeRate: number | null;
 }
 
 interface GitHubActivityResult {
@@ -254,6 +337,8 @@ export async function syncProjectGitHub(
 
   const repoStats = await fetchGitHubRepoStats(owner, repo, token);
   const commitActivity = await fetchCommitActivity(owner, repo, token);
+  const issueStats = await fetchIssueStats(owner, repo, token);
+  const pullRequestStats = await fetchPullRequestStats(owner, repo, token);
   const activityScore = calculateActivityScore(repoStats, commitActivity);
 
   // Update project with GitHub data
@@ -262,6 +347,16 @@ export async function syncProjectGitHub(
     data: {
       githubOwner: owner,
       githubRepo: repo,
+      githubStars: repoStats?.stars ?? null,
+      githubForks: repoStats?.forks ?? null,
+      githubWatchers: repoStats?.watchers ?? null,
+      githubOpenIssues: repoStats?.openIssues ?? null,
+      githubLastPush: repoStats?.lastPush ?? null,
+      githubLastCommit: commitActivity?.lastCommitDate ?? null,
+      githubContributors: commitActivity?.contributors ?? null,
+      githubCommitCount: commitActivity?.totalCommits ?? null,
+      githubIssueCloseRate: issueStats?.closeRate ?? null,
+      githubPrMergeRate: pullRequestStats?.mergeRate ?? null,
       githubActivityScore: activityScore,
       githubLastSync: new Date(),
     },

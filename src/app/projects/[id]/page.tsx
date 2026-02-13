@@ -77,6 +77,11 @@ const formatDate = (date: Date | null) => {
   }).format(date);
 };
 
+const formatNumber = (value: number | null | undefined) =>
+  typeof value === "number"
+    ? new Intl.NumberFormat("en-US", { notation: "compact" }).format(value)
+    : "—";
+
 const StatusBadge = ({ status }: { status: string }) => {
   const colors: Record<string, string> = {
     completed: "bg-emerald-100 text-emerald-700",
@@ -259,6 +264,94 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </div>
           </div>
         </header>
+
+        {(project.githubUrl || project.githubActivityScore !== null) && (
+          <Section title="GitHub Activity">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-sm text-slate-600">Repository metrics snapshot.</p>
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:underline"
+                  >
+                    {project.githubOwner && project.githubRepo
+                      ? `${project.githubOwner}/${project.githubRepo}`
+                      : "View GitHub repo"}
+                  </a>
+                )}
+              </div>
+              <div className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">
+                Activity score: {project.githubActivityScore ?? "—"}
+              </div>
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+                <p className="text-xs text-slate-400">Stars</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {formatNumber(project.githubStars)}
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+                <p className="text-xs text-slate-400">Forks</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {formatNumber(project.githubForks)}
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+                <p className="text-xs text-slate-400">Watchers</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {formatNumber(project.githubWatchers)}
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+                <p className="text-xs text-slate-400">Contributors</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {formatNumber(project.githubContributors)}
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+                <p className="text-xs text-slate-400">Issues closed</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {project.githubIssueCloseRate !== null &&
+                  project.githubIssueCloseRate !== undefined
+                    ? `${Math.round(project.githubIssueCloseRate * 100)}%`
+                    : "—"}
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+                <p className="text-xs text-slate-400">PR merge rate</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {project.githubPrMergeRate !== null && project.githubPrMergeRate !== undefined
+                    ? `${Math.round(project.githubPrMergeRate * 100)}%`
+                    : "—"}
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-lg border border-slate-100 bg-white p-3 text-sm">
+                <p className="text-xs text-slate-400">Last push</p>
+                <p className="mt-1 font-semibold text-slate-900">
+                  {formatDate(project.githubLastPush)}
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-100 bg-white p-3 text-sm">
+                <p className="text-xs text-slate-400">Last commit</p>
+                <p className="mt-1 font-semibold text-slate-900">
+                  {formatDate(project.githubLastCommit)}
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-100 bg-white p-3 text-sm">
+                <p className="text-xs text-slate-400">Last synced</p>
+                <p className="mt-1 font-semibold text-slate-900">
+                  {formatDate(project.githubLastSync)}
+                </p>
+              </div>
+            </div>
+          </Section>
+        )}
 
         <Section title="Connections">
           <div className="flex flex-wrap items-center justify-between gap-4">

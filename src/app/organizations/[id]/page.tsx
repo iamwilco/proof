@@ -25,6 +25,13 @@ const STATUS_COLORS: Record<string, string> = {
   pending: "bg-slate-100 text-slate-600",
 };
 
+const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <section className="rounded-2xl border border-slate-200 bg-white p-6">
+    <h2 className="mb-4 text-lg font-semibold text-slate-900">{title}</h2>
+    {children}
+  </section>
+);
+
 export default async function OrganizationDetailPage({ params }: PageProps) {
   const { id } = await params;
 
@@ -56,6 +63,14 @@ export default async function OrganizationDetailPage({ params }: PageProps) {
               fundingAmount: true,
               category: true,
               fund: { select: { name: true, number: true } },
+              githubUrl: true,
+              githubOwner: true,
+              githubRepo: true,
+              githubActivityScore: true,
+              githubStars: true,
+              githubForks: true,
+              githubLastCommit: true,
+              githubLastSync: true,
             },
           },
         },
@@ -99,6 +114,13 @@ export default async function OrganizationDetailPage({ params }: PageProps) {
   const topCategories = Object.entries(categoryCounts)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5);
+
+  const githubProjects = projects.filter((project) => project.githubUrl || project.githubActivityScore);
+  const githubAverage =
+    githubProjects.length > 0
+      ? githubProjects.reduce((sum, project) => sum + (project.githubActivityScore || 0), 0) /
+        githubProjects.length
+      : 0;
 
   return (
     <div className="min-h-screen bg-slate-50 px-6 py-12">
@@ -240,7 +262,65 @@ export default async function OrganizationDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="space-y-6 lg:col-span-2">
+            {githubProjects.length > 0 && (
+              <Section title="GitHub Activity">
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                    <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                      Repos tracked
+                    </p>
+                    <p className="mt-2 text-2xl font-semibold text-slate-900">
+                      {githubProjects.length}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                    <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                      Avg activity score
+                    </p>
+                    <p className="mt-2 text-2xl font-semibold text-slate-900">
+                      {githubAverage.toFixed(1)}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                    <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                      Recent commits
+                    </p>
+                    <p className="mt-2 text-2xl font-semibold text-slate-900">
+                      {githubProjects.filter((project) => project.githubLastCommit).length}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-4 space-y-3">
+                  {githubProjects.slice(0, 4).map((project) => (
+                    <div
+                      key={project.id}
+                      className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-100 bg-white p-3"
+                    >
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">{project.title}</p>
+                        {project.githubOwner && project.githubRepo && (
+                          <a
+                            href={project.githubUrl || `https://github.com/${project.githubOwner}/${project.githubRepo}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-blue-600 hover:underline"
+                          >
+                            {project.githubOwner}/{project.githubRepo}
+                          </a>
+                        )}
+                      </div>
+                      <div className="text-xs text-slate-500">
+                        Score: {project.githubActivityScore ?? "—"}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Section>
+            )}
+          </div>
+
           {/* Main Content */}
           <div className="lg:col-span-2">
             {/* Top Categories */}

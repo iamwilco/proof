@@ -38,19 +38,20 @@
 ## Current Task
 
 ```
-ID:          PROOF-100
-Title:       Score Transparency UI
+ID:          PROOF-101
+Title:       GitHub Metrics Integration
 Milestone:   27 — Accountability Scoring
 Status:      completed
 ```
 
 ### Acceptance Criteria
-- [x] Expandable score breakdown component
-- [x] Each factor shows value and contribution
-- [x] Data source links for each metric
-- [x] Confidence level indicator (Low/Medium/High)
-- [x] Trend indicator (improving/stable/declining)
-- [x] Last updated timestamp
+- [x] GitHub API integration
+- [x] Fetch repo stats: stars, forks, watchers
+- [x] Commit activity over time
+- [x] Contributor count
+- [x] Issues opened/closed ratio
+- [x] PR merge rate
+- [x] Daily ETL job for updates
 
 ---
 
@@ -58,6 +59,7 @@ Status:      completed
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-101 | GitHub Metrics Integration | 2026-02-13 |
 | PROOF-100 | Score Transparency UI | 2026-02-13 |
 | PROOF-099 | Score Preview Period System | 2026-02-13 |
 | PROOF-098 | Organization Accountability Score | 2026-02-13 |
@@ -238,6 +240,9 @@ _Use this section for important notes that should persist across sessions._
  - **2026-02-13:** Completed PROOF-100 Score Transparency UI
   - Added expandable score breakdown with data source links
   - Added confidence, trend, and last updated indicators
+ - **2026-02-13:** Completed PROOF-101 GitHub Metrics Integration
+  - Added GitHub repo metrics sync and admin trigger
+  - Surfaced GitHub activity on project and organization pages
   - Profile API route for PATCH updates
 - **2026-02-13:** Completed PROOF-097 Person Accountability Score Calculation
   - Created lib/accountability/scoring.ts with weighted factors

@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - Organization accountability score aggregation with team consistency modifiers.
 - Score preview period workflow with disputes, audits, and auto-publish.
 - Score transparency UI with breakdown, confidence, and trend indicators.
+- GitHub metrics integration and activity snapshots on projects and organizations.
 - Milestone progress tracker for transparency roadmap.
 - Agent session prompt updates to include feature PRD and progress tracking.
 - Scraped proposal ingestion script for projectcatalyst.io (`etl/catalyst/ingest_scraped_proposals.py`).
