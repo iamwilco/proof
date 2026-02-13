@@ -353,6 +353,78 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           </Section>
         )}
 
+        {(project.onchainAddress || project.onchainTxCount !== null) && (
+          <Section title="On-Chain Activity">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-sm text-slate-600">Cardano blockchain activity for this project.</p>
+                {project.onchainAddress && (
+                  <a
+                    href={`https://cardanoscan.io/address/${project.onchainAddress}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:underline"
+                  >
+                    {project.onchainAddress.slice(0, 12)}...{project.onchainAddress.slice(-8)}
+                  </a>
+                )}
+              </div>
+              {project.onchainPolicyId && (
+                <div className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">
+                  Policy: {project.onchainPolicyId.slice(0, 8)}...
+                </div>
+              )}
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+                <p className="text-xs text-slate-400">Transactions</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {formatNumber(project.onchainTxCount)}
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+                <p className="text-xs text-slate-400">Unique Addresses</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {formatNumber(project.onchainUniqueAddresses)}
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+                <p className="text-xs text-slate-400">Total Received</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {project.onchainTotalReceived
+                    ? `₳${formatNumber(Number(project.onchainTotalReceived))}`
+                    : "—"}
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+                <p className="text-xs text-slate-400">Total Sent</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {project.onchainTotalSent
+                    ? `₳${formatNumber(Number(project.onchainTotalSent))}`
+                    : "—"}
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+                <p className="text-xs text-slate-400">First Transaction</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {formatDate(project.onchainFirstTx)}
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+                <p className="text-xs text-slate-400">Last Transaction</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {formatDate(project.onchainLastTx)}
+                </p>
+              </div>
+            </div>
+            {project.onchainLastSync && (
+              <p className="mt-3 text-xs text-slate-400">
+                Last synced: {formatDate(project.onchainLastSync)}
+              </p>
+            )}
+          </Section>
+        )}
+
         <Section title="Connections">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <p className="text-sm text-slate-600">

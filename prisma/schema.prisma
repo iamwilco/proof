@@ -78,6 +78,16 @@ model Project {
   githubCommitCount Int?
   githubActivityScore Int?
   githubLastSync  DateTime?
+  // On-chain metrics (optional - manually provided addresses)
+  onchainAddress  String?       // Primary Cardano address for the project
+  onchainPolicyId String?       // Policy ID for project tokens/NFTs
+  onchainTxCount  Int?
+  onchainUniqueAddresses Int?
+  onchainTotalReceived Decimal? @db.Decimal(18, 6)
+  onchainTotalSent Decimal?     @db.Decimal(18, 6)
+  onchainFirstTx  DateTime?
+  onchainLastTx   DateTime?
+  onchainLastSync DateTime?
   milestones      Milestone[]
   deliverables    Deliverable[]
   projectPeople   ProjectPerson[]

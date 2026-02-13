@@ -249,6 +249,201 @@ export async function getTransactionStats() {
   };
 }
 
+// On-chain metrics for projects with manually provided addresses
+interface OnchainMetrics {
+  txCount: number;
+  uniqueAddresses: Set<string>;
+  totalReceived: number;
+  totalSent: number;
+  firstTx: Date | null;
+  lastTx: Date | null;
+}
+
+interface BlockfrostAddressInfo {
+  address: string;
+  amount: Array<{ unit: string; quantity: string }>;
+  stake_address: string | null;
+  type: string;
+  script: boolean;
+}
+
+export async function getAddressInfo(address: string): Promise<BlockfrostAddressInfo | null> {
+  return blockfrostFetch<BlockfrostAddressInfo>(`/addresses/${address}`);
+}
+
+async function computeOnchainMetrics(address: string): Promise<OnchainMetrics> {
+  const metrics: OnchainMetrics = {
+    txCount: 0,
+    uniqueAddresses: new Set(),
+    totalReceived: 0,
+    totalSent: 0,
+    firstTx: null,
+    lastTx: null,
+  };
+
+  let page = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const transactions = await getAddressTransactions(address, page, 100);
+    
+    if (transactions.length === 0) {
+      hasMore = false;
+      break;
+    }
+
+    for (const tx of transactions) {
+      metrics.txCount++;
+      
+      const txDate = new Date(tx.block_time * 1000);
+      if (!metrics.firstTx || txDate < metrics.firstTx) {
+        metrics.firstTx = txDate;
+      }
+      if (!metrics.lastTx || txDate > metrics.lastTx) {
+        metrics.lastTx = txDate;
+      }
+
+      const utxos = await getTransactionUtxos(tx.tx_hash);
+      if (!utxos) continue;
+
+      // Track unique addresses and amounts
+      for (const input of utxos.inputs) {
+        if (input.address !== address) {
+          metrics.uniqueAddresses.add(input.address);
+        }
+        if (input.address === address) {
+          const ada = input.amount.find((a) => a.unit === "lovelace");
+          if (ada) metrics.totalSent += lovelaceToAda(ada.quantity);
+        }
+      }
+
+      for (const output of utxos.outputs) {
+        if (output.address !== address) {
+          metrics.uniqueAddresses.add(output.address);
+        }
+        if (output.address === address) {
+          const ada = output.amount.find((a) => a.unit === "lovelace");
+          if (ada) metrics.totalReceived += lovelaceToAda(ada.quantity);
+        }
+      }
+
+      // Rate limiting
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+
+    page++;
+    
+    // Limit pages to avoid excessive API calls
+    if (page > 10) {
+      hasMore = false;
+    }
+  }
+
+  return metrics;
+}
+
+export interface OnchainSyncResult {
+  projectId: string;
+  address: string | null;
+  txCount: number | null;
+  uniqueAddresses: number | null;
+  totalReceived: number | null;
+  totalSent: number | null;
+  error?: string;
+}
+
+export async function syncProjectOnchain(projectId: string): Promise<OnchainSyncResult> {
+  const project = await prisma.project.findUnique({
+    where: { id: projectId },
+    select: { onchainAddress: true },
+  });
+
+  if (!project?.onchainAddress) {
+    return {
+      projectId,
+      address: null,
+      txCount: null,
+      uniqueAddresses: null,
+      totalReceived: null,
+      totalSent: null,
+      error: "No on-chain address configured",
+    };
+  }
+
+  const address = project.onchainAddress;
+
+  // Verify address exists
+  const addressInfo = await getAddressInfo(address);
+  if (!addressInfo) {
+    return {
+      projectId,
+      address,
+      txCount: null,
+      uniqueAddresses: null,
+      totalReceived: null,
+      totalSent: null,
+      error: "Invalid or unknown address",
+    };
+  }
+
+  const metrics = await computeOnchainMetrics(address);
+
+  // Update project with on-chain metrics
+  await prisma.project.update({
+    where: { id: projectId },
+    data: {
+      onchainTxCount: metrics.txCount,
+      onchainUniqueAddresses: metrics.uniqueAddresses.size,
+      onchainTotalReceived: metrics.totalReceived,
+      onchainTotalSent: metrics.totalSent,
+      onchainFirstTx: metrics.firstTx,
+      onchainLastTx: metrics.lastTx,
+      onchainLastSync: new Date(),
+    },
+  });
+
+  return {
+    projectId,
+    address,
+    txCount: metrics.txCount,
+    uniqueAddresses: metrics.uniqueAddresses.size,
+    totalReceived: metrics.totalReceived,
+    totalSent: metrics.totalSent,
+  };
+}
+
+export async function syncAllProjectsOnchain(
+  limit: number = 50
+): Promise<{ synced: number; errors: number; results: OnchainSyncResult[] }> {
+  const projects = await prisma.project.findMany({
+    where: {
+      onchainAddress: { not: null },
+    },
+    select: { id: true },
+    take: limit,
+  });
+
+  const results: OnchainSyncResult[] = [];
+  let synced = 0;
+  let errors = 0;
+
+  for (const project of projects) {
+    const result = await syncProjectOnchain(project.id);
+    results.push(result);
+    
+    if (result.error) {
+      errors++;
+    } else {
+      synced++;
+    }
+
+    // Rate limiting between projects
+    await new Promise((resolve) => setTimeout(resolve, 200));
+  }
+
+  return { synced, errors, results };
+}
+
 // Mock data for development without API key
 export async function ingestMockTransactions(projectId: string, count: number = 5): Promise<number> {
   const mockTxs = Array.from({ length: count }, (_, i) => ({

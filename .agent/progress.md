@@ -38,20 +38,17 @@
 ## Current Task
 
 ```
-ID:          PROOF-101
-Title:       GitHub Metrics Integration
-Milestone:   27 — Accountability Scoring
-Status:      completed
+ID:          PROOF-103
+Title:       ROI Calculation Engine
+Milestone:   28 — ROI Dashboard
+Status:      pending
 ```
 
 ### Acceptance Criteria
-- [x] GitHub API integration
-- [x] Fetch repo stats: stars, forks, watchers
-- [x] Commit activity over time
-- [x] Contributor count
-- [x] Issues opened/closed ratio
-- [x] PR merge rate
-- [x] Daily ETL job for updates
+- [ ] Define ROI formula
+- [ ] Combine GitHub + on-chain metrics
+- [ ] Percentile rankings within categories
+- [ ] Store ROI scores
 
 ---
 
@@ -59,6 +56,7 @@ Status:      completed
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-102 | On-Chain Metrics Integration | 2026-02-13 |
 | PROOF-101 | GitHub Metrics Integration | 2026-02-13 |
 | PROOF-100 | Score Transparency UI | 2026-02-13 |
 | PROOF-099 | Score Preview Period System | 2026-02-13 |
