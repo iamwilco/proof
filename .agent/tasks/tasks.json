@@ -1465,7 +1465,7 @@
     {
       "id": "PROOF-081",
       "priority": 81,
-      "status": "pending",
+      "status": "completed",
       "title": "Build API documentation UI",
       "description": "Interactive API documentation with Swagger UI",
       "acceptance_criteria": [
@@ -1476,7 +1476,7 @@
       ],
       "milestone": 20,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-082",
