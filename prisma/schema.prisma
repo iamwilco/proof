@@ -105,6 +105,7 @@ model Project {
   completionNFT   CompletionNFT?
   bookmarks       Bookmark[]
   fundingTransactions FundingTransaction[]
+  roiScores       ProjectROI[]
   sourceUrl       String
   sourceType      String
   lastSeenAt      DateTime
@@ -909,4 +910,30 @@ model FeatureVote {
   
   @@unique([featureId, userId])
   @@index([userId])
+}
+
+model ProjectROI {
+  id                  String   @id @default(uuid())
+  projectId           String
+  project             Project  @relation(fields: [projectId], references: [id])
+  // Outcome component scores (0-100)
+  githubScore         Float    @default(0)
+  deliverableScore    Float    @default(0)
+  onchainScore        Float    @default(0)
+  // Weighted outcome score
+  outcomeScore        Float    @default(0)
+  // ROI calculation
+  fundingAmount       Decimal  @db.Decimal(18, 2)
+  roiScore            Float    @default(0)
+  // Percentile rankings
+  categoryPercentile  Float?
+  overallPercentile   Float?
+  // Breakdown stored as JSON
+  breakdown           Json?
+  // Timestamps
+  calculatedAt        DateTime @default(now())
+  
+  @@index([projectId])
+  @@index([roiScore])
+  @@index([categoryPercentile])
 }

@@ -38,17 +38,19 @@
 ## Current Task
 
 ```
-ID:          PROOF-103
-Title:       ROI Calculation Engine
+ID:          PROOF-104
+Title:       ROI Dashboard
 Milestone:   28 — ROI Dashboard
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] Define ROI formula
-- [ ] Combine GitHub + on-chain metrics
-- [ ] Percentile rankings within categories
-- [ ] Store ROI scores
+- [ ] /analytics/roi page
+- [ ] Fund-level ROI comparison chart
+- [ ] Category ROI benchmarks
+- [ ] Top 10 / Bottom 10 performers tables
+- [ ] Time-to-delivery analysis
+- [ ] Export to CSV for researchers
 
 ---
 
@@ -56,6 +58,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-103 | ROI Calculation Engine | 2026-02-13 |
 | PROOF-102 | On-Chain Metrics Integration | 2026-02-13 |
 | PROOF-101 | GitHub Metrics Integration | 2026-02-13 |
 | PROOF-100 | Score Transparency UI | 2026-02-13 |

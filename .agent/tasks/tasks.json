@@ -1867,7 +1867,8 @@
       "id": "PROOF-103",
       "title": "ROI Calculation Engine",
       "description": "Calculate ROI scores based on GitHub + on-chain metrics vs funding received. Percentile rankings within categories.",
-      "status": "pending",
+      "status": "completed",
+      "completed": "2026-02-13",
       "priority": "high",
       "labels": ["roi", "scoring", "algorithm"],
       "acceptance_criteria": [
