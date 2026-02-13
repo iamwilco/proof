@@ -5,9 +5,16 @@ import prisma from "../../../lib/prisma";
 import AccountabilityBadge from "../../../components/AccountabilityBadge";
 import ConnectionHoverCard from "../../../components/ConnectionHoverCard";
 import AccountabilityDisputeForm from "../../../components/AccountabilityDisputeForm";
+import ScoreBreakdown from "../../../components/ScoreBreakdown";
 
 type PageProps = {
   params: Promise<{ id: string }>;
+};
+
+const getAuditScore = (payload: unknown) => {
+  if (!payload || typeof payload !== "object") return null;
+  const data = payload as { score?: number };
+  return typeof data.score === "number" ? data.score : null;
 };
 
 const formatCurrency = (amount: number) => {
@@ -48,7 +55,9 @@ export default async function PersonDetailPage({ params }: PageProps) {
   const person = await prisma.person.findUnique({
     where: { id },
     include: {
-      accountabilityScore: true,
+      accountabilityScore: {
+        include: { audits: { orderBy: { createdAt: "desc" }, take: 2 } },
+      },
       projectPeople: {
         include: {
           project: {
@@ -74,6 +83,18 @@ export default async function PersonDetailPage({ params }: PageProps) {
     (sum, p) => sum + Number(p.fundingAmount),
     0
   );
+
+  const audits = person.accountabilityScore?.audits ?? [];
+  const currentScore = audits[0] ? getAuditScore(audits[0].payload) : null;
+  const previousScore = audits[1] ? getAuditScore(audits[1].payload) : null;
+  const trend =
+    currentScore !== null && previousScore !== null
+      ? currentScore > previousScore
+        ? "improving"
+        : currentScore < previousScore
+          ? "declining"
+          : "stable"
+      : "stable";
 
   return (
     <div className="min-h-screen bg-slate-50 px-6 py-12">
@@ -221,6 +242,51 @@ export default async function PersonDetailPage({ params }: PageProps) {
                   </p>
                 </div>
               </div>
+            </div>
+
+            <div className="mt-6 grid gap-4 sm:grid-cols-3">
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3 text-sm">
+                <p className="text-xs text-slate-400">Confidence</p>
+                <p className="mt-1 font-semibold text-slate-900">
+                  {person.accountabilityScore.confidence}
+                </p>
+                <p className="text-xs text-slate-500">
+                  {person.accountabilityScore.dataPoints} data points
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3 text-sm">
+                <p className="text-xs text-slate-400">Trend</p>
+                <p
+                  className={`mt-1 font-semibold ${
+                    trend === "improving"
+                      ? "text-emerald-600"
+                      : trend === "declining"
+                        ? "text-rose-600"
+                        : "text-slate-700"
+                  }`}
+                >
+                  {trend}
+                </p>
+                <p className="text-xs text-slate-500">Based on recent recalculations</p>
+              </div>
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3 text-sm">
+                <p className="text-xs text-slate-400">Last updated</p>
+                <p className="mt-1 font-semibold text-slate-900">
+                  {new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" }).format(
+                    person.accountabilityScore.calculatedAt
+                  )}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <ScoreBreakdown
+                completionScore={person.accountabilityScore.completionScore}
+                deliveryScore={person.accountabilityScore.deliveryScore}
+                communityScore={person.accountabilityScore.communityScore}
+                efficiencyScore={person.accountabilityScore.efficiencyScore}
+                communicationScore={person.accountabilityScore.communicationScore}
+              />
             </div>
 
             {person.accountabilityScore.status === "preview" && (

@@ -370,6 +370,8 @@ model AccountabilityScore {
   efficiencyScore     Int
   communicationScore  Int
   badge               String
+  confidence          String   @default("LOW")
+  dataPoints          Int      @default(0)
   status              String   @default("preview")
   previewUntil         DateTime?
   publishedAt         DateTime?

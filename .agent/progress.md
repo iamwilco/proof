@@ -38,19 +38,19 @@
 ## Current Task
 
 ```
-ID:          PROOF-099
-Title:       Score Preview Period System
+ID:          PROOF-100
+Title:       Score Transparency UI
 Milestone:   27 — Accountability Scoring
 Status:      completed
 ```
 
 ### Acceptance Criteria
-- [x] previewUntil field on AccountabilityScore
-- [x] Notification sent when score calculated
-- [x] Dispute submission form for proposers
-- [x] Admin queue for dispute review
-- [x] Score auto-publishes after 14 days if no dispute
-- [x] Audit log of score changes
+- [x] Expandable score breakdown component
+- [x] Each factor shows value and contribution
+- [x] Data source links for each metric
+- [x] Confidence level indicator (Low/Medium/High)
+- [x] Trend indicator (improving/stable/declining)
+- [x] Last updated timestamp
 
 ---
 
@@ -58,6 +58,7 @@ Status:      completed
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-100 | Score Transparency UI | 2026-02-13 |
 | PROOF-099 | Score Preview Period System | 2026-02-13 |
 | PROOF-098 | Organization Accountability Score | 2026-02-13 |
 | PROOF-094 | Connection Explorer & Hover Cards | 2026-02-13 |
@@ -234,6 +235,9 @@ _Use this section for important notes that should persist across sessions._
   - Added preview/dispute/audit models and notification hooks
   - Built proposer dispute form and admin review queue
   - Added auto-publish flow for expired preview scores
+ - **2026-02-13:** Completed PROOF-100 Score Transparency UI
+  - Added expandable score breakdown with data source links
+  - Added confidence, trend, and last updated indicators
   - Profile API route for PATCH updates
 - **2026-02-13:** Completed PROOF-097 Person Accountability Score Calculation
   - Created lib/accountability/scoring.ts with weighted factors
