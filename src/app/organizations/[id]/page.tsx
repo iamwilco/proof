@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { Badge, getAccountabilityLabel, getAccountabilityVariant } from "@/components/ui";
 import prisma from "../../../lib/prisma";
 import ConnectionHoverCard from "../../../components/ConnectionHoverCard";
 
@@ -30,6 +31,7 @@ export default async function OrganizationDetailPage({ params }: PageProps) {
   const organization = await prisma.organization.findUnique({
     where: { id },
     include: {
+      accountabilityScore: true,
       members: {
         include: {
           person: {
@@ -73,16 +75,18 @@ export default async function OrganizationDetailPage({ params }: PageProps) {
       ? (organization.completedProposalsCount / organization.fundedProposalsCount) * 100
       : 0;
 
-  const accountabilityScore = Math.min(
-    100,
-    Math.round(
-      completionRate * 0.5 +
-        (organization.fundedProposalsCount > 0 ? 20 : 0) +
-        (organization.members.length > 1 ? 15 : 5) +
-        (organization.website ? 10 : 0) +
-        (organization.bio ? 5 : 0)
-    )
-  );
+  const accountabilityScore =
+    organization.accountabilityScore?.overallScore ??
+    Math.min(
+      100,
+      Math.round(
+        completionRate * 0.5 +
+          (organization.fundedProposalsCount > 0 ? 20 : 0) +
+          (organization.members.length > 1 ? 15 : 5) +
+          (organization.website ? 10 : 0) +
+          (organization.bio ? 5 : 0)
+      )
+    );
 
   const categoryCounts = projects.reduce(
     (acc, p) => {
@@ -124,7 +128,17 @@ export default async function OrganizationDetailPage({ params }: PageProps) {
             </div>
           )}
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">{organization.name}</h1>
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="text-3xl font-bold text-slate-900">{organization.name}</h1>
+              {organization.accountabilityScore && (
+                <Badge
+                  variant={getAccountabilityVariant(organization.accountabilityScore.overallScore)}
+                  size="sm"
+                >
+                  {getAccountabilityLabel(organization.accountabilityScore.overallScore)}
+                </Badge>
+              )}
+            </div>
             {organization.bio && (
               <p className="mt-2 text-lg text-slate-600">{organization.bio}</p>
             )}

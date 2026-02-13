@@ -211,6 +211,7 @@ model Organization {
   // Relationships
   members                 PersonOrganization[]
   projectOrgs             ProjectOrganization[]
+  accountabilityScore     OrganizationAccountabilityScore?
   sourceUrl               String
   sourceType              String
   lastSeenAt              DateTime
@@ -368,6 +369,17 @@ model AccountabilityScore {
   communicationScore  Int
   badge               String
   calculatedAt        DateTime @default(now())
+
+  @@index([badge])
+}
+
+model OrganizationAccountabilityScore {
+  id             String       @id @default(uuid())
+  organizationId String       @unique
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  overallScore   Int
+  badge          String
+  calculatedAt   DateTime     @default(now())
 
   @@index([badge])
 }

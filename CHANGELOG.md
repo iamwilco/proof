@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Proposer hover card with track record details on Discover cards.
 - Smart ordering in /api/discover based on accountability and flags.
 - Connection explorer hover cards with mini-graph view and shared proposals.
+- Organization accountability score aggregation with team consistency modifiers.
 - Milestone progress tracker for transparency roadmap.
 - Agent session prompt updates to include feature PRD and progress tracking.
 - Scraped proposal ingestion script for projectcatalyst.io (`etl/catalyst/ingest_scraped_proposals.py`).

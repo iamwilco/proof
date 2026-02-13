@@ -38,18 +38,19 @@
 ## Current Task
 
 ```
-ID:          PROOF-094
-Title:       Connection Explorer & Hover Cards
-Milestone:   25 — Enhanced Discovery UX
+ID:          PROOF-098
+Title:       Organization Accountability Score
+Milestone:   27 — Accountability Scoring
 Status:      completed
 ```
 
 ### Acceptance Criteria
-- [x] Hover card component for Person, Org, Project
-- [x] Key stats in hover card (score, projects, funding)
-- [x] Show connections button opening mini-graph
-- [x] Shared proposals section
-- [x] Admin connections integrated
+- [x] Aggregate team member scores
+- [x] +10 modifier if >3 completed projects
+- [x] +5 if team composition consistent
+- [x] -10 if key members changed mid-project
+- [x] -15 if any member has Concerning badge
+- [x] Organization badge assignment
 
 ---
 
@@ -57,6 +58,7 @@ Status:      completed
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-098 | Organization Accountability Score | 2026-02-13 |
 | PROOF-094 | Connection Explorer & Hover Cards | 2026-02-13 |
 | PROOF-047b | Implement text similarity detection | 2026-02-12 |
 | PROOF-056 | Add monthly reports moderation dashboard | 2026-02-12 |
@@ -223,6 +225,10 @@ _Use this section for important notes that should persist across sessions._
   - Added hover card previews for people, orgs, and projects
   - Added mini graph explorer modal and shared proposals list
   - Integrated admin connections into hover card data
+ - **2026-02-13:** Completed PROOF-098 Organization Accountability Score
+  - Added organization accountability model + Prisma client
+  - Implemented aggregate score with team consistency modifiers
+  - Displayed organization badge and stored score usage
   - Profile API route for PATCH updates
 - **2026-02-13:** Completed PROOF-097 Person Accountability Score Calculation
   - Created lib/accountability/scoring.ts with weighted factors

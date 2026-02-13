@@ -22,6 +22,7 @@ export default async function OrganizationsPage({ searchParams }: PageProps) {
 
   const organizations = await prisma.organization.findMany({
     include: {
+      accountabilityScore: true,
       members: {
         include: {
           person: {
@@ -54,6 +55,7 @@ export default async function OrganizationsPage({ searchParams }: PageProps) {
       ...org,
       completionRate,
       memberCount: org.members.length,
+      accountabilityScore: org.accountabilityScore?.overallScore ?? null,
     };
   });
 

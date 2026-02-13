@@ -31,6 +31,13 @@ export interface AccountabilityResult {
   calculatedAt: Date;
 }
 
+export interface OrganizationAccountabilityResult {
+  organizationId: string;
+  score: number;
+  badge: "TRUSTED" | "RELIABLE" | "UNPROVEN" | "CONCERNING";
+  calculatedAt: Date;
+}
+
 const WEIGHTS = {
   completionRate: 0.35,
   onTimeDelivery: 0.20,
@@ -338,13 +345,144 @@ export async function storePersonScore(result: AccountabilityResult): Promise<vo
   });
 }
 
+function clampScore(value: number): number {
+  return Math.max(0, Math.min(100, value));
+}
+
+export async function calculateOrganizationScore(
+  organizationId: string
+): Promise<OrganizationAccountabilityResult> {
+  const organization = await prisma.organization.findUnique({
+    where: { id: organizationId },
+    select: {
+      id: true,
+      members: { select: { personId: true } },
+      fundedProposalsCount: true,
+      completedProposalsCount: true,
+    },
+  });
+
+  if (!organization) {
+    throw new Error("Organization not found");
+  }
+
+  const memberIds = organization.members.map((member) => member.personId);
+  const projectLinks = await prisma.projectOrganization.findMany({
+    where: { organizationId: organization.id },
+    select: { projectId: true },
+  });
+  const projectIds = projectLinks.map((link) => link.projectId);
+  const projectPeople = projectIds.length
+    ? await prisma.projectPerson.findMany({
+        where: { projectId: { in: projectIds } },
+        select: { projectId: true, personId: true, isPrimary: true },
+      })
+    : [];
+  const memberScores = memberIds.length
+    ? await prisma.accountabilityScore.findMany({
+        where: { personId: { in: memberIds } },
+        select: { overallScore: true, badge: true, personId: true },
+      })
+    : [];
+
+  const baseScore = memberScores.length
+    ? memberScores.reduce((sum, score) => sum + score.overallScore, 0) / memberScores.length
+    : 50;
+
+  let modifier = 0;
+  if (organization.completedProposalsCount > 3) {
+    modifier += 10;
+  }
+
+  if (projectIds.length <= 1) {
+    modifier += 5;
+  } else {
+    const teamMap = new Map<string, Set<string>>();
+    const primaryMap = new Map<string, Set<string>>();
+
+    projectPeople.forEach((person) => {
+      if (!teamMap.has(person.projectId)) {
+        teamMap.set(person.projectId, new Set());
+        primaryMap.set(person.projectId, new Set());
+      }
+      teamMap.get(person.projectId)?.add(person.personId);
+      if (person.isPrimary) {
+        primaryMap.get(person.projectId)?.add(person.personId);
+      }
+    });
+
+    const teams = Array.from(teamMap.values());
+    const primaryTeams = Array.from(primaryMap.values()).filter((team) => team.size > 0);
+
+    const computeOverlap = (groups: Array<Set<string>>) => {
+      let overlapTotal = 0;
+      let comparisons = 0;
+      for (let i = 0; i < groups.length; i += 1) {
+        for (let j = i + 1; j < groups.length; j += 1) {
+          const groupA = groups[i];
+          const groupB = groups[j];
+          const intersection = new Set([...groupA].filter((member) => groupB.has(member)));
+          const union = new Set([...groupA, ...groupB]);
+          overlapTotal += union.size > 0 ? intersection.size / union.size : 0;
+          comparisons += 1;
+        }
+      }
+      return comparisons > 0 ? overlapTotal / comparisons : 1;
+    };
+
+    const averageOverlap = computeOverlap(teams);
+    if (averageOverlap >= 0.5) {
+      modifier += 5;
+    }
+
+    const primaryOverlap = computeOverlap(primaryTeams);
+    if (primaryOverlap < 0.3) {
+      modifier -= 10;
+    }
+  }
+
+  const hasConcerningMember = memberScores.some((score) => score.badge === "CONCERNING");
+  if (hasConcerningMember) {
+    modifier -= 15;
+  }
+
+  const score = clampScore(Math.round(baseScore + modifier));
+
+  return {
+    organizationId: organization.id,
+    score,
+    badge: getBadge(score),
+    calculatedAt: new Date(),
+  };
+}
+
+export async function storeOrganizationScore(
+  result: OrganizationAccountabilityResult
+): Promise<void> {
+  await prisma.organizationAccountabilityScore.upsert({
+    where: { organizationId: result.organizationId },
+    update: {
+      overallScore: result.score,
+      badge: result.badge,
+      calculatedAt: result.calculatedAt,
+    },
+    create: {
+      organizationId: result.organizationId,
+      overallScore: result.score,
+      badge: result.badge,
+      calculatedAt: result.calculatedAt,
+    },
+  });
+}
+
 /**
  * Calculate and store scores for all people
  */
 export async function recalculateAllScores(): Promise<{ processed: number; errors: number }> {
-  const people = await prisma.person.findMany({
-    select: { id: true },
-  });
+  const [people, organizations] = await Promise.all([
+    prisma.person.findMany({ select: { id: true } }),
+    prisma.organization.findMany({ select: { id: true } }),
+  ]);
 
   let processed = 0;
   let errors = 0;
@@ -355,7 +493,18 @@ export async function recalculateAllScores(): Promise<{ processed: number; error
       await storePersonScore(result);
       processed++;
     } catch (error) {
-      console.error(`Error calculating score for ${person.id}:`, error);
+      console.error(`Error calculating score for person ${person.id}:`, error);
+      errors++;
+    }
+  }
+
+  for (const organization of organizations) {
+    try {
+      const result = await calculateOrganizationScore(organization.id);
+      await storeOrganizationScore(result);
+      processed++;
+    } catch (error) {
+      console.error(`Error calculating score for organization ${organization.id}:`, error);
       errors++;
     }
   }

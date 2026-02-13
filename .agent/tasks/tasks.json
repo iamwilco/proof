@@ -1770,7 +1770,8 @@
       "id": "PROOF-098",
       "title": "Organization Accountability Score",
       "description": "Aggregate team member scores for organization scoring. Apply modifiers for team experience, consistency, and concerning members.",
-      "status": "pending",
+      "status": "completed",
+      "completed": "2026-02-13",
       "priority": "high",
       "labels": ["accountability", "scoring", "organization"],
       "acceptance_criteria": [
