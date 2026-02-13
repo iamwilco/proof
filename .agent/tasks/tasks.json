@@ -1559,6 +1559,394 @@
       "milestone": 21,
       "created": "2026-02-13",
       "completed": "2026-02-13"
+    },
+    {
+      "id": "PROOF-087",
+      "title": "Design System Foundation",
+      "description": "Create standardized component library with consistent styling. Buttons, cards, badges, forms, typography, spacing, dark mode support, loading states, skeleton screens.",
+      "status": "completed",
+      "completed": "2026-02-13",
+      "priority": "high",
+      "labels": ["design", "components", "ux"],
+      "acceptance_criteria": [
+        "Component library with Button, Card, Badge, Input, Select, Modal, Toast",
+        "Consistent color palette and typography scale",
+        "Dark mode toggle working",
+        "Skeleton loading components for all data types",
+        "Responsive breakpoints defined (desktop-first)"
+      ],
+      "milestone": 22,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-088",
+      "title": "Role-Based Navigation Architecture",
+      "description": "Implement adaptive navigation based on user role. Public vs authenticated views, role-specific menu items, progressive disclosure.",
+      "status": "completed",
+      "completed": "2026-02-13",
+      "priority": "high",
+      "labels": ["navigation", "ux", "auth"],
+      "acceptance_criteria": [
+        "Navigation adapts based on auth state",
+        "Role-specific menu items (MEMBER, PROPOSER, REVIEWER, MODERATOR, ADMIN)",
+        "Public pages accessible without login",
+        "Protected routes redirect to login",
+        "Sidebar/header responsive layout"
+      ],
+      "milestone": 22,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-089",
+      "title": "Cardano Wallet Authentication",
+      "description": "Implement CIP-30 wallet authentication as primary auth method. Support Nami, Eternl, Lace, Flint wallets.",
+      "status": "completed",
+      "completed": "2026-02-13",
+      "priority": "high",
+      "labels": ["auth", "wallet", "cardano"],
+      "acceptance_criteria": [
+        "Wallet detection for supported wallets",
+        "CIP-30 signature verification flow",
+        "Nonce generation and validation",
+        "Session creation on successful auth",
+        "Wallet address linked to User record",
+        "Disconnect wallet functionality"
+      ],
+      "milestone": 23,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-090",
+      "title": "Google OAuth & Email Magic Link Auth",
+      "description": "Implement secondary auth providers via NextAuth.js. Google OAuth for quick access, email magic link as fallback.",
+      "status": "completed",
+      "completed": "2026-02-13",
+      "priority": "high",
+      "labels": ["auth", "oauth", "nextauth"],
+      "acceptance_criteria": [
+        "Google OAuth provider configured",
+        "Email magic link provider configured",
+        "Auth providers linked to same User if email matches",
+        "Account linking UI for multiple providers",
+        "Session management working for all providers"
+      ],
+      "milestone": 23,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-091",
+      "title": "User Profile System",
+      "description": "User profiles with display name, avatar, bio. Profile settings page, claimed profiles (Person/Organization), role management.",
+      "status": "completed",
+      "completed": "2026-02-13",
+      "priority": "high",
+      "labels": ["profile", "user", "settings"],
+      "acceptance_criteria": [
+        "User model with walletAddress, email, googleId, displayName, avatarUrl, bio, role",
+        "Profile settings page (/my/settings)",
+        "Avatar upload or URL",
+        "Profile claiming workflow (link to Person/Org)",
+        "Admin can manage user roles"
+      ],
+      "milestone": 23,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-092",
+      "title": "Admin Connection Management",
+      "description": "Admin tool to manually create connections between entities when data sources are incomplete. Person↔Org, Person↔Project, Org↔Project links.",
+      "status": "completed",
+      "completed": "2026-02-13",
+      "priority": "high",
+      "labels": ["admin", "connections", "data"],
+      "acceptance_criteria": [
+        "AdminConnection model in Prisma schema",
+        "Admin UI to search entities",
+        "Create/edit/delete connections",
+        "Connection types: TEAM_MEMBER, FOUNDER, ADVISOR, EMPLOYEE, PARTNER, etc.",
+        "Evidence and notes fields",
+        "Audit log of connection changes",
+        "Manual connections displayed with badge on frontend"
+      ],
+      "milestone": 24,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-093",
+      "title": "Proposal Tinder 2.0 - Accountability Overlays",
+      "description": "Enhance existing Proposal Tinder with accountability data. Show proposer track record, completion rate, red flag badges.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["discovery", "tinder", "ux"],
+      "acceptance_criteria": [
+        "Accountability score badge on proposal cards",
+        "Quick stats: completion rate, on-time delivery %",
+        "Red flag indicators visible",
+        "Proposer hover card with track record",
+        "Keyboard shortcuts (arrows, space)",
+        "Smart ordering based on quality signals"
+      ],
+      "milestone": 25,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-094",
+      "title": "Connection Explorer & Hover Cards",
+      "description": "Make entity relationships instantly visible. Hover cards with key stats, one-click graph view, shared proposals display.",
+      "status": "pending",
+      "priority": "medium",
+      "labels": ["discovery", "connections", "ux"],
+      "acceptance_criteria": [
+        "Hover card component for Person, Org, Project",
+        "Key stats in hover card (score, projects, funding)",
+        "Show connections button opening mini-graph",
+        "Shared proposals section",
+        "Admin connections integrated"
+      ],
+      "milestone": 25,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-095",
+      "title": "Enhanced Search with Faceted Filters",
+      "description": "Improve search with natural language support and faceted filtering. Fund, category, status, score, flags filters.",
+      "status": "completed",
+      "completed": "2026-02-13",
+      "priority": "medium",
+      "labels": ["search", "filters", "ux"],
+      "acceptance_criteria": [
+        "Faceted filter sidebar",
+        "Filter by: Fund, Category, Status, Score range, Has flags",
+        "Saved searches for logged-in users",
+        "Search history dropdown",
+        "URL state for shareable filtered views"
+      ],
+      "milestone": 25,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-096",
+      "title": "Feature Roadmap & Voting System",
+      "description": "Public roadmap page showing planned features. Voting system for logged-in users to prioritize features.",
+      "status": "completed",
+      "completed": "2026-02-13",
+      "priority": "medium",
+      "labels": ["roadmap", "voting", "community"],
+      "acceptance_criteria": [
+        "Feature and FeatureVote models in Prisma",
+        "/roadmap page with Coming Soon, Planned, Considering, Shipped sections",
+        "Vote button for logged-in users",
+        "Vote count display",
+        "Feature submission form",
+        "Admin can manage feature status"
+      ],
+      "milestone": 26,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-097",
+      "title": "Person Accountability Score Calculation",
+      "description": "Implement automated accountability scoring for people. Completion rate, on-time delivery, milestone quality, communication, community rating.",
+      "status": "completed",
+      "completed": "2026-02-13",
+      "priority": "high",
+      "labels": ["accountability", "scoring", "algorithm"],
+      "acceptance_criteria": [
+        "Score calculation function with weighted factors",
+        "Completion rate (35%): Completed / Total funded",
+        "On-time delivery (20%): Milestones on time",
+        "Milestone quality (15%): PoA first submission acceptance",
+        "Communication (15%): Monthly reports regularity",
+        "Community rating (10%): Average review score",
+        "Response rate (5%): Responses to flags/concerns",
+        "Badge assignment: Trusted/Reliable/Unproven/Concerning"
+      ],
+      "milestone": 27,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-098",
+      "title": "Organization Accountability Score",
+      "description": "Aggregate team member scores for organization scoring. Apply modifiers for team experience, consistency, and concerning members.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["accountability", "scoring", "organization"],
+      "acceptance_criteria": [
+        "Aggregate team member scores",
+        "+10 modifier if >3 completed projects",
+        "+5 if team composition consistent",
+        "-10 if key members changed mid-project",
+        "-15 if any member has Concerning badge",
+        "Organization badge assignment"
+      ],
+      "milestone": 27,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-099",
+      "title": "Score Preview Period System",
+      "description": "14-day preview period before scores go public. Proposer notification, dispute workflow, admin review.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["accountability", "preview", "workflow"],
+      "acceptance_criteria": [
+        "previewUntil field on AccountabilityScore",
+        "Notification sent when score calculated",
+        "Dispute submission form for proposers",
+        "Admin queue for dispute review",
+        "Score auto-publishes after 14 days if no dispute",
+        "Audit log of score changes"
+      ],
+      "milestone": 27,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-100",
+      "title": "Score Transparency UI",
+      "description": "Display score breakdown with expandable calculation details. Data sources, confidence level, historical trend.",
+      "status": "pending",
+      "priority": "medium",
+      "labels": ["accountability", "ui", "transparency"],
+      "acceptance_criteria": [
+        "Expandable score breakdown component",
+        "Each factor shows value and contribution",
+        "Data source links for each metric",
+        "Confidence level indicator (Low/Medium/High)",
+        "Trend indicator (improving/stable/declining)",
+        "Last updated timestamp"
+      ],
+      "milestone": 27,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-101",
+      "title": "GitHub Metrics Integration",
+      "description": "Automated collection of GitHub activity metrics. Commits, stars, forks, contributors, issues, PRs.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["roi", "github", "metrics"],
+      "acceptance_criteria": [
+        "GitHub API integration",
+        "Fetch repo stats: stars, forks, watchers",
+        "Commit activity over time",
+        "Contributor count",
+        "Issues opened/closed ratio",
+        "PR merge rate",
+        "Daily ETL job for updates",
+        "Store in ProjectMetrics table"
+      ],
+      "milestone": 28,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-102",
+      "title": "On-Chain Metrics Integration",
+      "description": "Automated collection of on-chain activity. Contract deployments, transaction counts, unique addresses.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["roi", "blockchain", "metrics"],
+      "acceptance_criteria": [
+        "Blockfrost/Koios API integration",
+        "Detect contract deployments",
+        "Transaction count per project",
+        "Unique address interactions",
+        "Daily ETL job for updates",
+        "Store in ProjectMetrics table"
+      ],
+      "milestone": 28,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-103",
+      "title": "ROI Calculation Engine",
+      "description": "Calculate ROI scores based on GitHub + on-chain metrics vs funding received. Percentile rankings within categories.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["roi", "scoring", "algorithm"],
+      "acceptance_criteria": [
+        "Outcome score calculation (40% GitHub, 30% deliverables, 30% on-chain)",
+        "ROI score = outcome / funding * normalization",
+        "Category percentile rankings",
+        "ROI trend over time",
+        "Store in ProjectROI table"
+      ],
+      "milestone": 28,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-104",
+      "title": "ROI Dashboard",
+      "description": "Dashboard showing ROI metrics. Fund-level comparison, category benchmarks, top/bottom performers.",
+      "status": "pending",
+      "priority": "medium",
+      "labels": ["roi", "dashboard", "analytics"],
+      "acceptance_criteria": [
+        "/analytics/roi page",
+        "Fund-level ROI comparison chart",
+        "Category ROI benchmarks",
+        "Top 10 / Bottom 10 performers tables",
+        "Time-to-delivery analysis",
+        "Export to CSV for researchers"
+      ],
+      "milestone": 28,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-105",
+      "title": "Automated Red Flag Detection",
+      "description": "Automated detection of concerning patterns. Repeat incomplete, ghost projects, overdue milestones, duplicate effort.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["flags", "detection", "algorithm"],
+      "acceptance_criteria": [
+        "Repeat Incomplete flag: >2 incomplete funded proposals",
+        "Ghost Project flag: No updates >90 days",
+        "Milestone Overdue flag: >30 days past due",
+        "No Deliverables flag: Completed but no PoA",
+        "Daily detection job",
+        "Auto-create Flag records",
+        "Notification to admins for review"
+      ],
+      "milestone": 29,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-106",
+      "title": "Community Flag System",
+      "description": "Allow community members to submit flags with evidence. Moderation queue, proposer response workflow.",
+      "status": "pending",
+      "priority": "medium",
+      "labels": ["flags", "community", "moderation"],
+      "acceptance_criteria": [
+        "Flag submission form with reason and evidence",
+        "Report reasons: Plagiarism, Abandoned, Misuse, Quality, Other",
+        "Anonymous reporting with abuse prevention",
+        "Moderator review queue at /admin/flags",
+        "Proposer response workflow",
+        "Flag status: Pending, Dismissed, Confirmed",
+        "Confirmed flags affect accountability score"
+      ],
+      "milestone": 29,
+      "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-107",
+      "title": "Enhanced Knowledge Graph",
+      "description": "Improve graph performance and add clustering. Virtual scrolling, filters, search within graph, builder/grifter visualization.",
+      "status": "pending",
+      "priority": "medium",
+      "labels": ["graph", "visualization", "performance"],
+      "acceptance_criteria": [
+        "Virtual scrolling for large graphs",
+        "Auto-clustering of related entities",
+        "Filter by entity type, score, fund",
+        "Search highlighting within graph",
+        "Color coding by accountability score",
+        "Admin connections integrated",
+        "Risk cluster visualization"
+      ],
+      "milestone": 30,
+      "created": "2026-02-13"
     }
   ]
 }

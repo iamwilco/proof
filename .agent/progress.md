@@ -182,3 +182,75 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-13:** Completed PROOF-084 Build moderator profile pages (profile, scope, stats)
 - **2026-02-13:** Completed PROOF-085 Ingest reviewer/moderator data (linking, outcomes, batch import)
 - **2026-02-13:** Completed PROOF-086 Fix database schema drift - 17 missing tables and columns migrated
+
+## Phase 2: UX Overhaul, Authentication & ROI Engine
+- **2026-02-13:** Phase 2 PRD created (.agent/prd/phase2-ux-overhaul.md)
+- **2026-02-13:** 21 new tasks added (PROOF-087 through PROOF-107)
+- **Key Decisions:** Wallet-primary auth, GitHub+on-chain metrics only, score preview period, web-first
+- **2026-02-13:** Completed PROOF-087 Design System Foundation
+  - Created UI component library: Button, Card, Badge, Input, Select, Modal, Toast, Skeleton, ThemeToggle
+  - Updated globals.css with design tokens for light/dark mode
+  - Updated Navigation with grouped items, dark mode support, dropdown menu
+- **2026-02-13:** Completed PROOF-089 Cardano Wallet Authentication
+  - Created lib/auth with wallet detection, CIP-30 signature flow
+  - Created WalletConnect component with modal UI
+  - Added API route /api/auth/wallet for session creation
+  - Added AuthNonce model for replay attack prevention
+- **2026-02-13:** Completed PROOF-092 Admin Connection Management
+  - Added AdminConnection model with EntityType and ConnectionType enums
+  - Created /admin/connections page with form and list
+  - Added API routes for CRUD operations
+- **2026-02-13:** Completed PROOF-096 Feature Roadmap (static version)
+  - Created /roadmap page with feature voting UI
+  - Added Feature and FeatureVote models to schema
+- **2026-02-13:** Applied migration: phase2_auth_features
+- **2026-02-13:** Completed PROOF-088 Role-Based Navigation Architecture
+  - Session-aware navigation with auth state
+  - Admin links visible only to ADMIN/MODERATOR roles
+  - User avatar and logout in header when authenticated
+- **2026-02-13:** Completed PROOF-090 Google OAuth & Email Magic Link Auth
+  - Google OAuth flow with state verification
+  - Email magic link with MagicLinkToken model
+  - Updated login page with all auth options
+  - Applied migration: add_magic_link_token
+- **2026-02-13:** Completed PROOF-091 User Profile System
+  - Created /my/settings page with profile editing
+  - Connected accounts display (wallet, Google)
+  - Profile API route for PATCH updates
+- **2026-02-13:** Completed PROOF-097 Person Accountability Score Calculation
+  - Created lib/accountability/scoring.ts with weighted factors
+  - Completion (35%), On-time (20%), Quality (15%), Communication (15%), Community (10%), Response (5%)
+  - Badge assignment: TRUSTED (80+), RELIABLE (60+), UNPROVEN (40+), CONCERNING (<40)
+  - API endpoints for score retrieval and admin recalculation
+- **2026-02-13:** Completed PROOF-095 Enhanced Search with Faceted Filters
+  - Created GlobalSearch component with autocomplete and keyboard navigation
+  - Created /api/search route for cross-entity search (projects, people, orgs, funds)
+  - Created ProjectFilters component with URL state management
+  - Integrated GlobalSearch into Navigation header
+
+### Phase 2 Session Summary (2026-02-13)
+**9 tasks completed:**
+1. Design System Foundation (UI components, dark mode, design tokens)
+2. Role-Based Navigation (session-aware, admin links)
+3. Cardano Wallet Authentication (CIP-30, signature verification)
+4. Google OAuth & Email Magic Link (multi-provider auth)
+5. User Profile System (settings page, connected accounts)
+6. Admin Connection Management (manual entity linking)
+7. Feature Roadmap page (voting UI)
+8. Person Accountability Score Calculation (weighted algorithm)
+9. Enhanced Search with Faceted Filters (global search, project filters)
+
+**Key files created:**
+- `src/components/ui/*` - Button, Card, Badge, Input, Modal, Toast, Skeleton, ThemeToggle
+- `src/lib/auth/*` - wallet.ts, verify.ts, session.ts, nextauth.ts
+- `src/components/auth/*` - WalletConnect, SessionProvider
+- `src/lib/accountability/*` - scoring.ts
+- `src/components/search/*` - GlobalSearch
+- `src/components/filters/*` - ProjectFilters
+- `src/app/roadmap/page.tsx` - Feature roadmap
+- `src/app/admin/connections/*` - Admin connection management
+- `src/app/my/settings/page.tsx` - User profile settings
+
+**Migrations applied:**
+- phase2_auth_features (UserRole enum, AuthNonce, AdminConnection, Feature, FeatureVote)
+- add_magic_link_token (MagicLinkToken)
