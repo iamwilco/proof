@@ -165,7 +165,7 @@ async function upsertFund(fund: CatalystFund): Promise<string> {
         name: fund.title,
         slug: fund.slug,
         status: fund.status || "active",
-        currency: fund.currency || "USD",
+        currency: "ADA",  // CatalystExplorer returns ADA amounts
         totalBudget: fund.amount || 0,
         lastSeenAt: now,
       },
@@ -181,7 +181,7 @@ async function upsertFund(fund: CatalystFund): Promise<string> {
       number: fundNumber,
       slug: fund.slug,
       status: fund.status || "active",
-      currency: fund.currency || "USD",
+      currency: "ADA",  // CatalystExplorer returns ADA amounts
       totalBudget: fund.amount || 0,
       startDate: fund.launched_at ? new Date(fund.launched_at) : null,
       sourceUrl: `${CATALYST_EXPLORER_API}/funds/${fund.id}`,
@@ -324,28 +324,36 @@ async function computeFundStats(): Promise<void> {
   const funds = await prisma.fund.findMany({ select: { id: true } });
 
   for (const fund of funds) {
-    const stats = await prisma.project.aggregate({
+    // Count all proposals in fund
+    const totalCount = await prisma.project.count({
       where: { fundId: fund.id },
-      _count: true,
-      _sum: { fundingAmount: true, amountReceived: true },
     });
 
-    const funded = await prisma.project.count({
-      where: { fundId: fund.id, fundingStatus: "funded" },
+    // Count and sum ONLY funded proposals (fundingStatus = 'funded')
+    const fundedStats = await prisma.project.aggregate({
+      where: {
+        fundId: fund.id,
+        fundingStatus: "funded",
+      },
+      _count: true,
+      _sum: { fundingAmount: true, amountReceived: true },
     });
 
     const completed = await prisma.project.count({
       where: { fundId: fund.id, status: "complete" },
     });
 
+    // totalAwarded = sum of fundingAmount for FUNDED projects only
+    // totalDistributed = sum of amountReceived (actual disbursements)
     await prisma.fund.update({
       where: { id: fund.id },
       data: {
-        proposalsCount: stats._count,
-        fundedProposalsCount: funded,
+        proposalsCount: totalCount,
+        fundedProposalsCount: fundedStats._count,
         completedProposalsCount: completed,
-        totalAwarded: stats._sum.fundingAmount || 0,
-        totalDistributed: stats._sum.amountReceived || 0,
+        totalAwarded: fundedStats._sum.fundingAmount || 0,
+        totalDistributed: fundedStats._sum.amountReceived || 0,
+        currency: "ADA",  // CatalystExplorer returns ADA amounts
       },
     });
   }

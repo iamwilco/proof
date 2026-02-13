@@ -4,12 +4,10 @@ import prisma from "../../../lib/prisma";
 
 export const revalidate = 60;
 
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+const formatADA = (amount: number) => {
+  return `₳${new Intl.NumberFormat("en-US", {
     maximumFractionDigits: 0,
-  }).format(amount);
+  }).format(amount)}`;
 };
 
 const formatPercent = (value: number) => {
@@ -123,7 +121,7 @@ export default async function FundDetailPage({
             </div>
             <div className="text-right">
               <p className="text-3xl font-bold text-slate-900">
-                {formatCurrency(Number(fund.totalAwarded))}
+                {formatADA(Number(fund.totalAwarded))}
               </p>
               <p className="text-sm text-slate-500">Total Awarded</p>
             </div>
@@ -154,7 +152,7 @@ export default async function FundDetailPage({
           </div>
           <div className="rounded-xl border border-slate-200 bg-white p-4">
             <p className="text-2xl font-bold text-slate-900">
-              {formatCurrency(Number(fund.totalDistributed))}
+              {formatADA(Number(fund.totalDistributed))}
             </p>
             <p className="text-xs text-slate-500">Distributed</p>
           </div>
@@ -191,7 +189,7 @@ export default async function FundDetailPage({
                         </div>
                         <div className="text-right">
                           <p className="font-semibold text-slate-900">
-                            {formatCurrency(Number(project.fundingAmount))}
+                            {formatADA(Number(project.fundingAmount))}
                           </p>
                           {project.projectPeople.length > 0 && (
                             <div className="mt-1 flex -space-x-2">
@@ -244,7 +242,7 @@ export default async function FundDetailPage({
                           </p>
                         </div>
                         <p className="font-semibold text-slate-900">
-                          {formatCurrency(Number(person.totalFunding))}
+                          {formatADA(Number(person.totalFunding))}
                         </p>
                       </Link>
                     </li>

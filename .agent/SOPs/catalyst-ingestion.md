@@ -82,6 +82,27 @@ python metrics/impact_scoring.py
 **Problem:** Long-running ingestion times out  
 **Solution:** Check Supabase connection pooling settings. Consider running in batches.
 
+### ⚠️ Incorrect Fund Totals (totalAwarded too high)
+**Problem:** Fund totals showing much higher amounts than official Catalyst numbers (e.g., $133M instead of $12M)  
+**Root Cause:** `computeFundStats()` was summing `fundingAmount` for ALL proposals instead of only funded ones  
+**Solution:** Fixed in Feb 2026 - stats now only aggregate projects where `fundingStatus: "funded"`  
+**Recovery:** Run `npx tsx scripts/recalculate-stats.ts` to fix existing data
+
+### ⚠️ Currency Mismatch (ADA vs USD)
+**Problem:** Amounts displayed as USD when they are actually ADA  
+**Root Cause:** CatalystExplorer API returns amounts in ADA, but code was storing/displaying as USD  
+**Solution:** Fixed currency to "ADA" in fund records and updated UI to display ₳ symbol  
+**Files Changed:**
+- `scripts/ingest-catalyst.ts` - Set `currency: "ADA"`
+- `src/app/funds/page.tsx` - Use `formatADA()` instead of USD formatting
+- `src/app/funds/[id]/page.tsx` - Same
+- `src/app/funds/compare/page.tsx` - Same
+
+### ⚠️ Funded Count Discrepancy
+**Problem:** Funded proposal count doesn't exactly match official Catalyst numbers  
+**Cause:** CatalystExplorer API may not have 100% complete data, or there are edge cases with status values  
+**Note:** Typical variance is ~5 proposals per fund. This is a data source limitation, not a bug.
+
 ## Verification
 
 Check ingestion results:
@@ -109,5 +130,5 @@ SELECT COUNT(*) FROM "Person";
 ---
 
 **Created:** 2026-02-12  
-**Last Updated:** 2026-02-12  
+**Last Updated:** 2026-02-13  
 **Author:** Agent

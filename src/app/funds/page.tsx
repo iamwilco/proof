@@ -3,12 +3,10 @@ import prisma from "../../lib/prisma";
 
 export const revalidate = 60;
 
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+const formatADA = (amount: number) => {
+  return `₳${new Intl.NumberFormat("en-US", {
     maximumFractionDigits: 0,
-  }).format(amount);
+  }).format(amount)}`;
 };
 
 const formatPercent = (value: number) => {
@@ -74,7 +72,7 @@ const FundCard = ({ fund }: { fund: FundWithStats }) => {
         </div>
         <div className="text-right">
           <p className="text-2xl font-bold text-slate-900">
-            {formatCurrency(Number(fund.totalAwarded))}
+            {formatADA(Number(fund.totalAwarded))}
           </p>
           <p className="text-xs text-slate-500">Total Awarded</p>
         </div>
@@ -173,7 +171,7 @@ export default async function FundsPage() {
               <p className="text-sm text-slate-500">Completed</p>
             </div>
             <div>
-              <p className="text-3xl font-bold text-slate-900">{formatCurrency(totalStats.awarded)}</p>
+              <p className="text-3xl font-bold text-slate-900">{formatADA(totalStats.awarded)}</p>
               <p className="text-sm text-slate-500">Total Awarded</p>
             </div>
             <div>
