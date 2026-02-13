@@ -1,0 +1,581 @@
+openapi: 3.0.3
+info:
+  title: Catalyst Transparency API
+  description: |
+    API for accessing Cardano Catalyst transparency data including projects, 
+    proposals, funding transactions, and analytics.
+  version: 1.0.0
+  contact:
+    name: Catalyst Transparency Team
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: /api
+    description: API base path
+
+tags:
+  - name: Projects
+    description: Project and proposal endpoints
+  - name: Funds
+    description: Fund information endpoints
+  - name: People
+    description: Proposer and team endpoints
+  - name: Organizations
+    description: Organization endpoints
+  - name: Transactions
+    description: Funding transaction endpoints
+  - name: Analytics
+    description: Analytics and statistics endpoints
+  - name: AI
+    description: AI-powered features
+
+paths:
+  /projects:
+    get:
+      tags: [Projects]
+      summary: List projects
+      description: Get a paginated list of projects with optional filters
+      parameters:
+        - name: fund
+          in: query
+          schema:
+            type: string
+          description: Filter by fund ID
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, in_progress, completed, cancelled]
+          description: Filter by project status
+        - name: category
+          in: query
+          schema:
+            type: string
+          description: Filter by category
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: Page number
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+          description: Items per page
+      responses:
+        '200':
+          description: List of projects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  projects:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+
+  /projects/{id}:
+    get:
+      tags: [Projects]
+      summary: Get project by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Project details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectDetail'
+        '404':
+          description: Project not found
+
+  /funds:
+    get:
+      tags: [Funds]
+      summary: List funds
+      responses:
+        '200':
+          description: List of funds
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  funds:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Fund'
+
+  /funds/{id}:
+    get:
+      tags: [Funds]
+      summary: Get fund by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Fund details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundDetail'
+        '404':
+          description: Fund not found
+
+  /people:
+    get:
+      tags: [People]
+      summary: List proposers
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by name
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: List of proposers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  people:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Person'
+
+  /organizations:
+    get:
+      tags: [Organizations]
+      summary: List organizations
+      responses:
+        '200':
+          description: List of organizations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  organizations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Organization'
+
+  /transactions:
+    get:
+      tags: [Transactions]
+      summary: List funding transactions
+      parameters:
+        - name: project
+          in: query
+          schema:
+            type: string
+          description: Filter by project ID
+        - name: fund
+          in: query
+          schema:
+            type: string
+          description: Filter by fund ID
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [funding, milestone, refund]
+          description: Filter by transaction type
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: List of transactions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FundingTransaction'
+                  stats:
+                    $ref: '#/components/schemas/TransactionStats'
+
+  /analytics/funds/{id}:
+    get:
+      tags: [Analytics]
+      summary: Get fund analytics
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Fund analytics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundAnalytics'
+
+  /analytics/proposers:
+    get:
+      tags: [Analytics]
+      summary: Get proposer leaderboard
+      parameters:
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [funding, completion, projects]
+            default: funding
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Proposer leaderboard
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  proposers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProposerRanking'
+
+  /discover:
+    get:
+      tags: [AI]
+      summary: Get discovery feed
+      description: Get shuffled projects for discovery swipe UI
+      responses:
+        '200':
+          description: Discovery projects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  projects:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+
+  /search/ai:
+    get:
+      tags: [AI]
+      summary: AI-powered search
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Natural language query
+        - name: fund
+          in: query
+          schema:
+            type: string
+          description: Filter by fund ID
+      responses:
+        '200':
+          description: Search results with AI answer
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  answer:
+                    type: string
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        project:
+                          $ref: '#/components/schemas/Project'
+                        score:
+                          type: number
+                        explanation:
+                          type: string
+
+components:
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        fundingAmount:
+          type: number
+        fundingStatus:
+          type: string
+          enum: [funded, not_funded, pending]
+        status:
+          type: string
+          enum: [pending, in_progress, completed, cancelled]
+        yesVotes:
+          type: integer
+        noVotes:
+          type: integer
+        fund:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    ProjectDetail:
+      allOf:
+        - $ref: '#/components/schemas/Project'
+        - type: object
+          properties:
+            milestones:
+              type: array
+              items:
+                $ref: '#/components/schemas/Milestone'
+            team:
+              type: array
+              items:
+                $ref: '#/components/schemas/Person'
+            transactions:
+              type: array
+              items:
+                $ref: '#/components/schemas/FundingTransaction'
+
+    Fund:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        totalBudget:
+          type: number
+        currency:
+          type: string
+        launchDate:
+          type: string
+          format: date
+        projectsCount:
+          type: integer
+        fundedProjectsCount:
+          type: integer
+
+    FundDetail:
+      allOf:
+        - $ref: '#/components/schemas/Fund'
+        - type: object
+          properties:
+            categories:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  projectCount:
+                    type: integer
+                  fundingTotal:
+                    type: number
+
+    Person:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        username:
+          type: string
+        bio:
+          type: string
+        proposalsCount:
+          type: integer
+        fundedProposalsCount:
+          type: integer
+        completedProposalsCount:
+          type: integer
+        totalAmountAwarded:
+          type: number
+
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        bio:
+          type: string
+        website:
+          type: string
+        projectsCount:
+          type: integer
+        totalFunding:
+          type: number
+
+    FundingTransaction:
+      type: object
+      properties:
+        id:
+          type: string
+        txHash:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        usdValueAtTime:
+          type: number
+        txDate:
+          type: string
+          format: date-time
+        txType:
+          type: string
+          enum: [funding, milestone, refund]
+        explorerUrl:
+          type: string
+        project:
+          type: object
+          properties:
+            id:
+              type: string
+            title:
+              type: string
+
+    TransactionStats:
+      type: object
+      properties:
+        count:
+          type: integer
+        totalAda:
+          type: number
+        totalUsd:
+          type: number
+
+    Milestone:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        order:
+          type: integer
+        status:
+          type: string
+          enum: [pending, in_progress, completed, blocked]
+        dueDate:
+          type: string
+          format: date
+        completedAt:
+          type: string
+          format: date-time
+
+    FundAnalytics:
+      type: object
+      properties:
+        fundId:
+          type: string
+        totalProjects:
+          type: integer
+        fundedProjects:
+          type: integer
+        completedProjects:
+          type: integer
+        totalFunding:
+          type: number
+        completionRate:
+          type: number
+        categoryBreakdown:
+          type: array
+          items:
+            type: object
+            properties:
+              category:
+                type: string
+              count:
+                type: integer
+              funding:
+                type: number
+
+    ProposerRanking:
+      type: object
+      properties:
+        rank:
+          type: integer
+        person:
+          $ref: '#/components/schemas/Person'
+        totalFunding:
+          type: number
+        completionRate:
+          type: number
+        projectCount:
+          type: integer
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for authenticated endpoints
+
+security: []

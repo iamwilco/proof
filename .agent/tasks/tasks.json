@@ -1449,7 +1449,7 @@
     {
       "id": "PROOF-080",
       "priority": 80,
-      "status": "pending",
+      "status": "completed",
       "title": "Generate OpenAPI V3 specification",
       "description": "Create OpenAPI 3.0 spec for all public APIs",
       "acceptance_criteria": [
@@ -1460,7 +1460,7 @@
       ],
       "milestone": 20,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-081",

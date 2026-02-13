@@ -66,6 +66,7 @@ All notable changes to this project will be documented in this file.
 - USD conversion service with CoinGecko API, historical prices, and formatting utilities.
 - Team address tagging with wallet claiming, signature verification, and person linking.
 - Funding transaction explorer UI with timeline chart, filters, and explorer links.
+- OpenAPI V3 specification with all endpoints, schemas, and authentication.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
