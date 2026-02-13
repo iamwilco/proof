@@ -1290,7 +1290,7 @@
     {
       "id": "PROOF-070",
       "priority": 70,
-      "status": "pending",
+      "status": "completed",
       "title": "Build AI natural language search",
       "description": "Ask questions about proposals in natural language",
       "acceptance_criteria": [
@@ -1301,7 +1301,7 @@
       ],
       "milestone": 17,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-071",
