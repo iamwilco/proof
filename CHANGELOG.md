@@ -63,6 +63,7 @@ All notable changes to this project will be documented in this file.
 - Bookmark management UI with list page, CSV export, and sidebar navigation.
 - FundingTransaction schema for on-chain transaction tracking with USD values.
 - Funding transaction ingestion via Blockfrost API with treasury address tracking.
+- USD conversion service with CoinGecko API, historical prices, and formatting utilities.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

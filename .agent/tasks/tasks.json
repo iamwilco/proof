@@ -1401,7 +1401,7 @@
     {
       "id": "PROOF-077",
       "priority": 77,
-      "status": "pending",
+      "status": "completed",
       "title": "Build USD conversion service",
       "description": "Convert ADA amounts to USD at transaction time",
       "acceptance_criteria": [
@@ -1412,7 +1412,7 @@
       ],
       "milestone": 19,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-078",
