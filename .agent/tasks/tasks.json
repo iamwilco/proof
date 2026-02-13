@@ -1433,7 +1433,7 @@
     {
       "id": "PROOF-079",
       "priority": 79,
-      "status": "pending",
+      "status": "completed",
       "title": "Build funding transaction explorer UI",
       "description": "Interactive UI for exploring funding transactions",
       "acceptance_criteria": [
@@ -1444,7 +1444,7 @@
       ],
       "milestone": 19,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-080",
