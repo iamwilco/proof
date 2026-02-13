@@ -39,15 +39,16 @@
 
 ```
 ID:          PROOF-107
-Title:       Flag Impact on Scores
-Milestone:   29 — Red Flag System
+Title:       Enhanced Knowledge Graph
+Milestone:   30 — Knowledge Graph
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] Confirmed flags reduce accountability score
-- [ ] Severity-weighted impact calculation
-- [ ] Score restoration on flag resolution
+- [ ] Virtual scrolling for large graphs
+- [ ] Filters and search within graph
+- [ ] Builder/grifter visualization
+- [ ] Risk cluster visualization
 
 ---
 
@@ -55,6 +56,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| — | Flag Impact on Scores | 2026-02-13 |
 | PROOF-106 | Community Flag System | 2026-02-13 |
 | PROOF-105 | Automated Red Flag Detection | 2026-02-13 |
 | PROOF-104 | ROI Dashboard | 2026-02-13 |

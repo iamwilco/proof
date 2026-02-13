@@ -28,6 +28,7 @@ export interface AccountabilityResult {
   breakdown: ScoreBreakdown;
   confidence: "LOW" | "MEDIUM" | "HIGH";
   dataPoints: number;
+  flagImpact: FlagImpact;
   calculatedAt: Date;
 }
 
@@ -46,6 +47,64 @@ const WEIGHTS = {
   communityRating: 0.10,
   responseRate: 0.05,
 };
+
+// Flag severity penalties (deducted from final score)
+const FLAG_PENALTIES: Record<string, number> = {
+  low: 3,
+  medium: 7,
+  high: 15,
+  critical: 25,
+};
+
+export interface FlagImpact {
+  totalPenalty: number;
+  confirmedFlags: number;
+  byCategory: Record<string, number>;
+  bySeverity: Record<string, number>;
+}
+
+/**
+ * Calculate flag penalty for a person based on confirmed flags on their projects
+ */
+export async function calculateFlagPenalty(personId: string): Promise<FlagImpact> {
+  const projectIds = await prisma.projectPerson.findMany({
+    where: { personId },
+    select: { projectId: true },
+  });
+
+  const confirmedFlags = await prisma.flag.findMany({
+    where: {
+      projectId: { in: projectIds.map(p => p.projectId) },
+      status: "confirmed",
+    },
+    select: {
+      severity: true,
+      category: true,
+    },
+  });
+
+  const byCategory: Record<string, number> = {};
+  const bySeverity: Record<string, number> = {};
+  let totalPenalty = 0;
+
+  for (const flag of confirmedFlags) {
+    const penalty = FLAG_PENALTIES[flag.severity] || FLAG_PENALTIES.medium;
+    totalPenalty += penalty;
+
+    byCategory[flag.category] = (byCategory[flag.category] || 0) + 1;
+    bySeverity[flag.severity] = (bySeverity[flag.severity] || 0) + 1;
+  }
+
+  // Cap total penalty at 50 points to prevent complete score destruction
+  totalPenalty = Math.min(totalPenalty, 50);
+
+  return {
+    totalPenalty,
+    confirmedFlags: confirmedFlags.length,
+    byCategory,
+    bySeverity,
+  };
+}
 
 function getBadge(score: number): AccountabilityResult["badge"] {
   if (score >= 80) return "TRUSTED";
@@ -246,6 +305,7 @@ export async function calculatePersonScore(personId: string): Promise<Accountabi
     communication,
     communityRating,
     responseRate,
+    flagImpact,
   ] = await Promise.all([
     calculateCompletionRate(personId),
     calculateOnTimeDelivery(personId),
@@ -253,6 +313,7 @@ export async function calculatePersonScore(personId: string): Promise<Accountabi
     calculateCommunication(personId),
     calculateCommunityRating(personId),
     calculateResponseRate(personId),
+    calculateFlagPenalty(personId),
   ]);
 
   const breakdown: ScoreBreakdown = {
@@ -288,7 +349,7 @@ export async function calculatePersonScore(personId: string): Promise<Accountabi
     },
   };
 
-  const score = Math.round(
+  const baseScore = Math.round(
     breakdown.completionRate.contribution +
     breakdown.onTimeDelivery.contribution +
     breakdown.milestoneQuality.contribution +
@@ -296,6 +357,9 @@ export async function calculatePersonScore(personId: string): Promise<Accountabi
     breakdown.communityRating.contribution +
     breakdown.responseRate.contribution
   );
+
+  // Apply flag penalty (deduct from base score)
+  const score = Math.max(0, Math.min(100, baseScore - flagImpact.totalPenalty));
 
   const dataPoints =
     completionRate.total +
@@ -306,11 +370,12 @@ export async function calculatePersonScore(personId: string): Promise<Accountabi
 
   return {
     personId,
-    score: Math.max(0, Math.min(100, score)),
+    score,
     badge: getBadge(score),
     breakdown,
     confidence: getConfidence(dataPoints),
     dataPoints,
+    flagImpact,
     calculatedAt: new Date(),
   };
 }
@@ -329,6 +394,8 @@ export async function storePersonScore(result: AccountabilityResult): Promise<vo
       communityScore: Math.round(result.breakdown.communityRating.value),
       efficiencyScore: Math.round(result.breakdown.milestoneQuality.value),
       communicationScore: Math.round(result.breakdown.communication.value),
+      flagPenalty: result.flagImpact.totalPenalty,
+      confirmedFlags: result.flagImpact.confirmedFlags,
       badge: result.badge,
       confidence: result.confidence,
       dataPoints: result.dataPoints,
@@ -344,6 +411,8 @@ export async function storePersonScore(result: AccountabilityResult): Promise<vo
       communityScore: Math.round(result.breakdown.communityRating.value),
       efficiencyScore: Math.round(result.breakdown.milestoneQuality.value),
       communicationScore: Math.round(result.breakdown.communication.value),
+      flagPenalty: result.flagImpact.totalPenalty,
+      confirmedFlags: result.flagImpact.confirmedFlags,
       badge: result.badge,
       confidence: result.confidence,
       dataPoints: result.dataPoints,

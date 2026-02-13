@@ -390,6 +390,8 @@ model AccountabilityScore {
   communityScore      Int
   efficiencyScore     Int
   communicationScore  Int
+  flagPenalty         Int      @default(0)
+  confirmedFlags      Int      @default(0)
   badge               String
   confidence          String   @default("LOW")
   dataPoints          Int      @default(0)
