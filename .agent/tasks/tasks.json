@@ -1513,7 +1513,7 @@
     {
       "id": "PROOF-084",
       "priority": 84,
-      "status": "pending",
+      "status": "completed",
       "title": "Build moderator profile pages",
       "description": "Profile pages for moderators",
       "acceptance_criteria": [
@@ -1524,7 +1524,7 @@
       ],
       "milestone": 21,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-085",

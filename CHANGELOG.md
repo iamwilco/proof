@@ -70,6 +70,7 @@ All notable changes to this project will be documented in this file.
 - API documentation UI with endpoint list, code examples, and versioning.
 - Reviewer/Moderator schema with profiles, Ideascale integration, and badges.
 - Reviewer profile pages with review history, badges, and claim workflow.
+- Moderator profile pages with scope assignments, stats, and activity summary.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
