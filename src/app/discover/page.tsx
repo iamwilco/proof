@@ -87,14 +87,14 @@ export default function DiscoverPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-slate-900 to-slate-800 flex items-center justify-center">
         <div className="text-white text-lg">Loading proposals...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 px-4 py-8">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 to-slate-800 px-4 py-8">
       <div className="mx-auto max-w-lg">
         {/* Header */}
         <header className="mb-6 text-center">
