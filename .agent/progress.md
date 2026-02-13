@@ -38,17 +38,11 @@
 ## Current Task
 
 ```
-ID:          PROOF-107
-Title:       Enhanced Knowledge Graph
-Milestone:   30 — Knowledge Graph
+ID:          PROOF-108
+Title:       Next Task
+Milestone:   —
 Status:      pending
 ```
-
-### Acceptance Criteria
-- [ ] Virtual scrolling for large graphs
-- [ ] Filters and search within graph
-- [ ] Builder/grifter visualization
-- [ ] Risk cluster visualization
 
 ---
 
@@ -56,6 +50,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-107 | Enhanced Knowledge Graph | 2026-02-13 |
 | — | Flag Impact on Scores | 2026-02-13 |
 | PROOF-106 | Community Flag System | 2026-02-13 |
 | PROOF-105 | Automated Red Flag Detection | 2026-02-13 |

@@ -8,10 +8,13 @@ type GraphNode = {
   data: {
     id: string;
     label: string;
-    type: "project" | "person" | "fund";
+    type: "project" | "person" | "fund" | "organization";
     funding?: number;
     status?: string;
     completionRate?: number;
+    accountabilityScore?: number;
+    badge?: string;
+    flagCount?: number;
   };
 };
 
@@ -45,6 +48,20 @@ const typeLabels: Record<GraphNode["data"]["type"], string> = {
   project: "Projects",
   person: "People",
   fund: "Funds",
+  organization: "Organizations",
+};
+
+const getScoreColor = (score?: number): string => {
+  if (score === undefined) return "#94a3b8"; // slate-400
+  if (score >= 80) return "#10b981"; // emerald-500 (TRUSTED)
+  if (score >= 60) return "#3b82f6"; // blue-500 (RELIABLE)
+  if (score >= 40) return "#f59e0b"; // amber-500 (UNPROVEN)
+  return "#ef4444"; // red-500 (CONCERNING)
+};
+
+const getBadgeLabel = (badge?: string): string => {
+  if (!badge) return "Unknown";
+  return badge.charAt(0) + badge.slice(1).toLowerCase();
 };
 
 const formatCurrency = (amount: number) => {
@@ -62,7 +79,11 @@ export default function GraphClient() {
     project: true,
     person: true,
     fund: true,
+    organization: true,
   });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [scoreFilter, setScoreFilter] = useState<string>("all");
+  const [showFlaggedOnly, setShowFlaggedOnly] = useState(false);
   const [selectedNode, setSelectedNode] = useState<GraphNode["data"] | null>(null);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"default" | "centrality" | "clusters" | "funding">("default");
@@ -92,14 +113,52 @@ export default function GraphClient() {
         .map(([key]) => key)
     );
 
-    const nodes = payload.nodes.filter((node) => allowedTypes.has(node.data.type));
+    let nodes = payload.nodes.filter((node) => allowedTypes.has(node.data.type));
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      nodes = nodes.filter((node) =>
+        node.data.label.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply score filter
+    if (scoreFilter !== "all") {
+      nodes = nodes.filter((node) => {
+        const score = node.data.accountabilityScore;
+        if (score === undefined) return scoreFilter === "unknown";
+        if (scoreFilter === "trusted") return score >= 80;
+        if (scoreFilter === "reliable") return score >= 60 && score < 80;
+        if (scoreFilter === "unproven") return score >= 40 && score < 60;
+        if (scoreFilter === "concerning") return score < 40;
+        return true;
+      });
+    }
+
+    // Apply flagged filter
+    if (showFlaggedOnly) {
+      nodes = nodes.filter((node) => (node.data.flagCount || 0) > 0);
+    }
+
     const nodeIds = new Set(nodes.map((node) => node.data.id));
     const edges = payload.edges.filter(
       (edge) => nodeIds.has(edge.data.source) && nodeIds.has(edge.data.target)
     );
 
-    return [...nodes, ...edges];
-  }, [payload, activeTypes]);
+    // Highlight search matches
+    const highlightedNodes = nodes.map((node) => ({
+      ...node,
+      data: {
+        ...node.data,
+        highlighted: searchQuery.trim()
+          ? node.data.label.toLowerCase().includes(searchQuery.toLowerCase())
+          : false,
+      },
+    }));
+
+    return [...highlightedNodes, ...edges];
+  }, [payload, activeTypes, searchQuery, scoreFilter, showFlaggedOnly]);
 
   const toggleType = (type: GraphNode["data"]["type"]) => {
     setActiveTypes((prev) => ({ ...prev, [type]: !prev[type] }));
@@ -138,6 +197,44 @@ export default function GraphClient() {
             </label>
           ))}
         </div>
+      </div>
+
+      {/* Search and Filters */}
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <div className="relative flex-1 min-w-[200px] max-w-xs">
+          <input
+            type="text"
+            placeholder="Search nodes..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-lg border border-slate-300 px-4 py-2 pl-9 text-sm focus:border-blue-500 focus:outline-none"
+          />
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+        </div>
+        <select
+          value={scoreFilter}
+          onChange={(e) => setScoreFilter(e.target.value)}
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+        >
+          <option value="all">All Scores</option>
+          <option value="trusted">Trusted (80+)</option>
+          <option value="reliable">Reliable (60-79)</option>
+          <option value="unproven">Unproven (40-59)</option>
+          <option value="concerning">Concerning (&lt;40)</option>
+          <option value="unknown">No Score</option>
+        </select>
+        <label className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm">
+          <input
+            type="checkbox"
+            checked={showFlaggedOnly}
+            onChange={(e) => setShowFlaggedOnly(e.target.checked)}
+            className="accent-red-600"
+          />
+          <span className="text-slate-700">Flagged Only</span>
+        </label>
+        <span className="text-sm text-slate-500">
+          Showing {filtered.filter((el) => "type" in el.data).length} nodes
+        </span>
       </div>
 
       {/* View Mode Selector */}
@@ -239,6 +336,15 @@ export default function GraphClient() {
                   },
                 },
                 {
+                  selector: 'node[type = "organization"]',
+                  style: {
+                    "background-color": "#8b5cf6",
+                    shape: "round-rectangle",
+                    width: 30,
+                    height: 25,
+                  },
+                },
+                {
                   selector: 'node[type = "fund"]',
                   style: {
                     "background-color": "#10b981",
@@ -248,6 +354,33 @@ export default function GraphClient() {
                     "font-size": 11,
                     "font-weight": "bold",
                   },
+                },
+                // Score-based coloring for people (builder/grifter visualization)
+                {
+                  selector: 'node[type = "person"][badge = "TRUSTED"]',
+                  style: { "background-color": "#10b981", "border-width": 3, "border-color": "#059669" },
+                },
+                {
+                  selector: 'node[type = "person"][badge = "RELIABLE"]',
+                  style: { "background-color": "#3b82f6", "border-width": 2, "border-color": "#2563eb" },
+                },
+                {
+                  selector: 'node[type = "person"][badge = "UNPROVEN"]',
+                  style: { "background-color": "#f59e0b", "border-width": 1, "border-color": "#d97706" },
+                },
+                {
+                  selector: 'node[type = "person"][badge = "CONCERNING"]',
+                  style: { "background-color": "#ef4444", "border-width": 3, "border-color": "#dc2626" },
+                },
+                // Flagged nodes get a red ring
+                {
+                  selector: "node[flagCount > 0]",
+                  style: { "border-width": 4, "border-color": "#ef4444", "border-style": "dashed" },
+                },
+                // Highlighted search matches
+                {
+                  selector: "node[highlighted]",
+                  style: { "border-width": 4, "border-color": "#fbbf24", "border-style": "solid" },
                 },
                 {
                   selector: "edge",
@@ -291,6 +424,44 @@ export default function GraphClient() {
               </p>
             )}
             
+            {selectedNode.accountabilityScore !== undefined && (
+              <div className="mt-3">
+                <p className="text-xs text-slate-500">Accountability Score</p>
+                <div className="mt-1 flex items-center gap-2">
+                  <div className="h-2 flex-1 rounded-full bg-slate-200">
+                    <div
+                      className="h-2 rounded-full"
+                      style={{ 
+                        width: `${selectedNode.accountabilityScore}%`,
+                        backgroundColor: getScoreColor(selectedNode.accountabilityScore)
+                      }}
+                    />
+                  </div>
+                  <span className="text-sm font-bold" style={{ color: getScoreColor(selectedNode.accountabilityScore) }}>
+                    {selectedNode.accountabilityScore}
+                  </span>
+                </div>
+                {selectedNode.badge && (
+                  <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
+                    selectedNode.badge === "TRUSTED" ? "bg-emerald-100 text-emerald-700" :
+                    selectedNode.badge === "RELIABLE" ? "bg-blue-100 text-blue-700" :
+                    selectedNode.badge === "UNPROVEN" ? "bg-amber-100 text-amber-700" :
+                    "bg-red-100 text-red-700"
+                  }`}>
+                    {getBadgeLabel(selectedNode.badge)}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {selectedNode.flagCount !== undefined && selectedNode.flagCount > 0 && (
+              <div className="mt-2 rounded-lg bg-red-50 p-2">
+                <p className="text-xs font-medium text-red-700">
+                  ⚠️ {selectedNode.flagCount} confirmed flag{selectedNode.flagCount > 1 ? "s" : ""}
+                </p>
+              </div>
+            )}
+
             {selectedNode.completionRate !== undefined && selectedNode.completionRate > 0 && (
               <div className="mt-2">
                 <p className="text-xs text-slate-500">Completion Rate</p>

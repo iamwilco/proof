@@ -1819,21 +1819,6 @@
         "Confidence level indicator (Low/Medium/High)",
         "Trend indicator (improving/stable/declining)",
         "Last updated timestamp"
-      ],
-      "milestone": 27,
-      "created": "2026-02-13"
-    },
-    {
-      "id": "PROOF-101",
-      "title": "GitHub Metrics Integration",
-      "description": "Automated collection of GitHub activity metrics. Commits, stars, forks, contributors, issues, PRs.",
-      "status": "completed",
-      "completed": "2026-02-13",
-      "priority": "high",
-      "labels": ["roi", "github", "metrics"],
-      "acceptance_criteria": [
-        "GitHub API integration",
-        "Fetch repo stats: stars, forks, watchers",
         "Commit activity over time",
         "Contributor count",
         "Issues opened/closed ratio",
@@ -1944,7 +1929,8 @@
       "id": "PROOF-107",
       "title": "Enhanced Knowledge Graph",
       "description": "Improve graph performance and add clustering. Virtual scrolling, filters, search within graph, builder/grifter visualization.",
-      "status": "pending",
+      "status": "completed",
+      "completed": "2026-02-13",
       "priority": "medium",
       "labels": ["graph", "visualization", "performance"],
       "acceptance_criteria": [
