@@ -1385,7 +1385,7 @@
     {
       "id": "PROOF-076",
       "priority": 76,
-      "status": "pending",
+      "status": "completed",
       "title": "Build funding transaction ingestion",
       "description": "Ingest historical Catalyst funding transactions from mainnet",
       "acceptance_criteria": [
@@ -1396,7 +1396,7 @@
       ],
       "milestone": 19,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-077",

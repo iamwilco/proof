@@ -171,3 +171,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-13:** Completed PROOF-073 Build Proposal Tinder swipe UI (card stack, swipe gestures, keyboard shortcuts)
 - **2026-02-13:** Completed PROOF-074 Build bookmark management UI (list page, CSV export, list sidebar)
 - **2026-02-13:** Completed PROOF-075 Design FundingTransaction schema (txHash, amount, USD value, explorer link)
+- **2026-02-13:** Completed PROOF-076 Build funding transaction ingestion (Blockfrost API, treasury addresses, linking)

@@ -62,6 +62,7 @@ All notable changes to this project will be documented in this file.
 - Proposal Tinder swipe UI with card stack, swipe gestures, and keyboard shortcuts.
 - Bookmark management UI with list page, CSV export, and sidebar navigation.
 - FundingTransaction schema for on-chain transaction tracking with USD values.
+- Funding transaction ingestion via Blockfrost API with treasury address tracking.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
