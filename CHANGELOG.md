@@ -57,6 +57,7 @@ All notable changes to this project will be documented in this file.
 - AI/LLM infrastructure with OpenAI integration, embeddings, vector store, and rate limiting.
 - AI proposal comparison with side-by-side view, similarity analysis, and overlap detection.
 - AI natural language search with chat interface, fund filtering, and follow-up suggestions.
+- AI recommendation engine with user interactions, collaborative filtering, and explanations.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.

@@ -166,3 +166,4 @@ _Use this section for important notes that should persist across sessions._
 - **2026-02-13:** Completed PROOF-068 Set up AI/LLM infrastructure (OpenAI, embeddings, vector store, rate limiting)
 - **2026-02-13:** Completed PROOF-069 Build AI proposal comparison (side-by-side, similarities, differences, overlap)
 - **2026-02-13:** Completed PROOF-070 Build AI natural language search (chat interface, fund filter, follow-ups)
+- **2026-02-13:** Completed PROOF-071 Build AI recommendation engine (interactions, collaborative filtering, explanations)
