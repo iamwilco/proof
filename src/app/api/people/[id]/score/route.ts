@@ -12,9 +12,31 @@ export async function GET(
     // First check if we have a cached score
     const cachedScore = await prisma.accountabilityScore.findUnique({
       where: { personId: id },
+      include: { disputes: { where: { status: "pending" } } },
     });
 
     if (cachedScore) {
+      if (
+        cachedScore.status === "preview" &&
+        cachedScore.previewUntil &&
+        cachedScore.previewUntil <= new Date() &&
+        cachedScore.disputes.length === 0
+      ) {
+        const publishedAt = new Date();
+        await prisma.accountabilityScore.update({
+          where: { personId: id },
+          data: { status: "published", publishedAt },
+        });
+        await prisma.accountabilityScoreAudit.create({
+          data: {
+            score: { connect: { personId: id } },
+            action: "score_published",
+            payload: { reason: "preview_expired" },
+          },
+        });
+        cachedScore.status = "published";
+      }
+
       // Check if score is recent (< 24 hours old)
       const hoursSinceCalc = (Date.now() - cachedScore.calculatedAt.getTime()) / (1000 * 60 * 60);
       
@@ -30,6 +52,8 @@ export async function GET(
             efficiency: cachedScore.efficiencyScore,
             communication: cachedScore.communicationScore,
           },
+          status: cachedScore.status,
+          previewUntil: cachedScore.previewUntil,
           calculatedAt: cachedScore.calculatedAt,
           cached: true,
         });
@@ -39,6 +63,7 @@ export async function GET(
     // Calculate fresh score
     const result = await calculatePersonScore(id);
 
+    const previewUntil = new Date(result.calculatedAt.getTime() + 14 * 24 * 60 * 60 * 1000);
     return NextResponse.json({
       personId: id,
       score: result.score,
@@ -46,6 +71,8 @@ export async function GET(
       breakdown: result.breakdown,
       confidence: result.confidence,
       dataPoints: result.dataPoints,
+      status: "preview",
+      previewUntil,
       calculatedAt: result.calculatedAt,
       cached: false,
     });

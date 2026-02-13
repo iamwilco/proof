@@ -183,6 +183,7 @@ model Person {
   projectPeople           ProjectPerson[]
   organizations           PersonOrganization[]
   accountabilityScore     AccountabilityScore?
+  accountabilityNotifications AccountabilityNotification[]
   walletAddresses         WalletAddress[]
   sourceUrl               String
   sourceType              String
@@ -303,6 +304,7 @@ model User {
   reviewVotes   ReviewVote[]
   flags         Flag[]
   communities   Community[]
+  accountabilityScoreDisputes AccountabilityScoreDispute[]
   bookmarks     Bookmark[] @relation("UserBookmarks")
   bookmarkLists BookmarkList[] @relation("UserBookmarkLists")
   walletAddresses WalletAddress[] @relation("UserWallets")
@@ -368,9 +370,56 @@ model AccountabilityScore {
   efficiencyScore     Int
   communicationScore  Int
   badge               String
+  status              String   @default("preview")
+  previewUntil         DateTime?
+  publishedAt         DateTime?
   calculatedAt        DateTime @default(now())
+  disputes            AccountabilityScoreDispute[]
+  audits              AccountabilityScoreAudit[]
 
   @@index([badge])
+  @@index([status])
+}
+
+model AccountabilityScoreDispute {
+  id        String   @id @default(uuid())
+  scoreId   String
+  score     AccountabilityScore @relation(fields: [scoreId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  status    String   @default("pending")
+  reason    String
+  evidence  String?
+  createdAt DateTime @default(now())
+  resolvedAt DateTime?
+  resolvedBy String?
+
+  @@index([scoreId, status])
+  @@index([userId, createdAt])
+}
+
+model AccountabilityScoreAudit {
+  id        String   @id @default(uuid())
+  scoreId   String
+  score     AccountabilityScore @relation(fields: [scoreId], references: [id])
+  action    String
+  actorId   String?
+  payload   Json?
+  createdAt DateTime @default(now())
+
+  @@index([scoreId, createdAt])
+}
+
+model AccountabilityNotification {
+  id        String   @id @default(uuid())
+  personId  String
+  person    Person   @relation(fields: [personId], references: [id])
+  type      String
+  payload   Json?
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+
+  @@index([personId, createdAt])
 }
 
 model OrganizationAccountabilityScore {

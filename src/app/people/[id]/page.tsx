@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import prisma from "../../../lib/prisma";
 import AccountabilityBadge from "../../../components/AccountabilityBadge";
 import ConnectionHoverCard from "../../../components/ConnectionHoverCard";
+import AccountabilityDisputeForm from "../../../components/AccountabilityDisputeForm";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -154,6 +155,19 @@ export default async function PersonDetailPage({ params }: PageProps) {
 
         {person.accountabilityScore && (
           <Section title="Accountability Score">
+            {person.accountabilityScore.status === "preview" && (
+              <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+                <p className="font-semibold">Preview period active</p>
+                {person.accountabilityScore.previewUntil && (
+                  <p className="mt-1">
+                    This score will publish on{" "}
+                    {new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" }).format(
+                      person.accountabilityScore.previewUntil
+                    )}.
+                  </p>
+                )}
+              </div>
+            )}
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
                 <p className="text-xs font-medium uppercase tracking-wide text-slate-400">Overall</p>
@@ -162,6 +176,9 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 </p>
                 <p className="mt-2 text-xs text-slate-500">
                   Badge: {person.accountabilityScore.badge}
+                </p>
+                <p className="mt-2 text-xs text-slate-500">
+                  Status: {person.accountabilityScore.status}
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-3 text-sm">
@@ -205,6 +222,18 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 </div>
               </div>
             </div>
+
+            {person.accountabilityScore.status === "preview" && (
+              <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4">
+                <p className="text-sm font-semibold text-slate-900">Dispute this score</p>
+                <p className="mt-1 text-xs text-slate-500">
+                  If something looks off, submit a dispute for admin review.
+                </p>
+                <div className="mt-3">
+                  <AccountabilityDisputeForm scoreId={person.accountabilityScore.id} />
+                </div>
+              </div>
+            )}
           </Section>
         )}
 

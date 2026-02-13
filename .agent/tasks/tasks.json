@@ -1789,7 +1789,8 @@
       "id": "PROOF-099",
       "title": "Score Preview Period System",
       "description": "14-day preview period before scores go public. Proposer notification, dispute workflow, admin review.",
-      "status": "pending",
+      "status": "completed",
+      "completed": "2026-02-13",
       "priority": "high",
       "labels": ["accountability", "preview", "workflow"],
       "acceptance_criteria": [

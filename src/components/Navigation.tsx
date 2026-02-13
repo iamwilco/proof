@@ -31,6 +31,7 @@ const moreNavItems = [
 
 const adminNavItems = [
   { href: "/admin/connections", label: "Connections" },
+  { href: "/admin/accountability/disputes", label: "Score Disputes" },
 ];
 
 export default function Navigation() {

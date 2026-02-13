@@ -38,19 +38,19 @@
 ## Current Task
 
 ```
-ID:          PROOF-098
-Title:       Organization Accountability Score
+ID:          PROOF-099
+Title:       Score Preview Period System
 Milestone:   27 — Accountability Scoring
 Status:      completed
 ```
 
 ### Acceptance Criteria
-- [x] Aggregate team member scores
-- [x] +10 modifier if >3 completed projects
-- [x] +5 if team composition consistent
-- [x] -10 if key members changed mid-project
-- [x] -15 if any member has Concerning badge
-- [x] Organization badge assignment
+- [x] previewUntil field on AccountabilityScore
+- [x] Notification sent when score calculated
+- [x] Dispute submission form for proposers
+- [x] Admin queue for dispute review
+- [x] Score auto-publishes after 14 days if no dispute
+- [x] Audit log of score changes
 
 ---
 
@@ -58,6 +58,7 @@ Status:      completed
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-099 | Score Preview Period System | 2026-02-13 |
 | PROOF-098 | Organization Accountability Score | 2026-02-13 |
 | PROOF-094 | Connection Explorer & Hover Cards | 2026-02-13 |
 | PROOF-047b | Implement text similarity detection | 2026-02-12 |
@@ -229,6 +230,10 @@ _Use this section for important notes that should persist across sessions._
   - Added organization accountability model + Prisma client
   - Implemented aggregate score with team consistency modifiers
   - Displayed organization badge and stored score usage
+ - **2026-02-13:** Completed PROOF-099 Score Preview Period System
+  - Added preview/dispute/audit models and notification hooks
+  - Built proposer dispute form and admin review queue
+  - Added auto-publish flow for expired preview scores
   - Profile API route for PATCH updates
 - **2026-02-13:** Completed PROOF-097 Person Accountability Score Calculation
   - Created lib/accountability/scoring.ts with weighted factors

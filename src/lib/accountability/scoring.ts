@@ -319,6 +319,7 @@ export async function calculatePersonScore(personId: string): Promise<Accountabi
  * Store accountability score in database
  */
 export async function storePersonScore(result: AccountabilityResult): Promise<void> {
+  const previewUntil = new Date(result.calculatedAt.getTime() + 14 * 24 * 60 * 60 * 1000);
   await prisma.accountabilityScore.upsert({
     where: { personId: result.personId },
     update: {
@@ -329,6 +330,8 @@ export async function storePersonScore(result: AccountabilityResult): Promise<vo
       efficiencyScore: Math.round(result.breakdown.milestoneQuality.value),
       communicationScore: Math.round(result.breakdown.communication.value),
       badge: result.badge,
+      status: "preview",
+      previewUntil,
       calculatedAt: result.calculatedAt,
     },
     create: {
@@ -340,7 +343,25 @@ export async function storePersonScore(result: AccountabilityResult): Promise<vo
       efficiencyScore: Math.round(result.breakdown.milestoneQuality.value),
       communicationScore: Math.round(result.breakdown.communication.value),
       badge: result.badge,
+      status: "preview",
+      previewUntil,
       calculatedAt: result.calculatedAt,
+    },
+  });
+
+  await prisma.accountabilityNotification.create({
+    data: {
+      personId: result.personId,
+      type: "score_preview",
+      payload: { previewUntil },
+    },
+  });
+
+  await prisma.accountabilityScoreAudit.create({
+    data: {
+      score: { connect: { personId: result.personId } },
+      action: "score_calculated",
+      payload: { score: result.score, badge: result.badge },
     },
   });
 }
