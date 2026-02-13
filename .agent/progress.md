@@ -38,17 +38,16 @@
 ## Current Task
 
 ```
-ID:          PROOF-106
-Title:       Community Flag System
+ID:          PROOF-107
+Title:       Flag Impact on Scores
 Milestone:   29 — Red Flag System
 Status:      pending
 ```
 
 ### Acceptance Criteria
-- [ ] Flag submission form with reason and evidence
-- [ ] Anonymous reporting with abuse prevention
-- [ ] Moderator review queue at /admin/flags
-- [ ] Proposer response workflow
+- [ ] Confirmed flags reduce accountability score
+- [ ] Severity-weighted impact calculation
+- [ ] Score restoration on flag resolution
 
 ---
 
@@ -56,6 +55,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-106 | Community Flag System | 2026-02-13 |
 | PROOF-105 | Automated Red Flag Detection | 2026-02-13 |
 | PROOF-104 | ROI Dashboard | 2026-02-13 |
 | PROOF-103 | ROI Calculation Engine | 2026-02-13 |

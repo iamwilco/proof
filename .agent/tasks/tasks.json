@@ -1924,7 +1924,8 @@
       "id": "PROOF-106",
       "title": "Community Flag System",
       "description": "Allow community members to submit flags with evidence. Moderation queue, proposer response workflow.",
-      "status": "pending",
+      "status": "completed",
+      "completed": "2026-02-13",
       "priority": "medium",
       "labels": ["flags", "community", "moderation"],
       "acceptance_criteria": [

@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - ROI calculation engine with outcome scoring (GitHub, deliverables, on-chain) and percentile rankings.
 - ROI dashboard at /analytics/roi with fund comparison, category benchmarks, top/bottom tables, and CSV export.
 - Automated red flag detection with admin notifications (repeat delays, ghost projects, overdue milestones, funding clusters, similar proposals).
+- Community flag system with submission form, moderator review queue at /admin/flags, and proposer response workflow.
 - Milestone progress tracker for transparency roadmap.
 - Agent session prompt updates to include feature PRD and progress tracking.
 - Scraped proposal ingestion script for projectcatalyst.io (`etl/catalyst/ingest_scraped_proposals.py`).
