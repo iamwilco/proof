@@ -1353,7 +1353,7 @@
     {
       "id": "PROOF-074",
       "priority": 74,
-      "status": "pending",
+      "status": "completed",
       "title": "Build bookmark management UI",
       "description": "View and manage bookmarked proposals",
       "acceptance_criteria": [
@@ -1364,7 +1364,7 @@
       ],
       "milestone": 18,
       "created": "2026-02-12",
-      "completed": null
+      "completed": "2026-02-13"
     },
     {
       "id": "PROOF-075",

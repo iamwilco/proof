@@ -60,6 +60,7 @@ All notable changes to this project will be documented in this file.
 - AI recommendation engine with user interactions, collaborative filtering, and explanations.
 - Bookmark schema with Bookmark and BookmarkList models for named collections.
 - Proposal Tinder swipe UI with card stack, swipe gestures, and keyboard shortcuts.
+- Bookmark management UI with list page, CSV export, and sidebar navigation.
 
 ### Changed
 - Catalyst proposal scraper now includes pagination discovery and retry handling.
