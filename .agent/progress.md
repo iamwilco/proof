@@ -38,9 +38,9 @@
 ## Current Task
 
 ```
-ID:          PROOF-108
-Title:       Next Task
-Milestone:   —
+ID:          PROOF-109
+Title:       Fix ConnectionHoverCard AbortError
+Milestone:   31 (Pre-Launch Fixes)
 Status:      pending
 ```
 
@@ -50,6 +50,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-108 | Fix Database Schema Sync | 2026-02-14 |
 | PROOF-107 | Enhanced Knowledge Graph | 2026-02-13 |
 | — | Flag Impact on Scores | 2026-02-13 |
 | PROOF-106 | Community Flag System | 2026-02-13 |

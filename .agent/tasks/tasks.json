@@ -1818,7 +1818,7 @@
         "Data source links for each metric",
         "Confidence level indicator (Low/Medium/High)",
         "Trend indicator (improving/stable/declining)",
-        "Last updated timestamp"
+        "Last updated timestamp",
         "Commit activity over time",
         "Contributor count",
         "Issues opened/closed ratio",
@@ -1944,6 +1944,160 @@
       ],
       "milestone": 30,
       "created": "2026-02-13"
+    },
+    {
+      "id": "PROOF-108",
+      "title": "Fix Database Schema Sync",
+      "description": "Run database migrations to sync schema with Prisma. Fix githubStars column and other missing tables/columns.",
+      "status": "completed",
+      "completed": "2026-02-14",
+      "priority": "critical",
+      "labels": ["database", "migration", "bugfix"],
+      "acceptance_criteria": [
+        "Run prisma db push or prisma migrate dev",
+        "Verify /projects page loads without error",
+        "Verify all tables exist in database",
+        "No PrismaClientKnownRequestError on any page"
+      ],
+      "milestone": 31,
+      "created": "2026-02-14"
+    },
+    {
+      "id": "PROOF-109",
+      "title": "Fix ConnectionHoverCard AbortError",
+      "description": "Fix useEffect cleanup in ConnectionHoverCard component to properly abort fetch requests on unmount.",
+      "status": "pending",
+      "priority": "critical",
+      "labels": ["bugfix", "react", "useEffect"],
+      "acceptance_criteria": [
+        "Add AbortController to useEffect fetch",
+        "Clean up abort signal on unmount",
+        "No AbortError on /people page navigation"
+      ],
+      "milestone": 31,
+      "created": "2026-02-14"
+    },
+    {
+      "id": "PROOF-110",
+      "title": "Fix Rankings Performance Error",
+      "description": "Fix Performance.measure negative timestamp error on /rankings page.",
+      "status": "pending",
+      "priority": "critical",
+      "labels": ["bugfix", "performance"],
+      "acceptance_criteria": [
+        "Add force-dynamic or investigate timing issue",
+        "/rankings page loads without error"
+      ],
+      "milestone": 31,
+      "created": "2026-02-14"
+    },
+    {
+      "id": "PROOF-111",
+      "title": "Fix Empty Data Pages",
+      "description": "Fix /organizations and /milestones pages showing no data. Verify queries and data presence.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["bugfix", "data", "ui"],
+      "acceptance_criteria": [
+        "/organizations displays organization data",
+        "/milestones displays milestone data or helpful empty state",
+        "Queries verified working"
+      ],
+      "milestone": 31,
+      "created": "2026-02-14"
+    },
+    {
+      "id": "PROOF-112",
+      "title": "Fix Project Search",
+      "description": "Fix search functionality on project detail pages.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["bugfix", "search"],
+      "acceptance_criteria": [
+        "Search on /projects/[id] works",
+        "Results displayed correctly"
+      ],
+      "milestone": 31,
+      "created": "2026-02-14"
+    },
+    {
+      "id": "PROOF-113",
+      "title": "Design System: Dark Mode Default & Consistent Backgrounds",
+      "description": "Set dark mode as default. Fix inconsistent page backgrounds (some dark, some white).",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["design", "dark-mode", "ui"],
+      "acceptance_criteria": [
+        "Dark mode is default theme",
+        "All pages have consistent background colors",
+        "Theme persists across sessions"
+      ],
+      "milestone": 31,
+      "created": "2026-02-14"
+    },
+    {
+      "id": "PROOF-114",
+      "title": "Design System: Fix Invisible Input Fields",
+      "description": "Fix white inputs on white background with white font. Add proper borders and contrast.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["design", "ui", "accessibility"],
+      "acceptance_criteria": [
+        "All input fields have visible borders",
+        "Text is readable in both light and dark mode",
+        "Dropdowns and selects are properly styled"
+      ],
+      "milestone": 31,
+      "created": "2026-02-14"
+    },
+    {
+      "id": "PROOF-115",
+      "title": "Navigation Redesign: Smart Sidebar",
+      "description": "Replace overwhelming top navbar with collapsible sidebar navigation. Group items logically.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["design", "navigation", "ux"],
+      "acceptance_criteria": [
+        "Collapsible sidebar with grouped sections",
+        "Home, Explore (Projects/People/Orgs/Funds), Analytics, Graph, Admin",
+        "User menu in header",
+        "Mobile-friendly hamburger menu",
+        "Smooth collapse/expand animations"
+      ],
+      "milestone": 31,
+      "created": "2026-02-14"
+    },
+    {
+      "id": "PROOF-116",
+      "title": "Auth: Protected Routes",
+      "description": "Block certain areas for logged-in users only. Public browsing, actions require login.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["auth", "security"],
+      "acceptance_criteria": [
+        "Protected: /account, /bookmarks, /my/*, /admin/*",
+        "Public: /projects, /people, /organizations, /funds browsing",
+        "Actions (voting, flagging) require login",
+        "Redirect to login with return URL"
+      ],
+      "milestone": 31,
+      "created": "2026-02-14"
+    },
+    {
+      "id": "PROOF-117",
+      "title": "Verify Admin Dashboard",
+      "description": "Ensure admin dashboard is fully functional with all features working.",
+      "status": "pending",
+      "priority": "medium",
+      "labels": ["admin", "verification"],
+      "acceptance_criteria": [
+        "/admin pages load without error",
+        "Connection management works",
+        "Flag moderation works",
+        "Score preview management works"
+      ],
+      "milestone": 31,
+      "created": "2026-02-14"
     }
   ]
 }
