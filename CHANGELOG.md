@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Rankings: force dynamic rendering to avoid Performance.measure negative timestamp error.
 - Organizations/Milestones: force dynamic rendering and add actionable empty states for missing data.
 - Projects: trim search input and include related people/org matches to return results reliably.
+- Design system: default dark mode and normalize page background colors via theme variables.
 
 ### Added
 - Proposal Tinder 2.0 accountability overlays (score badge, completion/on-time stats, red flag indicators).

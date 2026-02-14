@@ -38,8 +38,8 @@
 ## Current Task
 
 ```
-ID:          PROOF-113
-Title:       Design System: Dark Mode Default & Consistent Backgrounds
+ID:          PROOF-114
+Title:       Design System: Fix Invisible Input Fields
 Milestone:   31 (Pre-Launch Fixes)
 Status:      pending
 ```
@@ -50,6 +50,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-113 | Design System: Dark Mode Default & Consistent Backgrounds | 2026-02-14 |
 | PROOF-112 | Fix Project Search | 2026-02-14 |
 | PROOF-111 | Fix Empty Data Pages | 2026-02-14 |
 | PROOF-110 | Fix Rankings Performance Error | 2026-02-14 |

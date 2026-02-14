@@ -2028,7 +2028,8 @@
       "id": "PROOF-113",
       "title": "Design System: Dark Mode Default & Consistent Backgrounds",
       "description": "Set dark mode as default. Fix inconsistent page backgrounds (some dark, some white).",
-      "status": "pending",
+      "status": "completed",
+      "completed": "2026-02-14",
       "priority": "high",
       "labels": ["design", "dark-mode", "ui"],
       "acceptance_criteria": [
