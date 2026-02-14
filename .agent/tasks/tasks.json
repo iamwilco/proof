@@ -1982,7 +1982,8 @@
       "id": "PROOF-110",
       "title": "Fix Rankings Performance Error",
       "description": "Fix Performance.measure negative timestamp error on /rankings page.",
-      "status": "pending",
+      "status": "completed",
+      "completed": "2026-02-14",
       "priority": "critical",
       "labels": ["bugfix", "performance"],
       "acceptance_criteria": [

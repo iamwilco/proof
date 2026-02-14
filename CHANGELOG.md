@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 - Database schema sync: ran `prisma db push` to add missing columns (githubStars, etc.) and tables.
 - Build errors: Added Suspense boundaries for useSearchParams, fixed opengraph-image export, added force-dynamic to pages with DB calls.
 - ConnectionHoverCard: guard aborted fetch cleanup to avoid AbortError on unmount.
+- Rankings: force dynamic rendering to avoid Performance.measure negative timestamp error.
 
 ### Added
 - Proposal Tinder 2.0 accountability overlays (score badge, completion/on-time stats, red flag indicators).

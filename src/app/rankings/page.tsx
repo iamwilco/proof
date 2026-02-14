@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import prisma from "../../lib/prisma";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 type SearchParams = {
   fund?: string;
