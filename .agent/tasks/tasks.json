@@ -2060,7 +2060,8 @@
       "id": "PROOF-115",
       "title": "Navigation Redesign: Smart Sidebar",
       "description": "Replace overwhelming top navbar with collapsible sidebar navigation. Group items logically.",
-      "status": "pending",
+      "status": "completed",
+      "completed": "2026-02-14",
       "priority": "high",
       "labels": ["design", "navigation", "ux"],
       "acceptance_criteria": [

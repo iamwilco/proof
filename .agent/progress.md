@@ -38,8 +38,8 @@
 ## Current Task
 
 ```
-ID:          PROOF-115
-Title:       Navigation Redesign: Smart Sidebar
+ID:          PROOF-116
+Title:       Auth: Protected Routes
 Milestone:   31 (Pre-Launch Fixes)
 Status:      pending
 ```
@@ -50,6 +50,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-115 | Navigation Redesign: Smart Sidebar | 2026-02-14 |
 | PROOF-114 | Design System: Fix Invisible Input Fields | 2026-02-14 |
 | PROOF-113 | Design System: Dark Mode Default & Consistent Backgrounds | 2026-02-14 |
 | PROOF-112 | Fix Project Search | 2026-02-14 |
