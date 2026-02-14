@@ -85,13 +85,13 @@ const formatNumber = (value: number | null | undefined) =>
 
 const StatusBadge = ({ status }: { status: string }) => {
   const colors: Record<string, string> = {
-    completed: "bg-emerald-100 text-emerald-700",
-    in_progress: "bg-blue-100 text-blue-700",
-    funded: "bg-amber-100 text-amber-700",
-    not_approved: "bg-slate-100 text-slate-600",
+    completed: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300",
+    in_progress: "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300",
+    funded: "bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300",
+    not_approved: "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300",
   };
 
-  const colorClass = colors[status.toLowerCase()] ?? "bg-slate-100 text-slate-600";
+  const colorClass = colors[status.toLowerCase()] ?? "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300";
 
   return (
     <span className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${colorClass}`}>
@@ -112,8 +112,8 @@ const LinkIcon = ({ type }: { type: string }) => {
 };
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <section className="rounded-2xl border border-slate-200 bg-white p-6">
-    <h2 className="mb-4 text-lg font-semibold text-slate-900">{title}</h2>
+  <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
+    <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">{title}</h2>
     {children}
   </section>
 );
@@ -180,30 +180,30 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-12">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 px-6 py-12">
       <div className="mx-auto max-w-4xl">
         <div className="mb-6">
           <Link
             href="/projects"
-            className="text-sm font-medium text-blue-600 hover:underline"
+            className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
           >
             ← Back to Projects
           </Link>
         </div>
 
         {project._count.flags > 0 && (
-          <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
+          <div className="mb-6 rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-4">
             <div className="flex items-start gap-3">
-              <svg className="mt-0.5 h-5 w-5 shrink-0 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="mt-0.5 h-5 w-5 shrink-0 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" />
               </svg>
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-red-800">
+                <h3 className="text-sm font-semibold text-red-800 dark:text-red-300">
                   This project has {project._count.flags} active flag{project._count.flags > 1 ? "s" : ""}
                 </h3>
                 <div className="mt-2 space-y-1">
                   {project.flags.map((flag) => (
-                    <div key={flag.id} className="text-sm text-red-700">
+                    <div key={flag.id} className="text-sm text-red-700 dark:text-red-400">
                       <span className="font-medium">{flag.category.replace(/_/g, " ")}:</span>{" "}
                       {flag.title}
                     </div>
@@ -211,7 +211,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 </div>
                 <Link
                   href={`/flags?projectId=${project.id}`}
-                  className="mt-3 inline-block text-sm font-medium text-red-700 hover:underline"
+                  className="mt-3 inline-block text-sm font-medium text-red-700 dark:text-red-400 hover:underline"
                 >
                   View all flags →
                 </Link>
@@ -220,11 +220,11 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           </div>
         )}
 
-        <header className="mb-8 rounded-2xl border border-slate-200 bg-white p-6">
+        <header className="mb-8 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-slate-900">{project.title}</h1>
-              <p className="mt-2 text-base text-slate-600">{project.description}</p>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{project.title}</h1>
+              <p className="mt-2 text-base text-slate-600 dark:text-slate-300">{project.description}</p>
             </div>
             <div className="flex items-center gap-2">
               {project.votingRecords[0]?.fundRank && (
@@ -234,34 +234,34 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </div>
           </div>
 
-          <div className="mt-6 grid gap-4 border-t border-slate-100 pt-6 sm:grid-cols-4">
+          <div className="mt-6 grid gap-4 border-t border-slate-100 dark:border-slate-700 pt-6 sm:grid-cols-4">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
                 Funding
               </p>
-              <p className="mt-1 text-lg font-semibold text-slate-900">
+              <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
                 {formatCurrency(Number(project.fundingAmount))}
               </p>
             </div>
             <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
                 Fund
               </p>
-              <p className="mt-1 text-base font-medium text-slate-900">
+              <Link href={`/funds/${project.fund.number}`} className="mt-1 block text-base font-medium text-blue-600 dark:text-blue-400 hover:underline">
                 {project.fund.name}
-              </p>
+              </Link>
             </div>
             <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
                 Category
               </p>
-              <p className="mt-1 text-base text-slate-700">{project.category}</p>
+              <p className="mt-1 text-base text-slate-700 dark:text-slate-300">{project.category}</p>
             </div>
             <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
                 Status
               </p>
-              <p className="mt-1 text-base text-slate-700">
+              <p className="mt-1 text-base text-slate-700 dark:text-slate-300">
                 {project.status.replace(/_/g, " ")}
               </p>
             </div>
@@ -272,13 +272,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           <Section title="GitHub Activity">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-sm text-slate-600">Repository metrics snapshot.</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Repository metrics snapshot.</p>
                 {project.githubUrl && (
                   <a
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-2 inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:underline"
+                    className="mt-2 inline-flex items-center gap-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
                   >
                     {project.githubOwner && project.githubRepo
                       ? `${project.githubOwner}/${project.githubRepo}`
@@ -286,47 +286,47 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   </a>
                 )}
               </div>
-              <div className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">
+              <div className="rounded-full bg-slate-100 dark:bg-slate-700 px-3 py-1 text-xs text-slate-600 dark:text-slate-300">
                 Activity score: {project.githubActivityScore ?? "—"}
               </div>
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">Stars</p>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
+              <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3">
+                <p className="text-xs text-slate-400 dark:text-slate-500">Stars</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
                   {formatNumber(project.githubStars)}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">Forks</p>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
+              <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3">
+                <p className="text-xs text-slate-400 dark:text-slate-500">Forks</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
                   {formatNumber(project.githubForks)}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">Watchers</p>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
+              <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3">
+                <p className="text-xs text-slate-400 dark:text-slate-500">Watchers</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
                   {formatNumber(project.githubWatchers)}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">Contributors</p>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
+              <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3">
+                <p className="text-xs text-slate-400 dark:text-slate-500">Contributors</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
                   {formatNumber(project.githubContributors)}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">Issues closed</p>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
+              <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3">
+                <p className="text-xs text-slate-400 dark:text-slate-500">Issues closed</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
                   {project.githubIssueCloseRate !== null &&
                   project.githubIssueCloseRate !== undefined
                     ? `${Math.round(project.githubIssueCloseRate * 100)}%`
                     : "—"}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">PR merge rate</p>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
+              <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3">
+                <p className="text-xs text-slate-400 dark:text-slate-500">PR merge rate</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
                   {project.githubPrMergeRate !== null && project.githubPrMergeRate !== undefined
                     ? `${Math.round(project.githubPrMergeRate * 100)}%`
                     : "—"}
@@ -334,21 +334,21 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               </div>
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-lg border border-slate-100 bg-white p-3 text-sm">
-                <p className="text-xs text-slate-400">Last push</p>
-                <p className="mt-1 font-semibold text-slate-900">
+              <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm">
+                <p className="text-xs text-slate-400 dark:text-slate-500">Last push</p>
+                <p className="mt-1 font-semibold text-slate-900 dark:text-white">
                   {formatDate(project.githubLastPush)}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-100 bg-white p-3 text-sm">
-                <p className="text-xs text-slate-400">Last commit</p>
-                <p className="mt-1 font-semibold text-slate-900">
+              <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm">
+                <p className="text-xs text-slate-400 dark:text-slate-500">Last commit</p>
+                <p className="mt-1 font-semibold text-slate-900 dark:text-white">
                   {formatDate(project.githubLastCommit)}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-100 bg-white p-3 text-sm">
-                <p className="text-xs text-slate-400">Last synced</p>
-                <p className="mt-1 font-semibold text-slate-900">
+              <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm">
+                <p className="text-xs text-slate-400 dark:text-slate-500">Last synced</p>
+                <p className="mt-1 font-semibold text-slate-900 dark:text-white">
                   {formatDate(project.githubLastSync)}
                 </p>
               </div>
@@ -360,68 +360,68 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           <Section title="On-Chain Activity">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-sm text-slate-600">Cardano blockchain activity for this project.</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Cardano blockchain activity for this project.</p>
                 {project.onchainAddress && (
                   <a
                     href={`https://cardanoscan.io/address/${project.onchainAddress}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-2 inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:underline"
+                    className="mt-2 inline-flex items-center gap-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
                   >
                     {project.onchainAddress.slice(0, 12)}...{project.onchainAddress.slice(-8)}
                   </a>
                 )}
               </div>
               {project.onchainPolicyId && (
-                <div className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">
+                <div className="rounded-full bg-slate-100 dark:bg-slate-700 px-3 py-1 text-xs text-slate-600 dark:text-slate-300">
                   Policy: {project.onchainPolicyId.slice(0, 8)}...
                 </div>
               )}
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">Transactions</p>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
+              <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3">
+                <p className="text-xs text-slate-400 dark:text-slate-500">Transactions</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
                   {formatNumber(project.onchainTxCount)}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">Unique Addresses</p>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
+              <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3">
+                <p className="text-xs text-slate-400 dark:text-slate-500">Unique Addresses</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
                   {formatNumber(project.onchainUniqueAddresses)}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">Total Received</p>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
+              <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3">
+                <p className="text-xs text-slate-400 dark:text-slate-500">Total Received</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
                   {project.onchainTotalReceived
                     ? `₳${formatNumber(Number(project.onchainTotalReceived))}`
                     : "—"}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">Total Sent</p>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
+              <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3">
+                <p className="text-xs text-slate-400 dark:text-slate-500">Total Sent</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
                   {project.onchainTotalSent
                     ? `₳${formatNumber(Number(project.onchainTotalSent))}`
                     : "—"}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">First Transaction</p>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
+              <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3">
+                <p className="text-xs text-slate-400 dark:text-slate-500">First Transaction</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
                   {formatDate(project.onchainFirstTx)}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">Last Transaction</p>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
+              <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3">
+                <p className="text-xs text-slate-400 dark:text-slate-500">Last Transaction</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
                   {formatDate(project.onchainLastTx)}
                 </p>
               </div>
             </div>
             {project.onchainLastSync && (
-              <p className="mt-3 text-xs text-slate-400">
+              <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">
                 Last synced: {formatDate(project.onchainLastSync)}
               </p>
             )}
@@ -430,13 +430,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
         <Section title="Connections">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               Hover to preview the strongest relationships around this proposal.
             </p>
             <ConnectionHoverCard entityType="project" entityId={project.id} href={`/projects/${project.id}`}>
               <button
                 type="button"
-                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                className="rounded-lg border border-slate-200 dark:border-slate-600 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Open connection explorer
               </button>
@@ -495,35 +495,35 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 {project.concerns.map((concern) => (
                   <div
                     key={concern.id}
-                    className="rounded-lg border border-slate-200 bg-slate-50 p-4"
+                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div>
-                        <p className="text-sm font-semibold text-slate-900">
+                        <p className="text-sm font-semibold text-slate-900 dark:text-white">
                           {concern.category}
                         </p>
-                        <p className="text-xs text-slate-500">{concern.status}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">{concern.status}</p>
                       </div>
                       {concern.evidenceUrl && (
                         <a
                           href={concern.evidenceUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs font-medium text-blue-600 hover:underline"
+                          className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
                         >
                           Evidence
                         </a>
                       )}
                     </div>
-                    <p className="mt-2 text-sm text-slate-700">
+                    <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
                       {concern.description}
                     </p>
                     {concern.responses.length > 0 && (
-                      <div className="mt-3 space-y-2 border-t border-slate-200 pt-3">
+                      <div className="mt-3 space-y-2 border-t border-slate-200 dark:border-slate-700 pt-3">
                         {concern.responses.map((response) => (
                           <div
                             key={response.id}
-                            className="rounded-md bg-white px-3 py-2 text-sm text-slate-700"
+                            className="rounded-md bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-300"
                           >
                             {response.message}
                           </div>
@@ -543,12 +543,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   <li key={pp.id} className="flex items-center justify-between">
                     <Link
                       href={`/people/${pp.person.id}`}
-                      className="font-medium text-blue-600 hover:underline"
+                      className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
                     >
                       {pp.person.name}
                     </Link>
                     {pp.role && (
-                      <span className="text-sm text-slate-500">{pp.role}</span>
+                      <span className="text-sm text-slate-500 dark:text-slate-400">{pp.role}</span>
                     )}
                   </li>
                 ))}
@@ -561,11 +561,11 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               <ul className="space-y-2">
                 {project.projectOrgs.map((po) => (
                   <li key={po.id} className="flex items-center justify-between">
-                    <span className="font-medium text-slate-800">
+                    <span className="font-medium text-slate-800 dark:text-white">
                       {po.organization.name}
                     </span>
                     {po.role && (
-                      <span className="text-sm text-slate-500">{po.role}</span>
+                      <span className="text-sm text-slate-500 dark:text-slate-400">{po.role}</span>
                     )}
                   </li>
                 ))}
@@ -587,15 +587,15 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 {project.milestones.map((milestone) => (
                   <div
                     key={milestone.id}
-                    className="rounded-lg border border-slate-100 bg-slate-50 p-4"
+                    className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <h3 className="font-semibold text-slate-900">
+                        <h3 className="font-semibold text-slate-900 dark:text-white">
                           {milestone.title}
                         </h3>
                         {milestone.dueDate && (
-                          <p className="mt-1 text-sm text-slate-500">
+                          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                             Due: {formatDate(milestone.dueDate)}
                           </p>
                         )}
@@ -603,12 +603,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       <div className="flex flex-wrap items-center justify-end gap-2">
                         <StatusBadge status={milestone.status} />
                         {milestone.somStatus && (
-                          <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
+                          <span className="rounded-full bg-blue-100 dark:bg-blue-900/50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300">
                             SoM: {milestone.somStatus.replace(/_/g, " ")}
                           </span>
                         )}
                         {milestone.poaStatus && (
-                          <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700">
+                          <span className="rounded-full bg-purple-100 dark:bg-purple-900/50 px-2 py-0.5 text-xs font-medium text-purple-700 dark:text-purple-300">
                             PoA: {milestone.poaStatus.replace(/_/g, " ")}
                           </span>
                         )}
@@ -616,8 +616,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                     </div>
 
                     {milestone.evidenceUrls.length > 0 && (
-                      <div className="mt-3 border-t border-slate-200 pt-3">
-                        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400">
+                      <div className="mt-3 border-t border-slate-200 dark:border-slate-700 pt-3">
+                        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
                           Evidence
                         </p>
                         <ul className="space-y-1 text-sm">
@@ -627,7 +627,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                                 href={url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-blue-600 hover:underline"
+                                className="text-blue-600 dark:text-blue-400 hover:underline"
                               >
                                 {url}
                               </a>
@@ -638,8 +638,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                     )}
 
                     {milestone.deliverables.length > 0 && (
-                      <div className="mt-3 border-t border-slate-200 pt-3">
-                        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400">
+                      <div className="mt-3 border-t border-slate-200 dark:border-slate-700 pt-3">
+                        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
                           Deliverables
                         </p>
                         <ul className="space-y-1">
@@ -648,12 +648,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                               key={d.id}
                               className="flex items-center justify-between text-sm"
                             >
-                              <span className="text-slate-700">{d.title}</span>
+                              <span className="text-slate-700 dark:text-slate-300">{d.title}</span>
                               <span
                                 className={`text-xs ${
                                   d.status === "completed"
-                                    ? "text-emerald-600"
-                                    : "text-slate-400"
+                                    ? "text-emerald-600 dark:text-emerald-400"
+                                    : "text-slate-400 dark:text-slate-500"
                                 }`}
                               >
                                 {d.status.replace(/_/g, " ")}
@@ -674,12 +674,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               <ul className="space-y-2">
                 {project.deliverables.map((d) => (
                   <li key={d.id} className="flex items-center justify-between">
-                    <span className="text-slate-700">{d.title}</span>
+                    <span className="text-slate-700 dark:text-slate-300">{d.title}</span>
                     <span
                       className={`text-sm ${
                         d.status === "completed"
-                          ? "text-emerald-600"
-                          : "text-slate-400"
+                          ? "text-emerald-600 dark:text-emerald-400"
+                          : "text-slate-400 dark:text-slate-500"
                       }`}
                     >
                       {d.status.replace(/_/g, " ")}
@@ -699,12 +699,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center text-blue-600 hover:underline"
+                      className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
                     >
                       <LinkIcon type={link.type} />
                       <span className="text-sm">{link.url}</span>
                     </a>
-                    <span className="ml-6 text-xs text-slate-400">
+                    <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
                       {link.type.replace(/_/g, " ")}
                     </span>
                   </li>
@@ -735,38 +735,38 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           <Section title="Source Provenance">
             <dl className="grid gap-4 sm:grid-cols-3">
               <div>
-                <dt className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                <dt className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
                   Source URL
                 </dt>
-                <dd className="mt-1 break-all text-sm text-slate-700">
+                <dd className="mt-1 break-all text-sm text-slate-700 dark:text-slate-300">
                   <a
                     href={project.sourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
                   >
                     {project.sourceUrl}
                   </a>
                 </dd>
               </div>
               <div>
-                <dt className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                <dt className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
                   Source Type
                 </dt>
-                <dd className="mt-1 text-sm text-slate-700">{project.sourceType}</dd>
+                <dd className="mt-1 text-sm text-slate-700 dark:text-slate-300">{project.sourceType}</dd>
               </div>
               <div>
-                <dt className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                <dt className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
                   Last Seen
                 </dt>
-                <dd className="mt-1 text-sm text-slate-700">
+                <dd className="mt-1 text-sm text-slate-700 dark:text-slate-300">
                   {formatDate(project.lastSeenAt)}
                 </dd>
               </div>
             </dl>
           </Section>
 
-          <footer className="text-center text-xs text-slate-400">
+          <footer className="text-center text-xs text-slate-400 dark:text-slate-500">
             <p>
               Created: {formatDate(project.createdAt)} · Updated:{" "}
               {formatDate(project.updatedAt)}
