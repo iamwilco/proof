@@ -167,11 +167,27 @@ export default function DiscoverPage() {
             </div>
           ) : (
             <>
+              {/* Desktop side buttons */}
+              <button
+                onClick={() => handleSwipe("left")}
+                className="absolute left-0 top-1/2 z-30 hidden -translate-x-16 -translate-y-1/2 lg:flex h-14 w-14 items-center justify-center rounded-full bg-red-500 text-xl text-white shadow-lg hover:bg-red-600 transition active:scale-95"
+                title="Skip (← or J)"
+              >
+                ✕
+              </button>
+              <button
+                onClick={() => handleSwipe("right")}
+                className="absolute right-0 top-1/2 z-30 hidden translate-x-16 -translate-y-1/2 lg:flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-xl text-white shadow-lg hover:bg-emerald-600 transition active:scale-95"
+                title="Like (→ or K or Space)"
+              >
+                ♥
+              </button>
+
               {/* Background cards */}
               {projects.slice(currentIndex + 1, currentIndex + 3).map((project, idx) => (
                 <div
                   key={project.id}
-                  className="absolute inset-0 rounded-3xl bg-white shadow-xl"
+                  className="absolute inset-0 rounded-3xl bg-white dark:bg-slate-800 shadow-xl"
                   style={{
                     transform: `scale(${1 - (idx + 1) * 0.05}) translateY(${(idx + 1) * 10}px)`,
                     zIndex: 10 - idx,
@@ -183,7 +199,7 @@ export default function DiscoverPage() {
               {/* Current card */}
               {currentProject && (
                 <div
-                  className={`absolute inset-0 rounded-3xl bg-white shadow-2xl transition-transform duration-300 ${
+                  className={`absolute inset-0 rounded-3xl bg-white dark:bg-slate-800 shadow-2xl transition-transform duration-300 ${
                     swipeDirection === "left"
                       ? "-translate-x-full -rotate-12 opacity-0"
                       : swipeDirection === "right"
@@ -195,7 +211,7 @@ export default function DiscoverPage() {
                   <div className="flex h-full flex-col p-6">
                     {/* Category Badge */}
                     <div className="flex items-center justify-between">
-                      <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
+                      <span className="rounded-full bg-blue-100 dark:bg-blue-900/50 px-3 py-1 text-xs font-medium text-blue-700 dark:text-blue-300">
                         {currentProject.category}
                       </span>
                       <div className="flex items-center gap-2">
@@ -204,21 +220,21 @@ export default function DiscoverPage() {
                             {currentProject.flagCount} flag{currentProject.flagCount > 1 ? "s" : ""}
                           </span>
                         )}
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-slate-400 dark:text-slate-500">
                           {currentProject.fund.name}
                         </span>
                       </div>
                     </div>
 
                     {/* Title */}
-                    <h2 className="mt-4 text-xl font-bold text-slate-900 line-clamp-2">
+                    <h2 className="mt-4 text-xl font-bold text-slate-900 dark:text-white line-clamp-2">
                       {currentProject.title}
                     </h2>
 
                     {currentProject.primaryPerson && (
-                      <div className="mt-3 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                      <div className="mt-3 flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2">
                         <div>
-                          <p className="text-xs text-slate-500">Proposer</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">Proposer</p>
                           <div
                             className="relative inline-flex items-center gap-2"
                             onMouseEnter={() => setIsHovering(true)}
@@ -226,7 +242,7 @@ export default function DiscoverPage() {
                           >
                             <Link
                               href={`/people/${currentProject.primaryPerson.id}`}
-                              className="text-sm font-semibold text-slate-900 hover:underline"
+                              className="text-sm font-semibold text-slate-900 dark:text-white hover:underline"
                             >
                               {currentProject.primaryPerson.name}
                             </Link>
@@ -241,32 +257,32 @@ export default function DiscoverPage() {
                               </span>
                             )}
                             {isHovering && (
-                              <div className="absolute left-0 top-full z-20 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-3 shadow-lg">
-                                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                              <div className="absolute left-0 top-full z-20 mt-2 w-64 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 shadow-lg">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
                                   Track record
                                 </p>
                                 <div className="mt-2 grid grid-cols-2 gap-3 text-sm">
                                   <div>
-                                    <p className="text-slate-500">Score</p>
-                                    <p className="font-semibold text-slate-900">
+                                    <p className="text-slate-500 dark:text-slate-400">Score</p>
+                                    <p className="font-semibold text-slate-900 dark:text-white">
                                       {currentProject.primaryPerson.accountabilityScore ?? "—"}
                                     </p>
                                   </div>
                                   <div>
-                                    <p className="text-slate-500">Completion</p>
-                                    <p className="font-semibold text-slate-900">
+                                    <p className="text-slate-500 dark:text-slate-400">Completion</p>
+                                    <p className="font-semibold text-slate-900 dark:text-white">
                                       {currentProject.primaryPerson.completionRate}%
                                     </p>
                                   </div>
                                   <div>
-                                    <p className="text-slate-500">On-time</p>
-                                    <p className="font-semibold text-slate-900">
+                                    <p className="text-slate-500 dark:text-slate-400">On-time</p>
+                                    <p className="font-semibold text-slate-900 dark:text-white">
                                       {currentProject.primaryPerson.onTimeDelivery ?? "—"}%
                                     </p>
                                   </div>
                                   <div>
-                                    <p className="text-slate-500">Flags</p>
-                                    <p className="font-semibold text-slate-900">
+                                    <p className="text-slate-500 dark:text-slate-400">Flags</p>
+                                    <p className="font-semibold text-slate-900 dark:text-white">
                                       {currentProject.flagCount}
                                     </p>
                                   </div>
@@ -277,8 +293,8 @@ export default function DiscoverPage() {
                         </div>
                         {currentProject.primaryPerson.accountabilityScore !== null && (
                           <div className="text-right">
-                            <p className="text-xs text-slate-500">Accountability</p>
-                            <p className="text-lg font-semibold text-slate-900">
+                            <p className="text-xs text-slate-500 dark:text-slate-400">Accountability</p>
+                            <p className="text-lg font-semibold text-slate-900 dark:text-white">
                               {currentProject.primaryPerson.accountabilityScore}
                             </p>
                           </div>
@@ -287,41 +303,41 @@ export default function DiscoverPage() {
                     )}
 
                     {/* Description */}
-                    <p className="mt-3 flex-1 overflow-y-auto text-sm text-slate-600 line-clamp-6">
+                    <p className="mt-3 flex-1 overflow-y-auto text-sm text-slate-600 dark:text-slate-300 line-clamp-6">
                       {currentProject.description}
                     </p>
 
                     {/* Stats */}
-                    <div className="mt-4 grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 text-sm">
+                    <div className="mt-4 grid grid-cols-2 gap-4 border-t border-slate-100 dark:border-slate-700 pt-4 text-sm">
                       <div>
-                        <p className="text-xs text-slate-400">Funding</p>
-                        <p className="font-semibold text-slate-900">
+                        <p className="text-xs text-slate-400 dark:text-slate-500">Funding</p>
+                        <p className="font-semibold text-slate-900 dark:text-white">
                           {formatCurrency(currentProject.fundingAmount)} ADA
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-400">Status</p>
+                        <p className="text-xs text-slate-400 dark:text-slate-500">Status</p>
                         <span
                           className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${
                             currentProject.status === "completed"
-                              ? "bg-emerald-100 text-emerald-700"
+                              ? "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300"
                               : currentProject.status === "in_progress"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-slate-100 text-slate-600"
+                              ? "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
+                              : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
                           }`}
                         >
                           {currentProject.status}
                         </span>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-400">Completion</p>
-                        <p className="font-semibold text-slate-900">
+                        <p className="text-xs text-slate-400 dark:text-slate-500">Completion</p>
+                        <p className="font-semibold text-slate-900 dark:text-white">
                           {currentProject.primaryPerson?.completionRate ?? "—"}%
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-400">On-time delivery</p>
-                        <p className="font-semibold text-slate-900">
+                        <p className="text-xs text-slate-400 dark:text-slate-500">On-time delivery</p>
+                        <p className="font-semibold text-slate-900 dark:text-white">
                           {currentProject.primaryPerson?.onTimeDelivery ?? "—"}%
                         </p>
                       </div>
@@ -341,9 +357,9 @@ export default function DiscoverPage() {
           )}
         </div>
 
-        {/* Action Buttons */}
+        {/* Action Buttons - Mobile only, hidden on desktop where side buttons are shown */}
         {!isFinished && (
-          <div className="mt-6 flex justify-center gap-6">
+          <div className="mt-6 flex justify-center gap-6 lg:hidden">
             <button
               onClick={() => handleSwipe("left")}
               className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500 text-2xl text-white shadow-lg hover:bg-red-600 transition active:scale-95"
