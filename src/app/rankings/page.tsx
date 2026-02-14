@@ -19,12 +19,12 @@ const formatCurrency = (amount: number) => {
 
 const RankBadge = ({ rank }: { rank: number }) => {
   const colors: Record<number, string> = {
-    1: "bg-amber-400 text-amber-900",
-    2: "bg-slate-300 text-slate-700",
-    3: "bg-orange-300 text-orange-800",
+    1: "bg-amber-400 text-amber-900 dark:bg-amber-500 dark:text-amber-950",
+    2: "bg-slate-300 text-slate-700 dark:bg-slate-400 dark:text-slate-900",
+    3: "bg-orange-300 text-orange-800 dark:bg-orange-400 dark:text-orange-950",
   };
 
-  const colorClass = colors[rank] ?? "bg-slate-100 text-slate-600";
+  const colorClass = colors[rank] ?? "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300";
 
   return (
     <span
@@ -130,11 +130,11 @@ export default async function RankingsPage({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-12">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 px-6 py-12">
       <div className="mx-auto max-w-6xl">
         <header className="mb-10">
-          <h1 className="text-3xl font-bold text-slate-900">Rankings</h1>
-          <p className="mt-2 text-base text-slate-600">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Rankings</h1>
+          <p className="mt-2 text-base text-slate-600 dark:text-slate-400">
             Top projects and contributors by funding and milestone completion.
           </p>
         </header>
@@ -145,7 +145,7 @@ export default async function RankingsPage({
             <select
               name="fund"
               defaultValue={fundFilter}
-              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none"
+              className="h-10 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 dark:text-white px-3 text-sm focus:border-blue-500 focus:outline-none"
             >
               <option value="">All Funds</option>
               {funds.map((f) => (
@@ -156,14 +156,14 @@ export default async function RankingsPage({
             </select>
             <button
               type="submit"
-              className="h-10 rounded-lg bg-slate-700 px-4 text-sm font-medium text-white hover:bg-slate-800"
+              className="h-10 rounded-lg bg-slate-700 dark:bg-slate-600 px-4 text-sm font-medium text-white hover:bg-slate-800 dark:hover:bg-slate-500"
             >
               Apply
             </button>
             {fundFilter && (
               <Link
                 href={buildUrl({ fund: "" })}
-                className="text-sm font-medium text-blue-600 hover:underline"
+                className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
               >
                 Clear
               </Link>
@@ -171,13 +171,13 @@ export default async function RankingsPage({
           </form>
 
           <div className="ml-auto flex items-center gap-2">
-            <span className="text-sm text-slate-500">Sort by:</span>
+            <span className="text-sm text-slate-500 dark:text-slate-400">Sort by:</span>
             <Link
               href={buildUrl({ sort: "funding" })}
               className={`rounded-lg px-3 py-1.5 text-sm font-medium ${
                 sortBy === "funding"
                   ? "bg-blue-600 text-white"
-                  : "bg-white text-slate-700 hover:bg-slate-100"
+                  : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
               }`}
             >
               Funding
@@ -187,7 +187,7 @@ export default async function RankingsPage({
               className={`rounded-lg px-3 py-1.5 text-sm font-medium ${
                 sortBy === "completion"
                   ? "bg-blue-600 text-white"
-                  : "bg-white text-slate-700 hover:bg-slate-100"
+                  : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
               }`}
             >
               Completion
@@ -197,16 +197,16 @@ export default async function RankingsPage({
 
         <div className="grid gap-8 lg:grid-cols-3">
           <section className="lg:col-span-2">
-            <h2 className="mb-4 text-lg font-semibold text-slate-900">
+            <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">
               Top Projects{" "}
-              <span className="text-sm font-normal text-slate-500">
+              <span className="text-sm font-normal text-slate-500 dark:text-slate-400">
                 by {sortBy === "completion" ? "milestone completion" : "funding"}
               </span>
             </h2>
 
             {topProjects.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-slate-300 bg-white py-12 text-center">
-                <p className="text-slate-600">No projects found</p>
+              <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 py-12 text-center">
+                <p className="text-slate-600 dark:text-slate-400">No projects found</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -214,22 +214,22 @@ export default async function RankingsPage({
                   <Link
                     key={project.id}
                     href={`/projects/${project.id}`}
-                    className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 transition-colors hover:border-blue-200 hover:bg-blue-50"
+                    className="flex items-center gap-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 transition-colors hover:border-blue-200 dark:hover:border-blue-800 hover:bg-blue-50 dark:hover:bg-slate-700"
                   >
                     <RankBadge rank={idx + 1} />
                     <div className="flex-1 min-w-0">
-                      <h3 className="truncate font-semibold text-slate-900">
+                      <h3 className="truncate font-semibold text-slate-900 dark:text-white">
                         {project.title}
                       </h3>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
                         {project.fund.name} · {project.category}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-slate-900">
+                      <p className="font-semibold text-slate-900 dark:text-white">
                         {formatCurrency(Number(project.fundingAmount))}
                       </p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
                         {project.completedMilestones}/{project.totalMilestones}{" "}
                         milestones ({Math.round(project.completionRate * 100)}%)
                       </p>
@@ -241,13 +241,13 @@ export default async function RankingsPage({
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-semibold text-slate-900">
+            <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">
               Top Contributors
             </h2>
 
             {contributorsWithStats.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-slate-300 bg-white py-12 text-center">
-                <p className="text-slate-600">No contributors found</p>
+              <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 py-12 text-center">
+                <p className="text-slate-600 dark:text-slate-400">No contributors found</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -255,21 +255,21 @@ export default async function RankingsPage({
                   <Link
                     key={person.id}
                     href={`/people/${person.id}`}
-                    className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 transition-colors hover:border-blue-200 hover:bg-blue-50"
+                    className="flex items-center gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 transition-colors hover:border-blue-200 dark:hover:border-blue-800 hover:bg-blue-50 dark:hover:bg-slate-700"
                   >
-                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-600 text-xs font-bold text-slate-600 dark:text-slate-300">
                       {idx + 1}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <h3 className="truncate text-sm font-semibold text-slate-900">
+                      <h3 className="truncate text-sm font-semibold text-slate-900 dark:text-white">
                         {person.name}
                       </h3>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
                         {person.projectCount} project
                         {person.projectCount !== 1 ? "s" : ""}
                       </p>
                     </div>
-                    <p className="text-sm font-medium text-slate-700">
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
                       {formatCurrency(person.totalFunding)}
                     </p>
                   </Link>
