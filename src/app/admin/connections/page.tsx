@@ -1,4 +1,7 @@
+import { redirect } from "next/navigation";
+
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/auth/session";
 import { Card, CardHeader, CardTitle, CardContent, Badge } from "@/components/ui";
 import { ConnectionForm } from "./ConnectionForm";
 import { ConnectionList } from "./ConnectionList";
@@ -35,6 +38,12 @@ async function getEntities() {
 }
 
 export default async function AdminConnectionsPage() {
+  const session = await getSession();
+  const isAdmin = session?.user.role === "ADMIN" || session?.user.role === "MODERATOR";
+  if (!isAdmin) {
+    redirect("/login?redirect=/admin/connections");
+  }
+
   const [connections, entities] = await Promise.all([
     getConnections(),
     getEntities(),

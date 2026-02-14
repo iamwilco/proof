@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - Design system: align input/textarea/select styling for dark mode visibility.
 - Navigation: replace top nav with collapsible sidebar layout plus mobile bottom bar.
 - Auth: add protected route gating with login redirects for restricted areas.
+- Admin: enforce admin access checks and improve disputes page dark-mode styling.
 
 ### Added
 - Proposal Tinder 2.0 accountability overlays (score badge, completion/on-time stats, red flag indicators).
