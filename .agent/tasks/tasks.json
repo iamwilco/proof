@@ -2043,8 +2043,9 @@
     {
       "id": "PROOF-114",
       "title": "Design System: Fix Invisible Input Fields",
-      "description": "Fix white inputs on white background with white font. Add proper borders and contrast.",
-      "status": "pending",
+      "description": "Fix input fields not visible in dark mode due to white text on white background.",
+      "status": "completed",
+      "completed": "2026-02-14",
       "priority": "high",
       "labels": ["design", "ui", "accessibility"],
       "acceptance_criteria": [

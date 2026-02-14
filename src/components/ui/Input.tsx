@@ -17,7 +17,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label htmlFor={inputId} className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label htmlFor={inputId} className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">
             {label}
           </label>
         )}
@@ -35,7 +35,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               placeholder:text-slate-400
               focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20
               disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500
-              ${error ? "border-red-300 focus:border-red-500 focus:ring-red-500/20" : "border-slate-300"}
+              dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500
+              dark:focus:border-blue-400 dark:focus:ring-blue-400/20 dark:disabled:bg-slate-800
+              ${error ? "border-red-300 focus:border-red-500 focus:ring-red-500/20 dark:border-red-500 dark:focus:border-red-400 dark:focus:ring-red-400/20" : "border-slate-300"}
               ${leftIcon ? "pl-10" : ""}
               ${rightIcon ? "pr-10" : ""}
               ${className}
@@ -49,7 +51,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
         {error && <p className="mt-1.5 text-sm text-red-600">{error}</p>}
-        {hint && !error && <p className="mt-1.5 text-sm text-slate-500">{hint}</p>}
+        {hint && !error && <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{hint}</p>}
       </div>
     );
   }
@@ -70,7 +72,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className="w-full">
         {label && (
-          <label htmlFor={inputId} className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label htmlFor={inputId} className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">
             {label}
           </label>
         )}
@@ -82,13 +84,15 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             placeholder:text-slate-400
             focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20
             disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500
-            ${error ? "border-red-300 focus:border-red-500 focus:ring-red-500/20" : "border-slate-300"}
+            dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500
+            dark:focus:border-blue-400 dark:focus:ring-blue-400/20 dark:disabled:bg-slate-800
+            ${error ? "border-red-300 focus:border-red-500 focus:ring-red-500/20 dark:border-red-500 dark:focus:border-red-400 dark:focus:ring-red-400/20" : "border-slate-300"}
             ${className}
           `}
           {...props}
         />
         {error && <p className="mt-1.5 text-sm text-red-600">{error}</p>}
-        {hint && !error && <p className="mt-1.5 text-sm text-slate-500">{hint}</p>}
+        {hint && !error && <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{hint}</p>}
       </div>
     );
   }
@@ -110,7 +114,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="w-full">
         {label && (
-          <label htmlFor={inputId} className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label htmlFor={inputId} className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">
             {label}
           </label>
         )}
@@ -121,7 +125,9 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             w-full rounded-lg border bg-white px-4 py-2 text-sm text-slate-900
             focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20
             disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500
-            ${error ? "border-red-300 focus:border-red-500 focus:ring-red-500/20" : "border-slate-300"}
+            dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100
+            dark:focus:border-blue-400 dark:focus:ring-blue-400/20 dark:disabled:bg-slate-800
+            ${error ? "border-red-300 focus:border-red-500 focus:ring-red-500/20 dark:border-red-500 dark:focus:border-red-400 dark:focus:ring-red-400/20" : "border-slate-300"}
             ${className}
           `}
           {...props}
@@ -133,7 +139,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           ))}
         </select>
         {error && <p className="mt-1.5 text-sm text-red-600">{error}</p>}
-        {hint && !error && <p className="mt-1.5 text-sm text-slate-500">{hint}</p>}
+        {hint && !error && <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{hint}</p>}
       </div>
     );
   }
