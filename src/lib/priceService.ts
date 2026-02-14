@@ -70,35 +70,58 @@ export async function getHistoricalAdaPrice(date: Date): Promise<number> {
   }
 }
 
+// Historical ADA price approximations by period
+const priceHistory: Record<string, number> = {
+  "2019": 0.04,
+  "2020-H1": 0.05,
+  "2020-H2": 0.12,
+  "2021-Q1": 1.20,
+  "2021-Q2": 1.50,
+  "2021-Q3": 2.50,
+  "2021-Q4": 1.40,
+  "2022-Q1": 1.00,
+  "2022-Q2": 0.50,
+  "2022-Q3": 0.45,
+  "2022-Q4": 0.30,
+  "2023-Q1": 0.35,
+  "2023-Q2": 0.30,
+  "2023-Q3": 0.25,
+  "2023-Q4": 0.40,
+  "2024-Q1": 0.60,
+  "2024-Q2": 0.45,
+  "2024-Q3": 0.35,
+  "2024-Q4": 0.50,
+  "2025": 0.55,
+  "2026": 0.60,
+};
+
+// Estimated ADA prices by Catalyst fund number (approximate time of funding)
+const fundPrices: Record<number, number> = {
+  1: 0.10,   // Fund 1 - late 2020
+  2: 0.15,   // Fund 2 - early 2021
+  3: 1.20,   // Fund 3 - Q1 2021
+  4: 1.40,   // Fund 4 - Q2 2021
+  5: 2.00,   // Fund 5 - Q3 2021
+  6: 1.80,   // Fund 6 - Q3 2021
+  7: 1.30,   // Fund 7 - Q4 2021
+  8: 1.00,   // Fund 8 - Q1 2022
+  9: 0.50,   // Fund 9 - Q2 2022
+  10: 0.35,  // Fund 10 - Q3 2022
+  11: 0.30,  // Fund 11 - Q4 2022
+  12: 0.35,  // Fund 12 - Q1 2023
+  13: 0.30,  // Fund 13 - Q2-Q3 2023
+  14: 0.40,  // Fund 14 - Q4 2023
+};
+
+// Get estimated ADA price for a specific fund number
+export function getEstimatedPriceForFund(fundNumber: number): number {
+  return fundPrices[fundNumber] || 0.50;
+}
+
 // Fallback price estimation based on historical data
-function getEstimatedPrice(date: Date): number {
+export function getEstimatedPrice(date: Date): number {
   const year = date.getFullYear();
   const month = date.getMonth();
-
-  // Historical ADA price approximations by period
-  const priceHistory: Record<string, number> = {
-    "2019": 0.04,
-    "2020-H1": 0.05,
-    "2020-H2": 0.12,
-    "2021-Q1": 1.20,
-    "2021-Q2": 1.50,
-    "2021-Q3": 2.50,
-    "2021-Q4": 1.40,
-    "2022-Q1": 1.00,
-    "2022-Q2": 0.50,
-    "2022-Q3": 0.45,
-    "2022-Q4": 0.30,
-    "2023-Q1": 0.35,
-    "2023-Q2": 0.30,
-    "2023-Q3": 0.25,
-    "2023-Q4": 0.40,
-    "2024-Q1": 0.60,
-    "2024-Q2": 0.45,
-    "2024-Q3": 0.35,
-    "2024-Q4": 0.50,
-    "2025": 0.55,
-    "2026": 0.60,
-  };
 
   if (year <= 2019) return priceHistory["2019"];
   if (year >= 2025) return priceHistory[`${year}`] || 0.55;

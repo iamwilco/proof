@@ -1,5 +1,6 @@
 import Link from "next/link";
 import prisma from "../../lib/prisma";
+import { getEstimatedPriceForFund } from "../../lib/priceService";
 
 export const revalidate = 60;
 
@@ -12,6 +13,16 @@ const formatCurrency = (amount: number, currency: string) => {
     currency: "USD",
     maximumFractionDigits: 0,
   }).format(amount);
+};
+
+const formatUsd = (amount: number) => {
+  if (amount >= 1_000_000) {
+    return `$${(amount / 1_000_000).toFixed(1)}M`;
+  }
+  if (amount >= 1_000) {
+    return `$${Math.round(amount / 1_000)}K`;
+  }
+  return `$${Math.round(amount)}`;
 };
 
 const formatPercent = (value: number) => {
@@ -30,6 +41,7 @@ type FundWithStats = {
   totalBudget: number;
   totalAwarded: number;
   totalDistributed: number;
+  usdValue?: number;
 };
 
 const ProgressBar = ({ value, max, color }: { value: number; max: number; color: string }) => {
@@ -44,7 +56,7 @@ const ProgressBar = ({ value, max, color }: { value: number; max: number; color:
   );
 };
 
-const FundCard = ({ fund }: { fund: FundWithStats }) => {
+const FundCard = ({ fund, adaPrice }: { fund: FundWithStats; adaPrice: number }) => {
   const completionRate = fund.fundedProposalsCount > 0
     ? fund.completedProposalsCount / fund.fundedProposalsCount
     : 0;
@@ -77,10 +89,17 @@ const FundCard = ({ fund }: { fund: FundWithStats }) => {
         </div>
         <div className="text-right">
           <p className="text-2xl font-bold text-slate-900 dark:text-white">
-            {formatCurrency(Number(fund.totalAwarded), fund.currency)}
+            {fund.currency === "ADA" 
+              ? formatUsd(Number(fund.totalAwarded) * adaPrice)
+              : formatCurrency(Number(fund.totalAwarded), fund.currency)}
           </p>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Total Awarded {fund.currency === "ADA" && <span className="text-slate-400 dark:text-slate-500">(ADA)</span>}
+            Total Awarded
+            {fund.currency === "ADA" && (
+              <span className="ml-1 text-slate-400 dark:text-slate-500">
+                ({formatCurrency(Number(fund.totalAwarded), "ADA")})
+              </span>
+            )}
           </p>
         </div>
       </div>
@@ -199,6 +218,7 @@ export default async function FundsPage() {
                 totalAwarded: Number(fund.totalAwarded),
                 totalDistributed: Number(fund.totalDistributed),
               }}
+              adaPrice={getEstimatedPriceForFund(fund.number)}
             />
           ))}
         </section>
