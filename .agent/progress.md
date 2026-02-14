@@ -38,8 +38,8 @@
 ## Current Task
 
 ```
-ID:          PROOF-112
-Title:       Fix Project Search
+ID:          PROOF-113
+Title:       Design System: Dark Mode Default & Consistent Backgrounds
 Milestone:   31 (Pre-Launch Fixes)
 Status:      pending
 ```
@@ -50,6 +50,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-112 | Fix Project Search | 2026-02-14 |
 | PROOF-111 | Fix Empty Data Pages | 2026-02-14 |
 | PROOF-110 | Fix Rankings Performance Error | 2026-02-14 |
 | PROOF-109 | Fix ConnectionHoverCard AbortError | 2026-02-14 |

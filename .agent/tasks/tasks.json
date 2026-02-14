@@ -2013,7 +2013,8 @@
       "id": "PROOF-112",
       "title": "Fix Project Search",
       "description": "Fix search functionality on project detail pages.",
-      "status": "pending",
+      "status": "completed",
+      "completed": "2026-02-14",
       "priority": "high",
       "labels": ["bugfix", "search"],
       "acceptance_criteria": [

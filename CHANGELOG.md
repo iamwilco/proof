@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - ConnectionHoverCard: guard aborted fetch cleanup to avoid AbortError on unmount.
 - Rankings: force dynamic rendering to avoid Performance.measure negative timestamp error.
 - Organizations/Milestones: force dynamic rendering and add actionable empty states for missing data.
+- Projects: trim search input and include related people/org matches to return results reliably.
 
 ### Added
 - Proposal Tinder 2.0 accountability overlays (score badge, completion/on-time stats, red flag indicators).

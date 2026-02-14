@@ -4,7 +4,7 @@ import prisma from "../../lib/prisma";
 import RankingBadge from "../../components/RankingBadge";
 import ConnectionHoverCard from "../../components/ConnectionHoverCard";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 type SearchParams = {
   q?: string;
@@ -120,7 +120,7 @@ export default async function ProjectsPage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
-  const query = params.q ?? "";
+  const query = (params.q ?? "").trim();
   const fundFilter = params.fund ?? "";
   const statusFilter = params.status ?? "";
   const categoryFilter = params.category ?? "";
@@ -133,6 +133,8 @@ export default async function ProjectsPage({
     whereClause.OR = [
       { title: { contains: query, mode: "insensitive" } },
       { description: { contains: query, mode: "insensitive" } },
+      { projectPeople: { some: { person: { name: { contains: query, mode: "insensitive" } } } } },
+      { projectOrgs: { some: { organization: { name: { contains: query, mode: "insensitive" } } } } },
     ];
   }
 
