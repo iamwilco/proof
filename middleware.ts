@@ -1,4 +1,3 @@
-import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -58,35 +57,27 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (url.pathname.startsWith("/account")) {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const protectedPrefixes = [
+    "/account",
+    "/admin",
+    "/moderators",
+    "/reviewers",
+    "/my",
+    "/transactions",
+    "/voting",
+    "/reports",
+    "/bookmarks",
+  ];
+  const isProtectedRoute = protectedPrefixes.some((prefix) => url.pathname.startsWith(prefix));
 
-    if (!supabaseUrl || !supabaseAnon) {
-      return new NextResponse("Supabase not configured", { status: 503 });
-    }
+  if (isProtectedRoute) {
+    const sessionToken = request.cookies.get("session")?.value;
 
-    const response = NextResponse.next();
-    const supabase = createServerClient(supabaseUrl, supabaseAnon, {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            response.cookies.set(name, value, options);
-          });
-        },
-      },
-    });
-
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) {
+    if (!sessionToken) {
       url.pathname = "/login";
+      url.searchParams.set("redirect", request.nextUrl.pathname);
       return NextResponse.redirect(url);
     }
-
-    return response;
   }
 
   if (url.pathname.startsWith("/api/")) {
@@ -100,5 +91,17 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/health", "/account", "/api/:path*"],
+  matcher: [
+    "/admin/health",
+    "/account",
+    "/admin/:path*",
+    "/moderators/:path*",
+    "/reviewers/:path*",
+    "/my/:path*",
+    "/transactions/:path*",
+    "/voting/:path*",
+    "/reports/:path*",
+    "/bookmarks/:path*",
+    "/api/:path*",
+  ],
 };

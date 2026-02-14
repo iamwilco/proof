@@ -2078,7 +2078,8 @@
       "id": "PROOF-116",
       "title": "Auth: Protected Routes",
       "description": "Block certain areas for logged-in users only. Public browsing, actions require login.",
-      "status": "pending",
+      "status": "completed",
+      "completed": "2026-02-14",
       "priority": "high",
       "labels": ["auth", "security"],
       "acceptance_criteria": [
