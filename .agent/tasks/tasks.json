@@ -1997,7 +1997,8 @@
       "id": "PROOF-111",
       "title": "Fix Empty Data Pages",
       "description": "Fix /organizations and /milestones pages showing no data. Verify queries and data presence.",
-      "status": "pending",
+      "status": "completed",
+      "completed": "2026-02-14",
       "priority": "high",
       "labels": ["bugfix", "data", "ui"],
       "acceptance_criteria": [

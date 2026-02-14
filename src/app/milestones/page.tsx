@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import prisma from "../../lib/prisma";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 const formatNumber = (value: number) =>
   new Intl.NumberFormat("en-US", { notation: "compact" }).format(value);
@@ -84,30 +84,56 @@ export default async function MilestoneDashboardPage({ searchParams }: PageProps
               {formatNumber(totalMilestones)}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-              Completed
-            </p>
-            <p className="mt-1 text-2xl font-bold text-emerald-600">
-              {formatNumber(completedMilestones)}
-            </p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-              In Progress
-            </p>
-            <p className="mt-1 text-2xl font-bold text-blue-600">
-              {formatNumber(inProgressMilestones)}
-            </p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-              Pending
-            </p>
-            <p className="mt-1 text-2xl font-bold text-amber-600">
-              {formatNumber(pendingMilestones)}
-            </p>
-          </div>
+          {milestones.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white py-12 text-center">
+              <p className="text-sm font-semibold text-slate-700">No milestones available yet</p>
+              <p className="mt-2 text-sm text-slate-500">
+                Milestone data is populated by the ingestion pipeline. If this is a fresh database,
+                run the milestone import or verify data sources.
+              </p>
+              <div className="mt-4 flex justify-center gap-3">
+                <Link
+                  href="/admin/health"
+                  className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50"
+                >
+                  Check data health
+                </Link>
+                <Link
+                  href="/roadmap"
+                  className="rounded-lg bg-slate-900 px-3 py-1.5 text-sm text-white hover:bg-slate-800"
+                >
+                  View roadmap
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="rounded-2xl border border-slate-200 bg-white p-5">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  Completed
+                </p>
+                <p className="mt-1 text-2xl font-bold text-emerald-600">
+                  {formatNumber(completedMilestones)}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white p-5">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  In Progress
+                </p>
+                <p className="mt-1 text-2xl font-bold text-blue-600">
+                  {formatNumber(inProgressMilestones)}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white p-5">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  Pending
+                </p>
+                <p className="mt-1 text-2xl font-bold text-amber-600">
+                  {formatNumber(pendingMilestones)}
+                </p>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="mb-6 flex flex-wrap items-center gap-3">

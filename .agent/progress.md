@@ -38,8 +38,8 @@
 ## Current Task
 
 ```
-ID:          PROOF-111
-Title:       Fix Empty Data Pages
+ID:          PROOF-112
+Title:       Fix Project Search
 Milestone:   31 (Pre-Launch Fixes)
 Status:      pending
 ```
@@ -50,6 +50,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-111 | Fix Empty Data Pages | 2026-02-14 |
 | PROOF-110 | Fix Rankings Performance Error | 2026-02-14 |
 | PROOF-109 | Fix ConnectionHoverCard AbortError | 2026-02-14 |
 | PROOF-108 | Fix Database Schema Sync | 2026-02-14 |

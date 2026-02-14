@@ -3,7 +3,7 @@ import Image from "next/image";
 import prisma from "../../lib/prisma";
 import ConnectionHoverCard from "../../components/ConnectionHoverCard";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 interface PageProps {
   searchParams: Promise<{ sort?: string }>;
@@ -143,8 +143,26 @@ export default async function OrganizationsPage({ searchParams }: PageProps) {
 
         {/* Organizations List */}
         {sortedOrgs.length === 0 ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center">
-            <p className="text-slate-500">No organizations found.</p>
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+            <p className="text-sm font-semibold text-slate-700">No organizations found yet</p>
+            <p className="mt-2 text-sm text-slate-500">
+              Organization data appears after ingestion and manual connections. If this is a fresh
+              environment, run the data ingest or link orgs in the admin panel.
+            </p>
+            <div className="mt-4 flex justify-center gap-3">
+              <Link
+                href="/admin/connections"
+                className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50"
+              >
+                Manage connections
+              </Link>
+              <Link
+                href="/roadmap"
+                className="rounded-lg bg-slate-900 px-3 py-1.5 text-sm text-white hover:bg-slate-800"
+              >
+                View roadmap
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
