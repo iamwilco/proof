@@ -71,7 +71,7 @@ const FundCard = ({ fund, adaPrice }: { fund: FundWithStats; adaPrice: number })
 
   return (
     <Link
-      href={`/funds/${fund.id}`}
+      href={`/funds/${fund.number}`}
       className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-slate-700 dark:bg-slate-800"
     >
       <div className="flex items-start justify-between">
