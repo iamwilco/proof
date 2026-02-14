@@ -13,7 +13,7 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
-export async function GET(
+export default async function Image(
   _: Request,
   { params }: { params: { id: string } }
 ) {

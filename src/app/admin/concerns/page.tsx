@@ -1,5 +1,7 @@
 import prisma from "../../../lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function ConcernsQueuePage() {
   const concerns = await prisma.concern.findMany({
     where: { status: "pending" },

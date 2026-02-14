@@ -3,6 +3,8 @@ import { Card, CardHeader, CardTitle, CardContent, Badge } from "@/components/ui
 import { ConnectionForm } from "./ConnectionForm";
 import { ConnectionList } from "./ConnectionList";
 
+export const dynamic = "force-dynamic";
+
 async function getConnections() {
   return prisma.adminConnection.findMany({
     orderBy: { createdAt: "desc" },

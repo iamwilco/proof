@@ -1,7 +1,7 @@
 import Link from "next/link";
 import prisma from "../../../lib/prisma";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat("en-US", {

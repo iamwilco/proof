@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import GraphClient from "./GraphClient";
 
 export default function GraphPage() {
@@ -12,7 +13,9 @@ export default function GraphPage() {
             Visualize relationships across projects, people, and funds.
           </p>
         </header>
-        <GraphClient />
+        <Suspense fallback={<div className="flex h-96 items-center justify-center text-slate-500">Loading graph...</div>}>
+          <GraphClient />
+        </Suspense>
       </div>
     </div>
   );

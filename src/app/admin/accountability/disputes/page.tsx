@@ -3,6 +3,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import DisputeActions from "./DisputeActions";
 
+export const dynamic = "force-dynamic";
+
 export default async function AccountabilityDisputesPage() {
   const disputes = await prisma.accountabilityScoreDispute.findMany({
     orderBy: { createdAt: "desc" },

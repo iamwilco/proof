@@ -1,5 +1,7 @@
 import prisma from "../../../lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 type StatCardProps = {
   label: string;
   value: string | number;
