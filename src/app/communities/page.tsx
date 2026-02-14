@@ -64,12 +64,12 @@ export default async function CommunitiesPage({ searchParams }: PageProps) {
   const totalProjects = communities.reduce((sum, c) => sum + c.projects.length, 0);
 
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-12">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 px-6 py-12">
       <div className="mx-auto max-w-6xl">
         <header className="mb-8 flex items-start justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Communities</h1>
-            <p className="mt-2 text-sm text-slate-600">
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Communities</h1>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
               Topic-based groupings of Catalyst proposals.
             </p>
           </div>
@@ -83,23 +83,23 @@ export default async function CommunitiesPage({ searchParams }: PageProps) {
 
         {/* Stats */}
         <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
               Total Communities
             </p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">{totalCommunities}</p>
+            <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{totalCommunities}</p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
               Projects in Communities
             </p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">{totalProjects}</p>
+            <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{totalProjects}</p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
               Avg Projects/Community
             </p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">
+            <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
               {totalCommunities > 0 ? (totalProjects / totalCommunities).toFixed(1) : 0}
             </p>
           </div>
@@ -107,7 +107,7 @@ export default async function CommunitiesPage({ searchParams }: PageProps) {
 
         {/* Sort */}
         <div className="mb-6 flex items-center gap-4">
-          <span className="text-sm font-medium text-slate-500">Sort by:</span>
+          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Sort by:</span>
           <div className="flex gap-2">
             {[
               { key: "projects", label: "Most Projects" },
@@ -120,8 +120,8 @@ export default async function CommunitiesPage({ searchParams }: PageProps) {
                 href={`/communities?sort=${option.key}`}
                 className={`rounded-lg px-3 py-1.5 text-sm font-medium ${
                   sortBy === option.key
-                    ? "bg-blue-100 text-blue-700"
-                    : "bg-white text-slate-600 hover:bg-slate-100"
+                    ? "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
+                    : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                 }`}
               >
                 {option.label}
@@ -132,8 +132,8 @@ export default async function CommunitiesPage({ searchParams }: PageProps) {
 
         {/* Communities Grid */}
         {communitiesWithStats.length === 0 ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center">
-            <p className="text-slate-500">No communities yet.</p>
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-12 text-center">
+            <p className="text-slate-500 dark:text-slate-400">No communities yet.</p>
             <Link
               href="/communities/new"
               className="mt-4 inline-block rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
@@ -147,25 +147,25 @@ export default async function CommunitiesPage({ searchParams }: PageProps) {
               <Link
                 key={community.id}
                 href={`/communities/${community.slug}`}
-                className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-blue-200 hover:shadow-md"
+                className="group rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 transition hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-md"
               >
-                <h2 className="text-lg font-semibold text-slate-900 group-hover:text-blue-600">
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
                   {community.name}
                 </h2>
                 {community.description && (
-                  <p className="mt-2 line-clamp-2 text-sm text-slate-600">
+                  <p className="mt-2 line-clamp-2 text-sm text-slate-600 dark:text-slate-400">
                     {community.description}
                   </p>
                 )}
-                <div className="mt-4 flex items-center gap-4 text-sm text-slate-500">
-                  <span className="font-medium text-slate-700">
+                <div className="mt-4 flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+                  <span className="font-medium text-slate-700 dark:text-slate-300">
                     {community.projectCount} projects
                   </span>
                   <span>
                     ${(community.totalFunding / 1000).toFixed(0)}k funding
                   </span>
                 </div>
-                <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
+                <div className="mt-3 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
                   <span>
                     Created by {community.createdBy.displayName || "Anonymous"}
                   </span>

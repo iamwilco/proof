@@ -74,60 +74,60 @@ export default async function VotingAnalyticsPage() {
       : 0;
 
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-12">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 px-6 py-12">
       <div className="mx-auto max-w-6xl">
         <header className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Voting Analytics</h1>
-          <p className="mt-2 text-sm text-slate-600">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Voting Analytics</h1>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
             Fund-wide voting statistics and historical trends across Catalyst proposals.
           </p>
         </header>
 
         <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
               Total Proposals
             </p>
-            <p className="mt-1 text-2xl font-bold text-slate-900">
+            <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">
               {formatNumber(records.length)}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
               Total Yes Votes
             </p>
-            <p className="mt-1 text-2xl font-bold text-emerald-600">
+            <p className="mt-1 text-2xl font-bold text-emerald-600 dark:text-emerald-400">
               {formatNumber(totalYes)}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
               Total No Votes
             </p>
-            <p className="mt-1 text-2xl font-bold text-rose-600">
+            <p className="mt-1 text-2xl font-bold text-rose-600 dark:text-rose-400">
               {formatNumber(totalNo)}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
               Avg Approval Rate
             </p>
-            <p className="mt-1 text-2xl font-bold text-blue-600">
+            <p className="mt-1 text-2xl font-bold text-blue-600 dark:text-blue-400">
               {Math.round(avgApproval * 100)}%
             </p>
           </div>
         </div>
 
-        <div className="mb-8 rounded-2xl border border-slate-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">
+        <div className="mb-8 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
+          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">
             Historical Voting Trends
           </h2>
           <VotingTrendsChart data={trendData} />
         </div>
 
         <div className="mb-8 grid gap-6 lg:grid-cols-2">
-          <div className="rounded-2xl border border-slate-200 bg-white p-6">
-            <h2 className="mb-4 text-lg font-semibold text-slate-900">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
+            <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">
               Top Categories by Yes Votes
             </h2>
             <div className="space-y-3">
@@ -138,16 +138,16 @@ export default async function VotingAnalyticsPage() {
                 return (
                   <div key={cat.category} className="space-y-1">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="font-medium text-slate-700">
+                      <span className="font-medium text-slate-700 dark:text-slate-300">
                         {idx + 1}. {cat.category}
                       </span>
-                      <span className="text-slate-500">
+                      <span className="text-slate-500 dark:text-slate-400">
                         {formatNumber(cat._sum.yesVotes ?? 0)} votes
                       </span>
                     </div>
-                    <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+                    <div className="h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
                       <div
-                        className="h-full bg-emerald-500"
+                        className="h-full bg-emerald-500 dark:bg-emerald-400"
                         style={{ width: `${yesPercent}%` }}
                       />
                     </div>
@@ -157,24 +157,24 @@ export default async function VotingAnalyticsPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6">
-            <h2 className="mb-4 text-lg font-semibold text-slate-900">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
+            <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">
               Top Proposals by Yes Votes
             </h2>
             <div className="space-y-3">
               {records.slice(0, 10).map((record) => (
                 <div
                   key={record.id}
-                  className="flex items-center justify-between gap-3 rounded-lg border border-slate-100 bg-slate-50 p-3"
+                  className="flex items-center justify-between gap-3 rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3"
                 >
                   <div className="min-w-0 flex-1">
                     <Link
                       href={`/projects/${record.projectId}`}
-                      className="block truncate font-medium text-blue-600 hover:underline"
+                      className="block truncate font-medium text-blue-600 dark:text-blue-400 hover:underline"
                     >
                       {record.project.title}
                     </Link>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       {record.fund.name} · {record.category}
                     </p>
                   </div>
@@ -194,7 +194,7 @@ export default async function VotingAnalyticsPage() {
           </div>
         </div>
 
-        <footer className="text-center text-xs text-slate-400">
+        <footer className="text-center text-xs text-slate-400 dark:text-slate-500">
           <p>Data refreshes every 5 minutes. Last updated at page load.</p>
         </footer>
       </div>
