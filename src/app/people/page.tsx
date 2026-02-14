@@ -11,6 +11,7 @@ type SearchParams = {
   q?: string;
   sort?: string;
   cursor?: string;
+  view?: string;
 };
 
 const PAGE_SIZE = 24;
@@ -132,6 +133,8 @@ export default async function PeoplePage({
   const params = await searchParams;
   const query = params.q ?? "";
   const cursor = params.cursor ?? "";
+  const viewMode = params.view === "table" ? "table" : "grid";
+  const sortBy = params.sort ?? "";
 
   const whereClause: Record<string, unknown> = {};
 
@@ -177,7 +180,18 @@ export default async function PeoplePage({
   const buildPaginationUrl = (cursorValue: string) => {
     const searchParamsObj: Record<string, string> = {};
     if (query) searchParamsObj.q = query;
+    if (sortBy) searchParamsObj.sort = sortBy;
+    if (viewMode === "table") searchParamsObj.view = "table";
     if (cursorValue) searchParamsObj.cursor = cursorValue;
+    const qs = new URLSearchParams(searchParamsObj).toString();
+    return qs ? `/people?${qs}` : "/people";
+  };
+
+  const buildViewUrl = (view: string) => {
+    const searchParamsObj: Record<string, string> = {};
+    if (query) searchParamsObj.q = query;
+    if (sortBy) searchParamsObj.sort = sortBy;
+    if (view === "table") searchParamsObj.view = "table";
     const qs = new URLSearchParams(searchParamsObj).toString();
     return qs ? `/people?${qs}` : "/people";
   };
@@ -192,8 +206,9 @@ export default async function PeoplePage({
           </p>
         </header>
 
-        <section className="mb-8">
+        <section className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <form method="GET" action="/people" className="flex items-center gap-2">
+            <input type="hidden" name="view" value={viewMode} />
             <input
               type="text"
               name="q"
@@ -201,6 +216,15 @@ export default async function PeoplePage({
               placeholder="Search by name or alias…"
               className="h-10 w-64 rounded-lg border border-slate-300 bg-white px-3 text-sm placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500"
             />
+            <select
+              name="sort"
+              defaultValue={sortBy}
+              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-white"
+            >
+              <option value="">Sort by Name</option>
+              <option value="funding">Sort by Funding</option>
+              <option value="projects">Sort by Projects</option>
+            </select>
             <button
               type="submit"
               className="h-10 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700"
@@ -216,6 +240,30 @@ export default async function PeoplePage({
               </Link>
             )}
           </form>
+
+          {/* View Toggle */}
+          <div className="flex items-center gap-1 rounded-lg border border-slate-300 dark:border-slate-600 p-1">
+            <Link
+              href={buildViewUrl("grid")}
+              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                viewMode === "grid"
+                  ? "bg-blue-600 text-white"
+                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
+              }`}
+            >
+              Grid
+            </Link>
+            <Link
+              href={buildViewUrl("table")}
+              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                viewMode === "table"
+                  ? "bg-blue-600 text-white"
+                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
+              }`}
+            >
+              Table
+            </Link>
+          </div>
         </section>
 
         {displayPeople.length === 0 ? (
@@ -227,21 +275,80 @@ export default async function PeoplePage({
           </div>
         ) : (
           <>
-            <section className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {displayPeople.map((person) => (
-                <PersonCard
-                  key={person.id}
-                  id={person.id}
-                  name={person.name}
-                  heroImgUrl={person.heroImgUrl}
-                  proposalsCount={person.proposalsCount}
-                  fundedProposalsCount={person.fundedProposalsCount}
-                  completedProposalsCount={person.completedProposalsCount}
-                  totalAmountAwarded={Number(person.totalAmountAwarded)}
-                  accountability={person.accountabilityScore}
-                />
-              ))}
-            </section>
+            {viewMode === "table" ? (
+              <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+                      <th className="px-4 py-3 text-left font-semibold text-slate-900 dark:text-white">Name</th>
+                      <th className="px-4 py-3 text-right font-semibold text-slate-900 dark:text-white">Proposals</th>
+                      <th className="px-4 py-3 text-right font-semibold text-slate-900 dark:text-white">Funded</th>
+                      <th className="px-4 py-3 text-right font-semibold text-slate-900 dark:text-white">Completed</th>
+                      <th className="px-4 py-3 text-right font-semibold text-slate-900 dark:text-white">Completion</th>
+                      <th className="px-4 py-3 text-right font-semibold text-slate-900 dark:text-white">Funding</th>
+                      <th className="px-4 py-3 text-center font-semibold text-slate-900 dark:text-white">Score</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                    {displayPeople.map((person) => {
+                      const completionRate = person.fundedProposalsCount > 0
+                        ? person.completedProposalsCount / person.fundedProposalsCount
+                        : 0;
+                      return (
+                        <tr key={person.id} className="hover:bg-slate-50 dark:hover:bg-slate-700">
+                          <td className="px-4 py-3">
+                            <Link href={`/people/${person.id}`} className="flex items-center gap-3 font-medium text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400">
+                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600 dark:bg-blue-900/50 dark:text-blue-400">
+                                {person.name.charAt(0).toUpperCase()}
+                              </div>
+                              {person.name}
+                            </Link>
+                          </td>
+                          <td className="px-4 py-3 text-right text-slate-600 dark:text-slate-300">{person.proposalsCount}</td>
+                          <td className="px-4 py-3 text-right text-emerald-600 dark:text-emerald-400">{person.fundedProposalsCount}</td>
+                          <td className="px-4 py-3 text-right text-blue-600 dark:text-blue-400">{person.completedProposalsCount}</td>
+                          <td className="px-4 py-3 text-right">
+                            <span className={completionRate >= 0.8 ? "text-emerald-600" : completionRate >= 0.5 ? "text-amber-600" : "text-red-600"}>
+                              {formatPercent(completionRate)}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-right font-semibold text-slate-900 dark:text-white">
+                            {formatCurrency(Number(person.totalAmountAwarded))}
+                          </td>
+                          <td className="px-4 py-3 text-center">
+                            {person.accountabilityScore ? (
+                              <AccountabilityBadge
+                                badge={person.accountabilityScore.badge as "trusted" | "reliable" | "unproven" | "concerning"}
+                                score={person.accountabilityScore.overallScore}
+                                size="sm"
+                              />
+                            ) : (
+                              <span className="text-slate-400">—</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <section className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {displayPeople.map((person) => (
+                  <PersonCard
+                    key={person.id}
+                    id={person.id}
+                    name={person.name}
+                    heroImgUrl={person.heroImgUrl}
+                    proposalsCount={person.proposalsCount}
+                    fundedProposalsCount={person.fundedProposalsCount}
+                    completedProposalsCount={person.completedProposalsCount}
+                    totalAmountAwarded={Number(person.totalAmountAwarded)}
+                    accountability={person.accountabilityScore}
+                  />
+                ))}
+              </section>
+            )}
 
             {(cursor || hasMore) && (
               <div className="mt-10 flex items-center justify-center gap-4">
