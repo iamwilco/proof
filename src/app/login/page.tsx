@@ -50,6 +50,7 @@ function LoginContent() {
   const getErrorMessage = (code: string | null): string | null => {
     switch (code) {
       case "google_denied": return "Google sign-in was cancelled";
+      case "google_not_configured": return "Google sign-in is not configured. Please use wallet or email.";
       case "invalid_request": return "Invalid authentication request";
       case "invalid_state": return "Security check failed, please try again";
       case "token_exchange": return "Failed to complete Google sign-in";
@@ -57,6 +58,7 @@ function LoginContent() {
       case "missing_token": return "Invalid email link";
       case "invalid_token": return "Email link expired or already used";
       case "verification_failed": return "Email verification failed";
+      case "wallet_error": return "Wallet connection failed. Please try again.";
       default: return null;
     }
   };

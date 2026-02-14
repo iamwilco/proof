@@ -27,13 +27,13 @@ const formatCurrency = (amount: number) => {
 
 const StatusBadge = ({ status }: { status: string }) => {
   const colors: Record<string, string> = {
-    completed: "bg-emerald-100 text-emerald-700",
-    in_progress: "bg-blue-100 text-blue-700",
-    funded: "bg-amber-100 text-amber-700",
-    not_approved: "bg-slate-100 text-slate-600",
+    completed: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300",
+    in_progress: "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300",
+    funded: "bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300",
+    not_approved: "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300",
   };
 
-  const colorClass = colors[status.toLowerCase()] ?? "bg-slate-100 text-slate-600";
+  const colorClass = colors[status.toLowerCase()] ?? "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300";
 
   return (
     <span
@@ -73,13 +73,13 @@ const ProjectCard = ({
         href={`/projects/${id}`}
         className={`group flex flex-col rounded-2xl border p-5 shadow-sm transition-shadow hover:shadow-md ${
           flagCount && flagCount > 0
-            ? "border-red-200 bg-red-50/30"
-            : "border-slate-200 bg-white"
+            ? "border-red-200 bg-red-50/30 dark:border-red-800 dark:bg-red-900/20"
+            : "border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800"
         }`}
       >
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
-            <h3 className="text-lg font-semibold leading-snug text-slate-900 group-hover:text-blue-600">
+            <h3 className="text-lg font-semibold leading-snug text-slate-900 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
               {title}
             </h3>
             {flagCount && flagCount > 0 && (
@@ -96,16 +96,16 @@ const ProjectCard = ({
             <StatusBadge status={status} />
           </div>
         </div>
-        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-600">
+        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
           {description}
         </p>
         <div className="mt-auto pt-4">
-          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-            <span className="rounded bg-slate-100 px-2 py-0.5">{category}</span>
+          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <span className="rounded bg-slate-100 px-2 py-0.5 dark:bg-slate-700">{category}</span>
             <span>•</span>
             <span>{fundName}</span>
           </div>
-          <p className="mt-2 text-base font-semibold text-slate-900">
+          <p className="mt-2 text-base font-semibold text-slate-900 dark:text-white">
             {formatCurrency(fundingAmount)}
           </p>
         </div>
@@ -205,11 +205,11 @@ export default async function ProjectsPage({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-12">
+    <div className="min-h-screen bg-slate-50 px-6 py-12 dark:bg-slate-950">
       <div className="mx-auto max-w-7xl">
         <header className="mb-10">
-          <h1 className="text-3xl font-bold text-slate-900">Projects</h1>
-          <p className="mt-2 text-base text-slate-600">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Projects</h1>
+          <p className="mt-2 text-base text-slate-600 dark:text-slate-300">
             Browse Catalyst-funded projects. Use the filters and search to find specific proposals.
           </p>
         </header>
@@ -224,7 +224,7 @@ export default async function ProjectsPage({
               name="q"
               defaultValue={query}
               placeholder="Search projects…"
-              className="h-10 w-64 rounded-lg border border-slate-300 bg-white px-3 text-sm placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="h-10 w-64 rounded-lg border border-slate-300 bg-white px-3 text-sm placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500"
             />
             <button
               type="submit"
@@ -239,7 +239,7 @@ export default async function ProjectsPage({
             <select
               name="flagged"
               defaultValue={flaggedFilter}
-              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none"
+              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-white"
             >
               <option value="">All Projects</option>
               <option value="yes">Flagged Only</option>
@@ -249,7 +249,7 @@ export default async function ProjectsPage({
             <select
               name="fund"
               defaultValue={fundFilter}
-              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none"
+              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-white"
             >
               <option value="">All Funds</option>
               {funds.map((f) => (
@@ -262,7 +262,7 @@ export default async function ProjectsPage({
             <select
               name="status"
               defaultValue={statusFilter}
-              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none"
+              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-white"
             >
               <option value="">All Statuses</option>
               {statuses.map((s) => (
@@ -275,7 +275,7 @@ export default async function ProjectsPage({
             <select
               name="category"
               defaultValue={categoryFilter}
-              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none"
+              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-white"
             >
               <option value="">All Categories</option>
               {categories.map((c) => (
@@ -304,9 +304,9 @@ export default async function ProjectsPage({
         </section>
 
         {displayProjects.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white py-16 text-center">
-            <p className="text-lg font-medium text-slate-600">No projects found</p>
-            <p className="mt-1 text-sm text-slate-500">Try adjusting your search or filters.</p>
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-white py-16 text-center dark:border-slate-600 dark:bg-slate-800">
+            <p className="text-lg font-medium text-slate-600 dark:text-slate-300">No projects found</p>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Try adjusting your search or filters.</p>
           </div>
         ) : (
           <>
@@ -332,7 +332,7 @@ export default async function ProjectsPage({
                 {cursor && (
                   <Link
                     href={buildPaginationUrl("")}
-                    className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                    className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                   >
                     ← First Page
                   </Link>

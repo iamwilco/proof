@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import prisma from "../../../lib/prisma";
+import { getSession } from "../../../lib/auth/session";
 import RankingBadge from "../../../components/RankingBadge";
 import VotingStats from "../../../components/VotingStats";
 import ConnectionHoverCard from "../../../components/ConnectionHoverCard";
@@ -119,6 +120,8 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
 
 export default async function ProjectDetailPage({ params }: PageProps) {
   const { id } = await params;
+  const session = await getSession();
+  const isAuthenticated = !!session;
 
   const project = await prisma.project.findUnique({
     where: { id },
@@ -456,21 +459,36 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </Section>
           )}
 
-          <Section title="Feedback">
-            <FeedbackForm projectId={project.id} />
-          </Section>
+          {isAuthenticated ? (
+            <Section title="Feedback">
+              <FeedbackForm projectId={project.id} />
+            </Section>
+          ) : (
+            <Section title="Feedback">
+              <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-center dark:border-slate-700 dark:bg-slate-800">
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  <Link href="/login" className="font-medium text-blue-600 hover:underline dark:text-blue-400">
+                    Sign in
+                  </Link>{" "}
+                  to rate this project or submit feedback.
+                </p>
+              </div>
+            </Section>
+          )}
           <ReviewSection projectId={project.id} />
-          <Section title="Leader responses">
-            <LeaderResponsePanel
-              projectId={project.id}
-              concerns={project.concerns.map((concern) => ({
-                id: concern.id,
-                description: concern.description,
-                category: concern.category,
-                status: concern.status,
-              }))}
-            />
-          </Section>
+          {isAuthenticated && (
+            <Section title="Leader responses">
+              <LeaderResponsePanel
+                projectId={project.id}
+                concerns={project.concerns.map((concern) => ({
+                  id: concern.id,
+                  description: concern.description,
+                  category: concern.category,
+                  status: concern.status,
+                }))}
+              />
+            </Section>
+          )}
           {project.concerns.length > 0 && (
             <Section title="Concerns & Responses">
               <div className="space-y-4">
@@ -695,7 +713,24 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </Section>
           )}
 
-          <FlagSection projectId={project.id} projectTitle={project.title} />
+          {isAuthenticated ? (
+            <FlagSection projectId={project.id} projectTitle={project.title} />
+          ) : (
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Community Oversight</h2>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Help maintain transparency by reporting concerns about this project.
+              </p>
+              <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4 text-center dark:border-slate-700 dark:bg-slate-900">
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  <Link href="/login" className="font-medium text-blue-600 hover:underline dark:text-blue-400">
+                    Sign in
+                  </Link>{" "}
+                  to report concerns about this project.
+                </p>
+              </div>
+            </div>
+          )}
 
           <Section title="Source Provenance">
             <dl className="grid gap-4 sm:grid-cols-3">

@@ -6,9 +6,8 @@ const GOOGLE_REDIRECT_URI = process.env.NEXTAUTH_URL + "/api/auth/google/callbac
 
 export async function GET() {
   if (!GOOGLE_CLIENT_ID) {
-    return NextResponse.json(
-      { error: "Google OAuth not configured" },
-      { status: 500 }
+    return NextResponse.redirect(
+      new URL("/login?error=google_not_configured", process.env.NEXTAUTH_URL || "http://localhost:3000")
     );
   }
 

@@ -5,8 +5,8 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 type Theme = "light" | "dark" | "system";
 
 function getStoredTheme(): Theme {
-  if (typeof window === "undefined") return "system";
-  return (localStorage.getItem("theme") as Theme) || "system";
+  if (typeof window === "undefined") return "dark";
+  return (localStorage.getItem("theme") as Theme) || "dark";
 }
 
 export function ThemeToggle() {

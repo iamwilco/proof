@@ -81,36 +81,36 @@ export default async function OrganizationsPage({ searchParams }: PageProps) {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-12">
+    <div className="min-h-screen bg-slate-50 px-6 py-12 dark:bg-slate-950">
       <div className="mx-auto max-w-6xl">
         <header className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Organizations</h1>
-          <p className="mt-2 text-sm text-slate-600">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Organizations</h1>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
             Teams and companies building on Cardano through Catalyst.
           </p>
         </header>
 
         {/* Stats */}
         <div className="mb-8 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
               Total Organizations
             </p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">{totalOrgs}</p>
+            <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{totalOrgs}</p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
               Total Funding Awarded
             </p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">
+            <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
               {formatCurrency(totalFunded)}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
               Avg Funding/Org
             </p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">
+            <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
               {totalOrgs > 0 ? formatCurrency(totalFunded / totalOrgs) : "$0"}
             </p>
           </div>
@@ -118,7 +118,7 @@ export default async function OrganizationsPage({ searchParams }: PageProps) {
 
         {/* Sort */}
         <div className="mb-6 flex items-center gap-4">
-          <span className="text-sm font-medium text-slate-500">Sort by:</span>
+          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Sort by:</span>
           <div className="flex gap-2">
             {[
               { key: "funded", label: "Most Funded" },
@@ -131,8 +131,8 @@ export default async function OrganizationsPage({ searchParams }: PageProps) {
                 href={`/organizations?sort=${option.key}`}
                 className={`rounded-lg px-3 py-1.5 text-sm font-medium ${
                   sortBy === option.key
-                    ? "bg-blue-100 text-blue-700"
-                    : "bg-white text-slate-600 hover:bg-slate-100"
+                    ? "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300"
+                    : "bg-white text-slate-600 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
                 }`}
               >
                 {option.label}
@@ -143,9 +143,9 @@ export default async function OrganizationsPage({ searchParams }: PageProps) {
 
         {/* Organizations List */}
         {sortedOrgs.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-            <p className="text-sm font-semibold text-slate-700">No organizations found yet</p>
-            <p className="mt-2 text-sm text-slate-500">
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-600 dark:bg-slate-800">
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">No organizations found yet</p>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
               Organization data appears after ingestion and manual connections. If this is a fresh
               environment, run the data ingest or link orgs in the admin panel.
             </p>
@@ -175,7 +175,7 @@ export default async function OrganizationsPage({ searchParams }: PageProps) {
               >
                 <Link
                   href={`/organizations/${org.id}`}
-                  className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-blue-200 hover:shadow-md"
+                  className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-blue-200 hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:hover:border-blue-700"
                 >
                   <div className="flex items-start gap-4">
                     {org.heroImgUrl ? (
@@ -187,16 +187,16 @@ export default async function OrganizationsPage({ searchParams }: PageProps) {
                         className="h-12 w-12 rounded-lg object-cover"
                       />
                     ) : (
-                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 text-lg font-bold text-slate-400">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 text-lg font-bold text-slate-400 dark:bg-slate-700 dark:text-slate-300">
                         {org.name.charAt(0)}
                       </div>
                     )}
                     <div className="min-w-0 flex-1">
-                      <h2 className="truncate text-lg font-semibold text-slate-900 group-hover:text-blue-600">
+                      <h2 className="truncate text-lg font-semibold text-slate-900 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
                         {org.name}
                       </h2>
                       {org.bio && (
-                        <p className="mt-1 line-clamp-2 text-sm text-slate-600">
+                        <p className="mt-1 line-clamp-2 text-sm text-slate-600 dark:text-slate-300">
                           {org.bio}
                         </p>
                       )}
@@ -205,20 +205,20 @@ export default async function OrganizationsPage({ searchParams }: PageProps) {
 
                   <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className="text-slate-500">Funded</p>
-                      <p className="font-semibold text-slate-900">
+                      <p className="text-slate-500 dark:text-slate-400">Funded</p>
+                      <p className="font-semibold text-slate-900 dark:text-white">
                         {formatCurrency(Number(org.totalAmountAwarded))}
                       </p>
                     </div>
                     <div>
-                      <p className="text-slate-500">Projects</p>
-                      <p className="font-semibold text-slate-900">
+                      <p className="text-slate-500 dark:text-slate-400">Projects</p>
+                      <p className="font-semibold text-slate-900 dark:text-white">
                         {org.fundedProposalsCount}
                       </p>
                     </div>
                   </div>
 
-                  <div className="mt-4 flex items-center justify-between text-xs text-slate-400">
+                  <div className="mt-4 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
                     <span>{org.memberCount} members</span>
                     <span
                       className={`font-medium ${

@@ -2,8 +2,8 @@
 
 > Quick-glance milestone status and current work
 
-**Last Updated:** 2026-02-13  
-**Current Focus:** Milestone 25 — Enhanced Discovery UX
+**Last Updated:** 2026-02-14  
+**Current Focus:** Milestone 31 — Pre-Launch Design Fixes
 
 ---
 
@@ -50,6 +50,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-118 | Pre-Launch Design Fixes (Sidebar, Dark Mode, Homepage, Auth, Forms) | 2026-02-14 |
 | PROOF-117 | Verify Admin Dashboard | 2026-02-14 |
 | PROOF-116 | Auth: Protected Routes | 2026-02-14 |
 | PROOF-115 | Navigation Redesign: Smart Sidebar | 2026-02-14 |

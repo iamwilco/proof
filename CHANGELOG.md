@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Fixed
+- Sidebar layout: aligned to left edge with fixed positioning, made nav scrollable, fixed z-index overlap with header.
+- Dark mode styling: comprehensive rework across funds, projects, people, organizations pages for proper contrast and readability.
+- Theme toggle: defaulted to dark mode, added inline script to prevent flash of unstyled content on page load.
+- Google OAuth: redirect to login page with error message instead of JSON response when not configured.
+- Project action forms: conditionally hidden for non-authenticated users, showing login prompts instead.
 - Database schema sync: ran `prisma db push` to add missing columns (githubStars, etc.) and tables.
 - Build errors: Added Suspense boundaries for useSearchParams, fixed opengraph-image export, added force-dynamic to pages with DB calls.
 - ConnectionHoverCard: guard aborted fetch cleanup to avoid AbortError on unmount.

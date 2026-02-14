@@ -6,9 +6,9 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const variantStyles = {
-  default: "bg-white border border-slate-200",
-  outlined: "bg-transparent border border-slate-300",
-  elevated: "bg-white shadow-lg border border-slate-100",
+  default: "bg-white border border-slate-200 dark:bg-slate-800 dark:border-slate-700",
+  outlined: "bg-transparent border border-slate-300 dark:border-slate-600",
+  elevated: "bg-white shadow-lg border border-slate-100 dark:bg-slate-800 dark:border-slate-700",
 };
 
 const paddingStyles = {
@@ -55,7 +55,7 @@ interface CardTitleProps extends HTMLAttributes<HTMLHeadingElement> {
 export const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
   ({ as: Tag = "h3", className = "", children, ...props }, ref) => {
     return (
-      <Tag ref={ref} className={`text-lg font-semibold text-slate-900 ${className}`} {...props}>
+      <Tag ref={ref} className={`text-lg font-semibold text-slate-900 dark:text-slate-100 ${className}`} {...props}>
         {children}
       </Tag>
     );
@@ -69,7 +69,7 @@ type CardDescriptionProps = HTMLAttributes<HTMLParagraphElement>
 export const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionProps>(
   ({ className = "", children, ...props }, ref) => {
     return (
-      <p ref={ref} className={`text-sm text-slate-500 ${className}`} {...props}>
+      <p ref={ref} className={`text-sm text-slate-500 dark:text-slate-400 ${className}`} {...props}>
         {children}
       </p>
     );

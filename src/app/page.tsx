@@ -1,71 +1,145 @@
 import Link from "next/link";
+import prisma from "../lib/prisma";
 
-export default function Home() {
+export const revalidate = 300;
+
+const formatCurrency = (amount: number) => {
+  if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`;
+  if (amount >= 1000) return `$${(amount / 1000).toFixed(0)}K`;
+  return `$${amount.toLocaleString()}`;
+};
+
+const formatNumber = (num: number) => {
+  if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+  return num.toLocaleString();
+};
+
+export default async function Home() {
+  const [fundsData, projectsData, peopleData, orgsData, flagsData] = await Promise.all([
+    prisma.fund.aggregate({
+      _count: true,
+      _sum: { totalAwarded: true, totalDistributed: true },
+    }),
+    prisma.project.groupBy({
+      by: ["status"],
+      _count: true,
+    }),
+    prisma.person.aggregate({
+      _count: true,
+      _sum: { totalAmountAwarded: true },
+    }),
+    prisma.organization.aggregate({
+      _count: true,
+    }),
+    prisma.flag.count({
+      where: { status: { in: ["pending", "confirmed"] } },
+    }),
+  ]);
+
+  const totalProjects = projectsData.reduce((sum, p) => sum + p._count, 0);
+  const completedProjects = projectsData.find((p) => p.status === "completed")?._count || 0;
+  const inProgressProjects = projectsData.find((p) => p.status === "in_progress")?._count || 0;
+  const completionRate = totalProjects > 0 ? (completedProjects / totalProjects) * 100 : 0;
+
+  const totalAwarded = Number(fundsData._sum.totalAwarded) || 0;
+  const totalDistributed = Number(fundsData._sum.totalDistributed) || 0;
+  const distributionRate = totalAwarded > 0 ? (totalDistributed / totalAwarded) * 100 : 0;
+
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 py-16">
-        <header className="flex flex-col gap-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-emerald-300">
-            DOGE View • PROOF
-          </p>
-          <h1 className="max-w-3xl text-4xl font-semibold leading-tight md:text-5xl">
-            A public registry for Catalyst funding outcomes and accountability.
-          </h1>
-          <p className="max-w-2xl text-lg text-slate-300">
-            Explore projects, follow milestone delivery, and connect people to funding
-            outcomes across Project Catalyst.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/projects"
-              className="rounded-full bg-emerald-400 px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-emerald-300"
-            >
-              Browse projects
-            </Link>
-            <Link
-              href="/rankings"
-              className="rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white hover:border-white/40"
-            >
-              View rankings
-            </Link>
-            <Link
-              href="/login"
-              className="rounded-full border border-emerald-400/40 px-6 py-3 text-sm font-semibold text-emerald-200 hover:border-emerald-300"
-            >
-              Sign in
-            </Link>
-          </div>
-        </header>
+    <div className="space-y-8">
+      <header>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Dashboard</h1>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+          Project Catalyst transparency and accountability metrics
+        </p>
+      </header>
 
-        <section className="grid gap-6 lg:grid-cols-3">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <h2 className="text-lg font-semibold">Explore Catalyst funds</h2>
-            <p className="mt-2 text-sm text-slate-300">
-              Track funding totals, categories, and delivery progress across rounds.
-            </p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <h2 className="text-lg font-semibold">Verify outcomes</h2>
-            <p className="mt-2 text-sm text-slate-300">
-              See milestones, deliverables, and community feedback tied to each project.
-            </p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <h2 className="text-lg font-semibold">Connect the graph</h2>
-            <p className="mt-2 text-sm text-slate-300">
-              Visualize the people, orgs, and funding networks behind Catalyst.
-            </p>
-          </div>
-        </section>
+      {/* Key Stats Grid */}
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Total Awarded</p>
+          <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{formatCurrency(totalAwarded)}</p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">across {fundsData._count} funds</p>
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Projects</p>
+          <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{formatNumber(totalProjects)}</p>
+          <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-400">{completedProjects} completed</p>
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">People</p>
+          <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{formatNumber(peopleData._count)}</p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{formatNumber(orgsData._count)} organizations</p>
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Open Flags</p>
+          <p className="mt-2 text-3xl font-bold text-red-600 dark:text-red-400">{flagsData}</p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">pending review</p>
+        </div>
+      </section>
 
-        <section className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-6">
-          <h2 className="text-lg font-semibold text-emerald-100">Getting started</h2>
-          <p className="mt-2 text-sm text-emerald-100/80">
-            To ingest fresh Catalyst data, follow the setup checklist in
-            <span className="font-semibold text-emerald-100"> SETUP_CHECKLIST.md</span>.
-          </p>
-        </section>
-      </div>
+      {/* Progress Metrics */}
+      <section className="grid gap-6 lg:grid-cols-2">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800">
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Completion Rate</h2>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Projects reaching completion status</p>
+          <div className="mt-4 flex items-end gap-4">
+            <span className="text-4xl font-bold text-emerald-600 dark:text-emerald-400">{completionRate.toFixed(1)}%</span>
+            <span className="mb-1 text-sm text-slate-500 dark:text-slate-400">{completedProjects} / {totalProjects}</span>
+          </div>
+          <div className="mt-4 h-3 w-full rounded-full bg-slate-200 dark:bg-slate-700">
+            <div className="h-3 rounded-full bg-emerald-500" style={{ width: `${completionRate}%` }} />
+          </div>
+          <div className="mt-4 flex justify-between text-xs text-slate-500 dark:text-slate-400">
+            <span>{inProgressProjects} in progress</span>
+            <span>{totalProjects - completedProjects - inProgressProjects} other</span>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800">
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Fund Distribution</h2>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Percentage of awarded funds distributed</p>
+          <div className="mt-4 flex items-end gap-4">
+            <span className="text-4xl font-bold text-blue-600 dark:text-blue-400">{distributionRate.toFixed(1)}%</span>
+            <span className="mb-1 text-sm text-slate-500 dark:text-slate-400">{formatCurrency(totalDistributed)} / {formatCurrency(totalAwarded)}</span>
+          </div>
+          <div className="mt-4 h-3 w-full rounded-full bg-slate-200 dark:bg-slate-700">
+            <div className="h-3 rounded-full bg-blue-500" style={{ width: `${distributionRate}%` }} />
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Links */}
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Link
+          href="/projects"
+          className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-blue-300 hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:hover:border-blue-600"
+        >
+          <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">Browse Projects</h3>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">View all funded proposals</p>
+        </Link>
+        <Link
+          href="/rankings"
+          className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-blue-300 hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:hover:border-blue-600"
+        >
+          <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">Rankings</h3>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Top performers by metrics</p>
+        </Link>
+        <Link
+          href="/flags"
+          className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-red-300 hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:hover:border-red-600"
+        >
+          <h3 className="font-semibold text-slate-900 group-hover:text-red-600 dark:text-white dark:group-hover:text-red-400">Flags</h3>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Review accountability concerns</p>
+        </Link>
+        <Link
+          href="/discover"
+          className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-emerald-300 hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:hover:border-emerald-600"
+        >
+          <h3 className="font-semibold text-slate-900 group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400">Discover</h3>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Explore new proposals</p>
+        </Link>
+      </section>
     </div>
   );
 }
