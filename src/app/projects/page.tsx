@@ -189,7 +189,12 @@ export default async function ProjectsPage({
   const [funds, statuses, categories] = await Promise.all([
     prisma.fund.findMany({ select: { id: true, name: true }, orderBy: { number: "desc" } }),
     prisma.project.findMany({ select: { status: true }, distinct: ["status"] }),
-    prisma.project.findMany({ select: { category: true }, distinct: ["category"] }),
+    prisma.project.findMany({
+      where: fundFilter ? { fundId: fundFilter } : undefined,
+      select: { category: true },
+      distinct: ["category"],
+      orderBy: { category: "asc" },
+    }),
   ]);
 
   const buildPaginationUrl = (cursorValue: string) => {
@@ -277,7 +282,7 @@ export default async function ProjectsPage({
               defaultValue={categoryFilter}
               className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-white"
             >
-              <option value="">All Categories</option>
+              <option value="">{fundFilter ? "Categories in Fund" : "All Categories"}</option>
               {categories.map((c) => (
                 <option key={c.category} value={c.category}>
                   {c.category}
