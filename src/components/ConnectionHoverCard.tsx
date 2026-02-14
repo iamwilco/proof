@@ -82,6 +82,7 @@ export default function ConnectionHoverCard({
   const [isGraphOpen, setIsGraphOpen] = useState(false);
   const [data, setData] = useState<HoverCardPayload | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen || data || loading) return;
@@ -90,6 +91,7 @@ export default function ConnectionHoverCard({
     let isMounted = true;
     const load = async () => {
       setLoading(true);
+      setError(null);
       try {
         const params = new URLSearchParams({
           type: entityType,
@@ -98,14 +100,20 @@ export default function ConnectionHoverCard({
         const response = await fetch(`/api/connections/preview?${params.toString()}`, {
           signal: controller.signal,
         });
-        if (!response.ok || controller.signal.aborted) return;
+        if (controller.signal.aborted) return;
+        if (!response.ok) {
+          if (isMounted) {
+            setError("Failed to load");
+          }
+          return;
+        }
         const payload = (await response.json()) as HoverCardPayload;
         if (isMounted) {
           setData(payload);
         }
-      } catch (error) {
-        if ((error as DOMException).name !== "AbortError") {
-          throw error;
+      } catch (err) {
+        if ((err as DOMException).name !== "AbortError" && isMounted) {
+          setError("Connection error");
         }
       } finally {
         if (isMounted) {
@@ -138,13 +146,13 @@ export default function ConnectionHoverCard({
       {children}
 
       <div className="pointer-events-none absolute left-1/2 top-full z-30 hidden w-96 -translate-x-1/2 pt-3 group-hover:block">
-        <div className="pointer-events-auto rounded-2xl border border-slate-200 bg-white p-4 shadow-xl">
+        <div className="pointer-events-auto rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 shadow-xl">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
                 {typeLabel[entityType]}
               </p>
-              <p className="text-base font-semibold text-slate-900">
+              <p className="text-base font-semibold text-slate-900 dark:text-white">
                 {data?.entity.name ?? "Loading…"}
               </p>
             </div>
@@ -153,42 +161,44 @@ export default function ConnectionHoverCard({
             </Badge>
           </div>
 
-          {loading && !data ? (
-            <p className="mt-3 text-sm text-slate-500">Fetching connections…</p>
+          {error ? (
+            <p className="mt-3 text-sm text-red-500 dark:text-red-400">{error}</p>
+          ) : loading && !data ? (
+            <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Fetching connections…</p>
           ) : (
             <>
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-lg bg-slate-50 px-3 py-2">
-                  <p className="text-xs text-slate-400">Projects</p>
-                  <p className="text-sm font-semibold text-slate-900">
+                <div className="rounded-lg bg-slate-50 dark:bg-slate-900 px-3 py-2">
+                  <p className="text-xs text-slate-400 dark:text-slate-500">Projects</p>
+                  <p className="text-sm font-semibold text-slate-900 dark:text-white">
                     {data?.entity.stats.projects ?? "—"}
                   </p>
                 </div>
-                <div className="rounded-lg bg-slate-50 px-3 py-2">
-                  <p className="text-xs text-slate-400">Funding</p>
-                  <p className="text-sm font-semibold text-slate-900">
+                <div className="rounded-lg bg-slate-50 dark:bg-slate-900 px-3 py-2">
+                  <p className="text-xs text-slate-400 dark:text-slate-500">Funding</p>
+                  <p className="text-sm font-semibold text-slate-900 dark:text-white">
                     {data?.entity.stats.funding ? formatCurrency(data.entity.stats.funding) : "—"}
                   </p>
                 </div>
-                <div className="rounded-lg bg-slate-50 px-3 py-2">
-                  <p className="text-xs text-slate-400">Score</p>
-                  <p className="text-sm font-semibold text-slate-900">
+                <div className="rounded-lg bg-slate-50 dark:bg-slate-900 px-3 py-2">
+                  <p className="text-xs text-slate-400 dark:text-slate-500">Score</p>
+                  <p className="text-sm font-semibold text-slate-900 dark:text-white">
                     {data?.entity.stats.score ?? "—"}
                   </p>
                 </div>
               </div>
 
               <div className="mt-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
                   Connections
                 </p>
                 {data?.connections.length ? (
-                  <ul className="mt-2 space-y-2 text-sm text-slate-600">
+                  <ul className="mt-2 space-y-2 text-sm text-slate-600 dark:text-slate-300">
                     {data.connections.map((conn) => (
                       <li key={`${conn.type}-${conn.id}`} className="flex items-center justify-between gap-2">
                         <span className="truncate">
                           {conn.label}
-                          <span className="ml-2 text-xs text-slate-400">({typeLabel[conn.type]})</span>
+                          <span className="ml-2 text-xs text-slate-400 dark:text-slate-500">({typeLabel[conn.type]})</span>
                         </span>
                         <Badge variant={conn.source === "admin" ? "warning" : "default"} size="sm">
                           {connectionLabel[conn.connectionType ?? "linked"]}
@@ -197,32 +207,32 @@ export default function ConnectionHoverCard({
                     ))}
                   </ul>
                 ) : (
-                  <p className="mt-2 text-sm text-slate-500">No connections found.</p>
+                  <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">No connections found.</p>
                 )}
               </div>
 
               <div className="mt-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
                   {sharedLabel}
                 </p>
                 {data?.sharedProjects.length ? (
-                  <ul className="mt-2 space-y-2 text-sm text-slate-600">
+                  <ul className="mt-2 space-y-2 text-sm text-slate-600 dark:text-slate-300">
                     {data.sharedProjects.map((project) => (
                       <li key={project.id} className="flex items-center justify-between gap-2">
                         <span className="truncate">
                           {project.title}
                           {project.fundName && (
-                            <span className="ml-2 text-xs text-slate-400">{project.fundName}</span>
+                            <span className="ml-2 text-xs text-slate-400 dark:text-slate-500">{project.fundName}</span>
                           )}
                         </span>
-                        <span className="text-xs font-medium text-slate-500">
+                        <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                           {formatCurrency(project.fundingAmount)}
                         </span>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="mt-2 text-sm text-slate-500">No shared proposals yet.</p>
+                  <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">No shared proposals yet.</p>
                 )}
               </div>
 
@@ -230,13 +240,13 @@ export default function ConnectionHoverCard({
                 <button
                   type="button"
                   onClick={() => setIsGraphOpen(true)}
-                  className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+                  className="rounded-lg border border-slate-200 dark:border-slate-600 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
                 >
                   Show connections
                 </button>
                 <Link
                   href={href}
-                  className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800"
+                  className="rounded-lg bg-slate-900 dark:bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:hover:bg-blue-700"
                 >
                   View details
                 </Link>
@@ -254,7 +264,7 @@ export default function ConnectionHoverCard({
         size="lg"
       >
         {data ? (
-          <div className="h-[380px] overflow-hidden rounded-xl border border-slate-200">
+          <div className="h-[380px] overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
             <CytoscapeComponent
               elements={graphElements}
               layout={{ name: "cose", animate: true, fit: true, padding: 20 }}
@@ -306,7 +316,7 @@ export default function ConnectionHoverCard({
             />
           </div>
         ) : (
-          <p className="text-sm text-slate-500">Loading graph…</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Loading graph…</p>
         )}
       </Modal>
     </div>
