@@ -87,6 +87,7 @@ export default function ConnectionHoverCard({
     if (!isOpen || data || loading) return;
 
     const controller = new AbortController();
+    let isMounted = true;
     const load = async () => {
       setLoading(true);
       try {
@@ -97,17 +98,28 @@ export default function ConnectionHoverCard({
         const response = await fetch(`/api/connections/preview?${params.toString()}`, {
           signal: controller.signal,
         });
-        if (!response.ok) return;
+        if (!response.ok || controller.signal.aborted) return;
         const payload = (await response.json()) as HoverCardPayload;
-        setData(payload);
+        if (isMounted) {
+          setData(payload);
+        }
+      } catch (error) {
+        if ((error as DOMException).name !== "AbortError") {
+          throw error;
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     load();
 
-    return () => controller.abort();
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, [isOpen, data, loading, entityType, entityId]);
 
   const graphElements = useMemo(() => {

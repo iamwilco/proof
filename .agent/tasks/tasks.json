@@ -1966,7 +1966,8 @@
       "id": "PROOF-109",
       "title": "Fix ConnectionHoverCard AbortError",
       "description": "Fix useEffect cleanup in ConnectionHoverCard component to properly abort fetch requests on unmount.",
-      "status": "pending",
+      "status": "completed",
+      "completed": "2026-02-14",
       "priority": "critical",
       "labels": ["bugfix", "react", "useEffect"],
       "acceptance_criteria": [

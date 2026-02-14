@@ -38,8 +38,8 @@
 ## Current Task
 
 ```
-ID:          PROOF-109
-Title:       Fix ConnectionHoverCard AbortError
+ID:          PROOF-110
+Title:       Fix Rankings Performance Error
 Milestone:   31 (Pre-Launch Fixes)
 Status:      pending
 ```
@@ -50,6 +50,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-109 | Fix ConnectionHoverCard AbortError | 2026-02-14 |
 | PROOF-108 | Fix Database Schema Sync | 2026-02-14 |
 | PROOF-107 | Enhanced Knowledge Graph | 2026-02-13 |
 | — | Flag Impact on Scores | 2026-02-13 |
