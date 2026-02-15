@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import prisma from "../../../lib/prisma";
+import ROIFilters from "./ROIFilters";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +49,20 @@ interface CategoryROI {
   p75: number;
 }
 
-export default async function ROIDashboardPage() {
+export default async function ROIDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ fund?: string; category?: string; status?: string; sort?: string }>;
+}) {
+  const params = await searchParams;
+  const { fund, category, status, sort = "roi_desc" } = params;
+  // Get filter options
+  const [allFunds, allCategories] = await Promise.all([
+    prisma.fund.findMany({ select: { id: true, name: true }, orderBy: { number: "desc" } }),
+    prisma.project.findMany({ select: { category: true }, distinct: ["category"] }),
+  ]);
+  const categoryList = [...new Set(allCategories.map((p) => p.category))].sort();
+
   // Get all ROI scores with project data
   const roiScores = await prisma.projectROI.findMany({
     orderBy: { calculatedAt: "desc" },
@@ -72,7 +87,39 @@ export default async function ROIDashboardPage() {
       latestByProject.set(roi.projectId, roi);
     }
   }
-  const uniqueROIs = Array.from(latestByProject.values());
+  let uniqueROIs = Array.from(latestByProject.values());
+
+  // Apply filters
+  if (fund) {
+    uniqueROIs = uniqueROIs.filter((r) => r.project.fund.id === fund);
+  }
+  if (category) {
+    uniqueROIs = uniqueROIs.filter((r) => r.project.category === category);
+  }
+  if (status) {
+    uniqueROIs = uniqueROIs.filter((r) => r.project.status === status);
+  }
+
+  // Apply sorting
+  switch (sort) {
+    case "roi_asc":
+      uniqueROIs.sort((a, b) => a.roiScore - b.roiScore);
+      break;
+    case "outcome_desc":
+      uniqueROIs.sort((a, b) => b.outcomeScore - a.outcomeScore);
+      break;
+    case "funding_desc":
+      uniqueROIs.sort((a, b) => Number(b.fundingAmount) - Number(a.fundingAmount));
+      break;
+    case "funding_asc":
+      uniqueROIs.sort((a, b) => Number(a.fundingAmount) - Number(b.fundingAmount));
+      break;
+    case "community_desc":
+      uniqueROIs.sort((a, b) => b.communityScore - a.communityScore);
+      break;
+    default:
+      uniqueROIs.sort((a, b) => b.roiScore - a.roiScore);
+  }
 
   // Calculate fund-level ROI
   const fundMap = new Map<string, FundROI>();
@@ -143,12 +190,12 @@ export default async function ROIDashboardPage() {
   const totalFunding = uniqueROIs.reduce((sum, r) => sum + Number(r.fundingAmount), 0);
 
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-12">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 px-6 py-12">
       <div className="mx-auto max-w-7xl">
         <header className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">ROI Dashboard</h1>
-            <p className="mt-2 text-sm text-slate-600">
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">ROI Dashboard</h1>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
               Return on investment analysis across funds and categories.
             </p>
           </div>
@@ -160,38 +207,43 @@ export default async function ROIDashboardPage() {
           </a>
         </header>
 
+        {/* Filters */}
+        <Suspense fallback={<div className="h-10" />}>
+          <ROIFilters funds={allFunds} categories={categoryList} />
+        </Suspense>
+
         {/* Summary Stats */}
         <div className="mb-8 grid gap-4 sm:grid-cols-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
             <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
               Projects Analyzed
             </p>
-            <p className="mt-2 text-3xl font-bold text-slate-900">{totalProjects}</p>
+            <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{totalProjects}</p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
             <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
               Average ROI Score
             </p>
-            <p className="mt-2 text-3xl font-bold text-blue-600">{formatNumber(avgROI)}</p>
+            <p className="mt-2 text-3xl font-bold text-blue-600 dark:text-blue-400">{formatNumber(avgROI)}</p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
             <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
               Average Outcome
             </p>
-            <p className="mt-2 text-3xl font-bold text-emerald-600">{formatNumber(avgOutcome)}</p>
+            <p className="mt-2 text-3xl font-bold text-emerald-600 dark:text-emerald-400">{formatNumber(avgOutcome)}</p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
             <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
               Total Funding
             </p>
-            <p className="mt-2 text-3xl font-bold text-slate-900">{formatCurrency(totalFunding)}</p>
+            <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{formatCurrency(totalFunding)}</p>
           </div>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Fund-level ROI Comparison */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6">
-            <h2 className="mb-4 text-lg font-semibold text-slate-900">Fund ROI Comparison</h2>
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
+            <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">Fund ROI Comparison</h2>
             {fundROIs.length === 0 ? (
               <p className="text-sm text-slate-500">No ROI data available yet.</p>
             ) : (
@@ -224,8 +276,8 @@ export default async function ROIDashboardPage() {
           </div>
 
           {/* Category Benchmarks */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6">
-            <h2 className="mb-4 text-lg font-semibold text-slate-900">Category Benchmarks</h2>
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
+            <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">Category Benchmarks</h2>
             {categoryROIs.length === 0 ? (
               <p className="text-sm text-slate-500">No category data available yet.</p>
             ) : (
@@ -258,8 +310,8 @@ export default async function ROIDashboardPage() {
         {/* Top & Bottom Performers */}
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
           {/* Top 10 */}
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6">
-            <h2 className="mb-4 text-lg font-semibold text-emerald-900">Top 10 Performers</h2>
+          <div className="rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/30 p-6">
+            <h2 className="mb-4 text-lg font-semibold text-emerald-900 dark:text-emerald-100">Top 10 Performers</h2>
             {topPerformers.length === 0 ? (
               <p className="text-sm text-emerald-700">No data available yet.</p>
             ) : (
@@ -294,8 +346,8 @@ export default async function ROIDashboardPage() {
           </div>
 
           {/* Bottom 10 */}
-          <div className="rounded-2xl border border-red-200 bg-red-50 p-6">
-            <h2 className="mb-4 text-lg font-semibold text-red-900">Bottom 10 Performers</h2>
+          <div className="rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-6">
+            <h2 className="mb-4 text-lg font-semibold text-red-900 dark:text-red-100">Bottom 10 Performers</h2>
             {bottomPerformers.length === 0 ? (
               <p className="text-sm text-red-700">No data available yet.</p>
             ) : (
@@ -331,8 +383,8 @@ export default async function ROIDashboardPage() {
         </div>
 
         {/* Time-to-Delivery Analysis placeholder */}
-        <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">Time-to-Delivery Analysis</h2>
+        <div className="mt-8 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
+          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">Time-to-Delivery Analysis</h2>
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="rounded-lg bg-slate-50 p-4">
               <p className="text-xs text-slate-500">Projects On-Time</p>
