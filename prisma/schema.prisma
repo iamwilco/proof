@@ -45,6 +45,8 @@ model Fund {
 model Project {
   id              String        @id @default(uuid())
   externalId      String?       @unique
+  catalystId      String?       // ID from milestones.projectcatalyst.io
+  ideascaleId     String?       // IdeaScale proposal ID
   fundId          String
   fund            Fund          @relation(fields: [fundId], references: [id])
   title           String
@@ -54,15 +56,32 @@ model Project {
   solution        String?
   experience      String?
   category        String
+  challenge       String?       // Challenge/campaign name
   status          String
   fundingStatus   String        @default("pending")
   fundingAmount   Decimal       @db.Decimal(18, 2)
   amountReceived  Decimal       @default(0) @db.Decimal(18, 2)
+  amountRemaining Decimal       @default(0) @db.Decimal(18, 2)
   currency        String        @default("USD")
   yesVotes        Int           @default(0)
   noVotes         Int           @default(0)
+  abstainVotes    Int           @default(0)
+  uniqueVoters    Int           @default(0)
   fundedAt        DateTime?
+  completedAt     DateTime?
+  // Project Catalyst specific fields
+  projectDuration Int?          // Duration in months
+  milestonesTotal Int           @default(0)
+  milestonesCompleted Int       @default(0)
+  milestonesInProgress Int      @default(0)
+  milestonesPending Int         @default(0)
+  lastMilestoneAt DateTime?     // Last milestone submission/approval
+  // External links
   website         String?
+  ideascaleUrl    String?       // Link to IdeaScale proposal
+  catalystUrl     String?       // Link to projectcatalyst.io
+  milestonesUrl   String?       // Link to milestones.projectcatalyst.io
+  explorerUrl     String?       // Link to catalystexplorer.com
   githubUrl       String?
   githubOwner     String?
   githubRepo      String?
@@ -124,23 +143,44 @@ model Milestone {
   projectId   String
   project     Project      @relation(fields: [projectId], references: [id])
   title       String
+  description String?
+  milestoneNumber Int?     // M1, M2, M3 etc.
   dueDate     DateTime?
+  completedAt DateTime?
   status      String
   catalystMilestoneId String?
-  somStatus   String?
-  poaStatus   String?
+  // Statement of Milestone (SoM)
+  somStatus   String?      // pending, approved, rejected
+  somSubmittedAt DateTime?
+  somApprovedAt DateTime?
+  somContent  String?      // The actual SoM text/content
+  somCost     Decimal?     @db.Decimal(18, 2)
+  // Proof of Achievement (PoA)
+  poaStatus   String?      // pending, approved, rejected
   poaSubmittedAt DateTime?
   poaApprovedAt DateTime?
+  poaContent  String?      // The actual PoA text/content
+  // Reviewer feedback
   reviewerFeedback String?
-  paymentStatus String?
+  reviewerName String?
+  reviewedAt  DateTime?
+  // Payment info
+  paymentStatus String?    // pending, processing, paid
+  paymentAmount Decimal?   @db.Decimal(18, 2)
   paymentTxHash String?
+  paymentDate DateTime?
+  // Evidence and outputs
   evidenceUrls String[]
+  outputUrls  String[]     // Links to actual outputs/deliverables
   deliverables Deliverable[]
   sourceUrl   String
   sourceType  String
   lastSeenAt  DateTime
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+
+  @@index([projectId, milestoneNumber])
+  @@index([status])
 }
 
 model MonthlyReport {
