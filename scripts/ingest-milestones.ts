@@ -1,45 +1,31 @@
 /**
  * Catalyst Milestones Ingestion Script
- * Fetches milestone data from milestones.projectcatalyst.io
+ * Reads milestone data from a JSON file (milestones.projectcatalyst.io has no public API)
  * Updates project milestone counts and individual milestone records
+ * 
+ * Usage: npx tsx scripts/ingest-milestones.ts --payload ./data/milestones.json
  */
 
 import { PrismaClient } from "../src/generated/prisma";
-
-const MILESTONES_API = "https://milestones.projectcatalyst.io/api";
-const RATE_LIMIT_MS = 500;
-const MAX_PROJECTS = parseInt(process.env.INGEST_MAX_PROJECTS || "0", 10) || Infinity;
+import * as fs from "fs";
+import * as path from "path";
 
 const prisma = new PrismaClient({});
 
 // ============ Type Definitions ============
 
-interface MilestoneProject {
-  id: number;
-  project_id: number;
-  title: string;
-  slug: string;
-  status: string;
-  budget: number;
-  currency: string;
-  milestones_qty: number;
-  milestones_completed: number;
-  fund?: {
-    id: number;
-    title: string;
-  };
-}
-
-interface MilestoneDetail {
-  id: number;
-  project_id: number;
-  milestone_number: number;
+interface MilestoneRecord {
+  // Project linking
+  project_external_id: string;
+  milestone_id?: string;
+  catalyst_milestone_id?: string;
+  // Milestone details
   title: string;
   description?: string;
-  status: string;
+  milestone_number?: number;
+  due_date?: string;
+  status?: string;
   cost?: number;
-  currency?: string;
-  delivery_month?: string;
   // SoM fields
   som_status?: string;
   som_submitted_at?: string;
@@ -62,56 +48,12 @@ interface MilestoneDetail {
   // Evidence
   evidence_urls?: string[];
   output_urls?: string[];
-}
-
-interface ProjectsResponse {
-  data: MilestoneProject[];
-  meta: {
-    current_page: number;
-    last_page: number;
-    total: number;
-  };
-}
-
-interface MilestonesResponse {
-  data: MilestoneDetail[];
+  // Source
+  source_url?: string;
+  source_type?: string;
 }
 
 // ============ Utilities ============
-
-async function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function fetchWithRetry<T>(url: string, retries = 3): Promise<T | null> {
-  let attempt = 0;
-  while (true) {
-    attempt++;
-    try {
-      const response = await fetch(url, {
-        headers: {
-          Accept: "application/json",
-          "User-Agent": "PROOF-Milestones-Ingestion/1.0",
-        },
-      });
-      if (response.status === 404) {
-        return null;
-      }
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-      return (await response.json()) as T;
-    } catch (error) {
-      if (attempt >= retries) {
-        console.warn(`  Failed after ${retries} attempts: ${error}`);
-        return null;
-      }
-      const wait = Math.pow(1.5, attempt) * 1000;
-      console.warn(`  Retry ${attempt}/${retries} in ${wait}ms: ${error}`);
-      await sleep(wait);
-    }
-  }
-}
 
 function parseDate(dateStr?: string): Date | null {
   if (!dateStr) return null;
@@ -119,123 +61,117 @@ function parseDate(dateStr?: string): Date | null {
   return isNaN(parsed.getTime()) ? null : parsed;
 }
 
-// ============ Data Fetching ============
-
-async function* fetchAllProjects(): AsyncGenerator<MilestoneProject> {
-  let page = 1;
-  let processed = 0;
-
-  while (true) {
-    const url = `${MILESTONES_API}/projects?page=${page}&per_page=50`;
-    console.log(`Fetching projects page ${page}...`);
-
-    const response = await fetchWithRetry<ProjectsResponse>(url);
-    if (!response || !response.data || response.data.length === 0) break;
-
-    const lastPage = response.meta?.last_page || 1;
-    console.log(`  Got ${response.data.length} projects (page ${page}/${lastPage})`);
-
-    for (const project of response.data) {
-      yield project;
-      processed++;
-      if (processed >= MAX_PROJECTS) return;
-    }
-
-    if (page >= lastPage) break;
-    page++;
-    await sleep(RATE_LIMIT_MS);
+function loadPayload(filePath: string): MilestoneRecord[] {
+  const absolutePath = path.resolve(filePath);
+  if (!fs.existsSync(absolutePath)) {
+    throw new Error(`Payload file not found: ${absolutePath}`);
   }
-}
-
-async function fetchProjectMilestones(projectId: number): Promise<MilestoneDetail[]> {
-  const url = `${MILESTONES_API}/projects/${projectId}/milestones`;
-  const response = await fetchWithRetry<MilestonesResponse>(url);
-  return response?.data || [];
+  const content = fs.readFileSync(absolutePath, "utf-8");
+  const data = JSON.parse(content);
+  if (!Array.isArray(data)) {
+    throw new Error("Payload must be an array of milestone records");
+  }
+  return data as MilestoneRecord[];
 }
 
 // ============ Database Operations ============
 
-async function findProjectByCatalystId(catalystId: number): Promise<string | null> {
-  // Try to find by catalystId first
-  let project = await prisma.project.findFirst({
-    where: { catalystId: String(catalystId) },
+async function buildProjectLookup(): Promise<Map<string, string>> {
+  const lookup = new Map<string, string>();
+  const projects = await prisma.project.findMany({
+    select: { id: true, externalId: true, catalystId: true },
+  });
+  for (const p of projects) {
+    if (p.externalId) lookup.set(p.externalId, p.id);
+    if (p.catalystId) lookup.set(p.catalystId, p.id);
+  }
+  return lookup;
+}
+
+async function findExistingMilestone(
+  projectId: string,
+  record: MilestoneRecord
+): Promise<string | null> {
+  // Try by catalyst_milestone_id first
+  if (record.catalyst_milestone_id) {
+    const existing = await prisma.milestone.findFirst({
+      where: { catalystMilestoneId: record.catalyst_milestone_id },
+      select: { id: true },
+    });
+    if (existing) return existing.id;
+  }
+
+  // Try by title + due date
+  const dueDate = parseDate(record.due_date);
+  const existing = await prisma.milestone.findFirst({
+    where: {
+      projectId,
+      title: record.title,
+      ...(dueDate ? { dueDate } : {}),
+    },
     select: { id: true },
   });
-  
-  if (project) return project.id;
-
-  // Try by externalId (some projects use this)
-  project = await prisma.project.findFirst({
-    where: { externalId: String(catalystId) },
-    select: { id: true },
-  });
-
-  return project?.id || null;
+  return existing?.id || null;
 }
 
 async function upsertMilestone(
   projectId: string,
-  milestone: MilestoneDetail
-): Promise<void> {
+  record: MilestoneRecord,
+  index: number
+): Promise<{ inserted: boolean }> {
   const now = new Date();
-  const catalystMilestoneId = String(milestone.id);
 
   const data = {
     projectId,
-    title: milestone.title || `Milestone ${milestone.milestone_number}`,
-    description: milestone.description || null,
-    milestoneNumber: milestone.milestone_number,
-    dueDate: parseDate(milestone.delivery_month),
-    completedAt: milestone.status === "completed" ? parseDate(milestone.poa_approved_at) : null,
-    status: milestone.status || "pending",
-    catalystMilestoneId,
+    title: record.title || `Milestone ${record.milestone_number || index + 1}`,
+    description: record.description || null,
+    milestoneNumber: record.milestone_number || null,
+    dueDate: parseDate(record.due_date),
+    completedAt: record.status === "completed" ? parseDate(record.poa_approved_at) : null,
+    status: record.status || "pending",
+    catalystMilestoneId: record.catalyst_milestone_id || null,
     // SoM
-    somStatus: milestone.som_status || null,
-    somSubmittedAt: parseDate(milestone.som_submitted_at),
-    somApprovedAt: parseDate(milestone.som_approved_at),
-    somContent: milestone.som_content || null,
-    somCost: milestone.cost || null,
+    somStatus: record.som_status || null,
+    somSubmittedAt: parseDate(record.som_submitted_at),
+    somApprovedAt: parseDate(record.som_approved_at),
+    somContent: record.som_content || null,
+    somCost: record.cost || null,
     // PoA
-    poaStatus: milestone.poa_status || null,
-    poaSubmittedAt: parseDate(milestone.poa_submitted_at),
-    poaApprovedAt: parseDate(milestone.poa_approved_at),
-    poaContent: milestone.poa_content || null,
+    poaStatus: record.poa_status || null,
+    poaSubmittedAt: parseDate(record.poa_submitted_at),
+    poaApprovedAt: parseDate(record.poa_approved_at),
+    poaContent: record.poa_content || null,
     // Review
-    reviewerFeedback: milestone.reviewer_feedback || null,
-    reviewerName: milestone.reviewer_name || null,
-    reviewedAt: parseDate(milestone.reviewed_at),
+    reviewerFeedback: record.reviewer_feedback || null,
+    reviewerName: record.reviewer_name || null,
+    reviewedAt: parseDate(record.reviewed_at),
     // Payment
-    paymentStatus: milestone.payment_status || null,
-    paymentAmount: milestone.payment_amount || null,
-    paymentTxHash: milestone.payment_tx_hash || null,
-    paymentDate: parseDate(milestone.payment_date),
+    paymentStatus: record.payment_status || null,
+    paymentAmount: record.payment_amount || null,
+    paymentTxHash: record.payment_tx_hash || null,
+    paymentDate: parseDate(record.payment_date),
     // Evidence
-    evidenceUrls: milestone.evidence_urls || [],
-    outputUrls: milestone.output_urls || [],
+    evidenceUrls: record.evidence_urls || [],
+    outputUrls: record.output_urls || [],
     // Meta
-    sourceUrl: `${MILESTONES_API}/projects/${milestone.project_id}/milestones/${milestone.id}`,
-    sourceType: "catalyst_milestones",
+    sourceUrl: record.source_url || "manual",
+    sourceType: record.source_type || "catalyst_milestone_manual",
     lastSeenAt: now,
   };
 
-  // Find existing milestone
-  const existing = await prisma.milestone.findFirst({
-    where: { catalystMilestoneId },
-    select: { id: true },
-  });
+  const existingId = await findExistingMilestone(projectId, record);
 
-  if (existing) {
+  if (existingId) {
     await prisma.milestone.update({
-      where: { id: existing.id },
-      data,
+      where: { id: existingId },
+      data: { ...data, updatedAt: now },
     });
+    return { inserted: false };
   } else {
     await prisma.milestone.create({
-      data: {
-        ...data,
-        createdAt: now,
-      },
+      data: { ...data, createdAt: now },
     });
+    return { inserted: true };
   }
 }
 
@@ -250,7 +186,6 @@ async function updateProjectMilestoneStats(projectId: string): Promise<void> {
   const inProgress = milestones.filter((m) => m.status === "in_progress").length;
   const pending = milestones.filter((m) => m.status === "pending").length;
 
-  // Find last milestone activity
   const lastMilestone = milestones
     .filter((m) => m.poaApprovedAt)
     .sort((a, b) => (b.poaApprovedAt?.getTime() || 0) - (a.poaApprovedAt?.getTime() || 0))[0];
@@ -263,64 +198,69 @@ async function updateProjectMilestoneStats(projectId: string): Promise<void> {
       milestonesInProgress: inProgress,
       milestonesPending: pending,
       lastMilestoneAt: lastMilestone?.poaApprovedAt || null,
-      milestonesUrl: `https://milestones.projectcatalyst.io/projects/${projectId}`,
     },
   });
 }
 
 // ============ Main ============
 
-async function run(): Promise<void> {
+async function run(payloadPath: string): Promise<void> {
   console.log("=== Catalyst Milestones Ingestion ===");
-  console.log(`API: ${MILESTONES_API}`);
-  console.log(`Max projects: ${MAX_PROJECTS === Infinity ? "unlimited" : MAX_PROJECTS}\n`);
+  console.log(`Payload: ${payloadPath}\n`);
 
-  let projectsProcessed = 0;
-  let milestonesProcessed = 0;
-  let projectsNotFound = 0;
+  const records = loadPayload(payloadPath);
+  console.log(`Loaded ${records.length} milestone records\n`);
+
+  const projectLookup = await buildProjectLookup();
+  console.log(`Built lookup for ${projectLookup.size} project IDs\n`);
+
+  let inserted = 0;
+  let updated = 0;
+  let skipped = 0;
+  const processedProjects = new Set<string>();
 
   try {
-    for await (const milestoneProject of fetchAllProjects()) {
-      // Find matching project in our database
-      const projectId = await findProjectByCatalystId(milestoneProject.project_id);
+    for (let i = 0; i < records.length; i++) {
+      const record = records[i];
+      const externalId = record.project_external_id;
 
-      if (!projectId) {
-        projectsNotFound++;
+      if (!externalId) {
+        console.warn(`Skipping record ${i}: missing project_external_id`);
+        skipped++;
         continue;
       }
 
-      // Update project with catalyst ID and milestone URL
-      await prisma.project.update({
-        where: { id: projectId },
-        data: {
-          catalystId: String(milestoneProject.project_id),
-          milestonesUrl: `https://milestones.projectcatalyst.io/projects/${milestoneProject.id}`,
-        },
-      });
-
-      // Fetch and upsert milestones
-      const milestones = await fetchProjectMilestones(milestoneProject.id);
-      
-      for (const milestone of milestones) {
-        await upsertMilestone(projectId, milestone);
-        milestonesProcessed++;
+      const projectId = projectLookup.get(externalId);
+      if (!projectId) {
+        skipped++;
+        continue;
       }
 
-      // Update project milestone stats
+      const result = await upsertMilestone(projectId, record, i);
+      if (result.inserted) {
+        inserted++;
+      } else {
+        updated++;
+      }
+
+      processedProjects.add(projectId);
+
+      if ((inserted + updated) % 100 === 0) {
+        console.log(`  Progress: ${inserted} inserted, ${updated} updated...`);
+      }
+    }
+
+    // Update milestone stats for all affected projects
+    console.log(`\nUpdating stats for ${processedProjects.size} projects...`);
+    for (const projectId of processedProjects) {
       await updateProjectMilestoneStats(projectId);
-
-      projectsProcessed++;
-      if (projectsProcessed % 50 === 0) {
-        console.log(`  Processed ${projectsProcessed} projects, ${milestonesProcessed} milestones...`);
-      }
-
-      await sleep(RATE_LIMIT_MS);
     }
 
     console.log("\n=== Milestones Ingestion Complete ===");
-    console.log(`Projects processed: ${projectsProcessed}`);
-    console.log(`Projects not found in DB: ${projectsNotFound}`);
-    console.log(`Milestones upserted: ${milestonesProcessed}`);
+    console.log(`Inserted: ${inserted}`);
+    console.log(`Updated: ${updated}`);
+    console.log(`Skipped: ${skipped}`);
+    console.log(`Projects affected: ${processedProjects.size}`);
 
   } catch (error) {
     console.error("Milestones ingestion failed:", error);
@@ -330,7 +270,36 @@ async function run(): Promise<void> {
   }
 }
 
-run().catch((error) => {
+// Parse command line arguments
+const args = process.argv.slice(2);
+let payloadPath = "";
+
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === "--payload" && args[i + 1]) {
+    payloadPath = args[i + 1];
+    break;
+  }
+}
+
+if (!payloadPath) {
+  console.error("Usage: npx tsx scripts/ingest-milestones.ts --payload <path-to-json>");
+  console.error("\nExample JSON format:");
+  console.error(JSON.stringify([
+    {
+      project_external_id: "12345",
+      catalyst_milestone_id: "m-001",
+      title: "Milestone 1",
+      milestone_number: 1,
+      status: "completed",
+      due_date: "2024-03-01",
+      som_status: "approved",
+      poa_status: "approved",
+    }
+  ], null, 2));
+  process.exit(1);
+}
+
+run(payloadPath).catch((error) => {
   console.error("Fatal error:", error);
   process.exit(1);
 });
