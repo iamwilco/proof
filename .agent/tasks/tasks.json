@@ -1,7 +1,7 @@
 {
   "project": "PROOF",
   "version": "1.0",
-  "lastUpdated": "2026-02-11",
+  "lastUpdated": "2026-02-15",
   "currentMilestone": 1,
   "tasks": [
     {
@@ -2107,6 +2107,189 @@
       ],
       "milestone": 31,
       "created": "2026-02-14"
+    },
+    {
+      "id": "PROOF-118",
+      "title": "Add CLI fund filter to Catalyst ingestion",
+      "description": "Enhance scripts/ingest-catalyst.ts with --fund flag to ingest specific funds only. Add --since flag for delta sync.",
+      "status": "completed",
+      "completed": "2026-02-15",
+      "priority": "high",
+      "labels": ["etl", "data", "production"],
+      "acceptance_criteria": [
+        "npx tsx scripts/ingest-catalyst.ts --fund=15 ingests only Fund 15",
+        "npx tsx scripts/ingest-catalyst.ts --since=2026-02-01 ingests updates since date",
+        "Exponential backoff on rate limit errors",
+        "Progress logging shows fund being processed"
+      ],
+      "milestone": 32,
+      "created": "2026-02-15"
+    },
+    {
+      "id": "PROOF-119",
+      "title": "Implement currency normalization (ADA to USD)",
+      "description": "Add currency normalization utility to convert ADA funding (F10+) to USD for comparable metrics. Use configurable rate from env var.",
+      "status": "completed",
+      "completed": "2026-02-15",
+      "priority": "high",
+      "labels": ["etl", "data", "production"],
+      "acceptance_criteria": [
+        "src/lib/currency.ts with normalizeToUSD function",
+        "ADA_USD_RATE configurable via environment variable (default 0.35)",
+        "F2-F9 amounts treated as USD, F10+ as ADA",
+        "Ingestion script applies normalization on upsert",
+        "fundingAmountUSD field populated for all projects"
+      ],
+      "milestone": 32,
+      "created": "2026-02-15"
+    },
+    {
+      "id": "PROOF-120",
+      "title": "Run full F14/F15 Catalyst ingestion",
+      "description": "Execute ingestion script for Fund 14 and Fund 15 to populate production database with latest proposal data.",
+      "status": "completed",
+      "completed": "2026-02-15",
+      "priority": "high",
+      "labels": ["etl", "data", "production"],
+      "acceptance_criteria": [
+        "All F14 proposals ingested (~800+)",
+        "All F15 proposals ingested (~1200+)",
+        "No duplicate entries",
+        "Funding amounts normalized to USD",
+        "Team members linked to Person records"
+      ],
+      "milestone": 32,
+      "created": "2026-02-15"
+    },
+    {
+      "id": "PROOF-121",
+      "title": "Build Person aggregates API endpoint",
+      "description": "Create /api/people/[id]/aggregates endpoint returning total funding requested, received, projects count, completion rate grouped by fund.",
+      "status": "completed",
+      "completed": "2026-02-15",
+      "priority": "high",
+      "labels": ["api", "backend", "production"],
+      "acceptance_criteria": [
+        "GET /api/people/[id]/aggregates returns JSON",
+        "Response includes: totalFundingUSD, projectCount, completedCount, completionRate, avgROI",
+        "Response includes fundBreakdown array",
+        "Efficient Prisma aggregation query",
+        "Error handling for invalid person ID"
+      ],
+      "milestone": 32,
+      "created": "2026-02-15"
+    },
+    {
+      "id": "PROOF-122",
+      "title": "Integrate community review scores into ROI",
+      "description": "Add community review average as a component of the ROI outcome score. Weight: 15% of outcome.",
+      "status": "completed",
+      "completed": "2026-02-15",
+      "priority": "high",
+      "labels": ["scoring", "backend", "production"],
+      "acceptance_criteria": [
+        "ROI formula updated: GitHub 35%, Deliverables 25%, OnChain 25%, Community 15%",
+        "Community score = avg(alignment, feasibility, auditability) from reviews",
+        "Projects with <3 reviews use original formula (no community weight)",
+        "ROI recalculates when reviews are submitted",
+        "Score breakdown includes community component"
+      ],
+      "milestone": 32,
+      "created": "2026-02-15"
+    },
+    {
+      "id": "PROOF-123",
+      "title": "Build ROI Analytics Dashboard",
+      "description": "Create /analytics/roi page with filters, sorting, top/bottom tables, and basic stats.",
+      "status": "completed",
+      "completed": "2026-02-15",
+      "priority": "high",
+      "labels": ["frontend", "analytics", "production"],
+      "acceptance_criteria": [
+        "/analytics/roi page renders",
+        "Filter by: Fund, Category, Status",
+        "Sort by: ROI, Funding, Completion Rate",
+        "Top 10 and Bottom 10 ROI tables",
+        "Stats: Average ROI by fund, category distribution",
+        "Responsive design, works on mobile"
+      ],
+      "milestone": 32,
+      "created": "2026-02-15"
+    },
+    {
+      "id": "PROOF-124",
+      "title": "Enhance network graph with funding labels and tooltips",
+      "description": "Add edge labels showing funding amounts, node colors by ROI tier, and aggregate tooltips on hover.",
+      "status": "completed",
+      "completed": "2026-02-15",
+      "priority": "medium",
+      "labels": ["frontend", "graph", "production"],
+      "acceptance_criteria": [
+        "Edges show funding amount labels",
+        "Node colors: green (ROI>70), yellow (40-70), red (<40)",
+        "Person tooltip: Total Funding, Projects, Completion %",
+        "Project tooltip: ROI, Status, Funding amount",
+        "Performance: <2s render for 200 nodes"
+      ],
+      "milestone": 32,
+      "created": "2026-02-15"
+    },
+    {
+      "id": "PROOF-125",
+      "title": "Add data quality health checks",
+      "description": "Extend /api/health to include data completeness metrics: ingestion freshness, missing fields, orphan records.",
+      "status": "completed",
+      "completed": "2026-02-15",
+      "priority": "medium",
+      "labels": ["backend", "monitoring", "production"],
+      "acceptance_criteria": [
+        "/api/health returns ingestion stats",
+        "Check: Expected vs actual proposal counts per fund",
+        "Check: Projects with missing team members",
+        "Check: Stale data (no updates in 7+ days)",
+        "Health status: healthy/degraded/unhealthy"
+      ],
+      "milestone": 32,
+      "created": "2026-02-15"
+    },
+    {
+      "id": "PROOF-126",
+      "title": "Production polish: dark mode + responsive",
+      "description": "Ensure all pages support dark mode and are responsive on mobile devices.",
+      "status": "completed",
+      "completed": "2026-02-15",
+      "priority": "medium",
+      "labels": ["frontend", "design", "production"],
+      "acceptance_criteria": [
+        "All pages render correctly in dark mode",
+        "All pages usable on mobile (320px-768px)",
+        "Error states display friendly messages",
+        "Loading states show skeletons/spinners",
+        "No console errors in production build"
+      ],
+      "milestone": 32,
+      "created": "2026-02-15"
+    },
+    {
+      "id": "PROOF-127",
+      "title": "Production QA: test all pages",
+      "description": "Verify all pages render correctly, API routes return expected data, and no console errors.",
+      "status": "completed",
+      "completed": "2026-02-15",
+      "priority": "high",
+      "labels": ["qa", "testing", "production"],
+      "acceptance_criteria": [
+        "Projects directory loads and filters work",
+        "Project detail pages render with all sections",
+        "People directory and profiles work",
+        "Network graph renders without errors",
+        "Rankings page shows correct data",
+        "Authentication flow works (login/logout)",
+        "Review submission works",
+        "Admin pages accessible to admin users"
+      ],
+      "milestone": 32,
+      "created": "2026-02-15"
     }
   ]
 }

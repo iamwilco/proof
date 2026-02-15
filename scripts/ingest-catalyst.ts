@@ -5,6 +5,7 @@
  */
 
 import { PrismaClient } from "../src/generated/prisma";
+import { normalizeToUSD } from "../src/lib/currency";
 
 const CATALYST_EXPLORER_API = "https://www.catalystexplorer.com/api/v1";
 const PER_PAGE = 60;
@@ -12,6 +13,69 @@ const RATE_LIMIT_MS = 500;
 const MAX_PAGES = parseInt(process.env.INGEST_MAX_PAGES || "0", 10) || Infinity;
 
 const prisma = new PrismaClient({});
+
+// ============ CLI Arguments ============
+
+interface CLIOptions {
+  fund?: number;      // --fund=15 to ingest only Fund 15
+  since?: Date;       // --since=2026-02-01 for delta sync
+  full: boolean;      // --full for full refresh (default)
+  help: boolean;
+}
+
+function parseArgs(): CLIOptions {
+  const args = process.argv.slice(2);
+  const options: CLIOptions = { full: true, help: false };
+
+  for (const arg of args) {
+    if (arg === "--help" || arg === "-h") {
+      options.help = true;
+    } else if (arg.startsWith("--fund=")) {
+      const fundNum = parseInt(arg.split("=")[1], 10);
+      if (!isNaN(fundNum) && fundNum > 0) {
+        options.fund = fundNum;
+        options.full = false;
+      }
+    } else if (arg.startsWith("--since=")) {
+      const dateStr = arg.split("=")[1];
+      const date = new Date(dateStr);
+      if (!isNaN(date.getTime())) {
+        options.since = date;
+        options.full = false;
+      }
+    } else if (arg === "--full") {
+      options.full = true;
+    }
+  }
+
+  return options;
+}
+
+function printHelp(): void {
+  console.log(`
+Catalyst Ingestion Script
+
+Usage:
+  npx tsx scripts/ingest-catalyst.ts [options]
+
+Options:
+  --fund=<number>     Ingest only specific fund (e.g., --fund=15)
+  --since=<date>      Ingest proposals updated since date (e.g., --since=2026-02-01)
+  --full              Full ingestion of all proposals (default)
+  --help, -h          Show this help message
+
+Examples:
+  npx tsx scripts/ingest-catalyst.ts --fund=15
+  npx tsx scripts/ingest-catalyst.ts --since=2026-02-01
+  npx tsx scripts/ingest-catalyst.ts --fund=14 --since=2026-01-15
+  npx tsx scripts/ingest-catalyst.ts --full
+
+Environment Variables:
+  INGEST_MAX_PAGES    Limit number of pages fetched (default: unlimited)
+`);
+}
+
+const CLI_OPTIONS = parseArgs();
 
 // ============ Type Definitions ============
 
@@ -85,7 +149,7 @@ async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function fetchWithRetry<T>(url: string, retries = 3): Promise<T> {
+async function fetchWithRetry<T>(url: string, retries = 5): Promise<T> {
   let attempt = 0;
   while (true) {
     attempt++;
@@ -96,14 +160,25 @@ async function fetchWithRetry<T>(url: string, retries = 3): Promise<T> {
           "User-Agent": "PROOF-Ingestion/1.0",
         },
       });
+      
+      // Handle rate limiting with exponential backoff
+      if (response.status === 429) {
+        const retryAfter = parseInt(response.headers.get("Retry-After") || "60", 10);
+        const wait = Math.min(retryAfter * 1000, 120000); // Max 2 minutes
+        console.warn(`  Rate limited. Waiting ${wait / 1000}s before retry...`);
+        await sleep(wait);
+        continue;
+      }
+      
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       return (await response.json()) as T;
     } catch (error) {
       if (attempt >= retries) throw error;
-      const wait = Math.pow(1.5, attempt) * 1000;
-      console.warn(`  Retry ${attempt}/${retries} in ${wait}ms: ${error}`);
+      // Exponential backoff: 2s, 4s, 8s, 16s, 32s
+      const wait = Math.pow(2, attempt) * 1000;
+      console.warn(`  Retry ${attempt}/${retries} in ${wait / 1000}s: ${error}`);
       await sleep(wait);
     }
   }
@@ -116,11 +191,32 @@ function extractFundNumber(fundTitle: string): number {
 
 // ============ Data Fetching ============
 
-async function* fetchAllProposals(): AsyncGenerator<CatalystProposal> {
+function buildProposalUrl(page: number, options: CLIOptions): string {
+  const params = new URLSearchParams({
+    per_page: PER_PAGE.toString(),
+    page: page.toString(),
+    include: "campaign,fund,team",
+  });
+
+  // Add fund filter if specified
+  if (options.fund) {
+    params.set("fund", `Fund ${options.fund}`);
+  }
+
+  // Add date filter if specified (updated_at >= since)
+  if (options.since) {
+    params.set("updated_after", options.since.toISOString().split("T")[0]);
+  }
+
+  return `${CATALYST_EXPLORER_API}/proposals?${params.toString()}`;
+}
+
+async function* fetchAllProposals(options: CLIOptions): AsyncGenerator<CatalystProposal> {
   let page = 1;
+  let totalYielded = 0;
 
   while (true) {
-    const url = `${CATALYST_EXPLORER_API}/proposals?per_page=${PER_PAGE}&page=${page}&include=campaign,fund,team`;
+    const url = buildProposalUrl(page, options);
     console.log(`Fetching page ${page}...`);
 
     const response = await fetchWithRetry<ApiResponse<CatalystProposal>>(url);
@@ -129,16 +225,32 @@ async function* fetchAllProposals(): AsyncGenerator<CatalystProposal> {
     if (proposals.length === 0) break;
 
     const lastPage = response.meta.last_page || 1;
-    console.log(`  Got ${proposals.length} proposals (page ${page}/${lastPage})`);
+    const total = response.meta.total || 0;
+    console.log(`  Got ${proposals.length} proposals (page ${page}/${lastPage}, total: ${total})`);
 
     for (const proposal of proposals) {
+      // Additional client-side filtering for fund number if API doesn't support exact match
+      if (options.fund && proposal.fund) {
+        const fundNum = extractFundNumber(proposal.fund.title);
+        if (fundNum !== options.fund) continue;
+      }
+
+      // Additional client-side filtering for date if API doesn't support it
+      if (options.since && proposal.updated_at) {
+        const updatedAt = new Date(proposal.updated_at);
+        if (updatedAt < options.since) continue;
+      }
+
       yield proposal;
+      totalYielded++;
     }
 
     if (page >= lastPage || page >= MAX_PAGES) break;
     page++;
     await sleep(RATE_LIMIT_MS);
   }
+
+  console.log(`  Total proposals yielded: ${totalYielded}`);
 }
 
 // ============ Upsert Functions ============
@@ -237,7 +349,8 @@ async function upsertPerson(member: CatalystTeamMember): Promise<string> {
 
 async function upsertProposal(
   proposal: CatalystProposal,
-  fundId: string
+  fundId: string,
+  fundNumber: number
 ): Promise<string> {
   const now = new Date();
   const sourceUrl = proposal.link || `${CATALYST_EXPLORER_API}/proposals/${proposal.id}`;
@@ -248,6 +361,15 @@ async function upsertProposal(
 
   const status = proposal.status || "unknown";
   const fundingStatus = proposal.funding_status || (proposal.amount_received > 0 ? "funded" : "pending");
+  
+  // Get original amounts
+  const fundingAmount = proposal.amount_requested || 0;
+  const amountReceived = proposal.amount_received || 0;
+  const currency = proposal.currency || (fundNumber >= 10 ? "ADA" : "USD");
+  
+  // Normalize to USD for comparison
+  const fundingAmountUSD = normalizeToUSD(fundingAmount, fundNumber, currency);
+  const amountReceivedUSD = normalizeToUSD(amountReceived, fundNumber, currency);
 
   const data = {
     externalId: proposal.id,
@@ -261,9 +383,11 @@ async function upsertProposal(
     category: proposal.campaign?.title || "Uncategorized",
     status,
     fundingStatus,
-    fundingAmount: proposal.amount_requested || 0,
-    amountReceived: proposal.amount_received || 0,
-    currency: proposal.currency || "USD",
+    fundingAmount,
+    fundingAmountUSD,
+    amountReceived,
+    amountReceivedUSD,
+    currency,
     yesVotes: proposal.yes_votes_count || 0,
     noVotes: proposal.no_votes_count || 0,
     fundedAt: proposal.funded_at ? new Date(proposal.funded_at) : null,
@@ -405,19 +529,40 @@ async function computePersonStats(): Promise<void> {
 // ============ Main ============
 
 async function run(): Promise<void> {
-  console.log("=== Catalyst Full Ingestion ===");
+  // Handle help flag
+  if (CLI_OPTIONS.help) {
+    printHelp();
+    return;
+  }
+
+  // Print run configuration
+  console.log("=== Catalyst Ingestion ===");
   console.log(`API: ${CATALYST_EXPLORER_API}`);
-  console.log(`Max pages: ${MAX_PAGES === Infinity ? "unlimited" : MAX_PAGES}\n`);
+  console.log(`Max pages: ${MAX_PAGES === Infinity ? "unlimited" : MAX_PAGES}`);
+  
+  if (CLI_OPTIONS.fund) {
+    console.log(`Fund filter: Fund ${CLI_OPTIONS.fund}`);
+  }
+  if (CLI_OPTIONS.since) {
+    console.log(`Since filter: ${CLI_OPTIONS.since.toISOString().split("T")[0]}`);
+  }
+  if (CLI_OPTIONS.full && !CLI_OPTIONS.fund && !CLI_OPTIONS.since) {
+    console.log(`Mode: Full ingestion`);
+  }
+  console.log();
 
   let proposalCount = 0;
   let teamLinksCount = 0;
+  const startTime = Date.now();
 
   try {
-    for await (const proposal of fetchAllProposals()) {
-      // Upsert fund
+    for await (const proposal of fetchAllProposals(CLI_OPTIONS)) {
+      // Upsert fund and get fund number for currency normalization
       let fundId: string;
+      let fundNumber = 0;
       if (proposal.fund) {
         fundId = await upsertFund(proposal.fund);
+        fundNumber = extractFundNumber(proposal.fund.title);
       } else {
         const defaultFund = await prisma.fund.upsert({
           where: { externalId: "unknown" },
@@ -434,8 +579,8 @@ async function run(): Promise<void> {
         fundId = defaultFund.id;
       }
 
-      // Upsert proposal
-      const projectId = await upsertProposal(proposal, fundId);
+      // Upsert proposal with currency normalization
+      const projectId = await upsertProposal(proposal, fundId, fundNumber);
       proposalCount++;
 
       // Link team members
@@ -453,7 +598,9 @@ async function run(): Promise<void> {
     await computeFundStats();
     await computePersonStats();
 
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
     console.log("\n=== Ingestion Complete ===");
+    console.log(`Duration: ${elapsed}s`);
     console.log(`Funds: ${fundCache.size}`);
     console.log(`Proposals: ${proposalCount}`);
     console.log(`People: ${personCache.size}`);
