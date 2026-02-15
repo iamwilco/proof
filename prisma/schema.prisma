@@ -60,7 +60,9 @@ model Project {
   status          String
   fundingStatus   String        @default("pending")
   fundingAmount   Decimal       @db.Decimal(18, 2)
+  fundingAmountUSD Decimal      @default(0) @db.Decimal(18, 2)  // Normalized to USD for comparison
   amountReceived  Decimal       @default(0) @db.Decimal(18, 2)
+  amountReceivedUSD Decimal     @default(0) @db.Decimal(18, 2)  // Normalized to USD for comparison
   amountRemaining Decimal       @default(0) @db.Decimal(18, 2)
   currency        String        @default("USD")
   yesVotes        Int           @default(0)
@@ -970,6 +972,7 @@ model ProjectROI {
   githubScore         Float    @default(0)
   deliverableScore    Float    @default(0)
   onchainScore        Float    @default(0)
+  communityScore      Float    @default(0)
   // Weighted outcome score
   outcomeScore        Float    @default(0)
   // ROI calculation

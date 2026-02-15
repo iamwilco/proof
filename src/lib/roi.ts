@@ -1,10 +1,12 @@
 import prisma from "./prisma";
 
 // ROI Calculation Weights
+// Community reviews added as 15% weight, redistributed from other components
 const WEIGHTS = {
-  github: 0.4,
-  deliverables: 0.3,
-  onchain: 0.3,
+  github: 0.30,
+  deliverables: 0.30,
+  onchain: 0.25,
+  community: 0.15,
 };
 
 // Normalization constants
@@ -31,6 +33,12 @@ interface ROIBreakdown {
     txCount: number;
     uniqueAddresses: number;
     totalReceived: number;
+    weight: number;
+    score: number;
+  };
+  community: {
+    reviewCount: number;
+    avgRating: number;
     weight: number;
     score: number;
   };
@@ -131,6 +139,39 @@ function calculateOnchainScore(project: {
   return Math.min(txScore + addressScore + volumeScore, 100);
 }
 
+/**
+ * Calculate community review score from project reviews
+ * Returns score 0-100 based on average rating and review count
+ */
+async function calculateCommunityScore(projectId: string): Promise<{
+  score: number;
+  reviewCount: number;
+  avgRating: number;
+}> {
+  const reviews = await prisma.review.findMany({
+    where: { projectId },
+    select: { rating: true },
+  });
+
+  if (reviews.length === 0) {
+    return { score: 0, reviewCount: 0, avgRating: 0 };
+  }
+
+  const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+  
+  // Convert 1-5 rating to 0-100 scale
+  // 1 star = 0, 5 stars = 100
+  const ratingScore = ((avgRating - 1) / 4) * 100;
+  
+  // Bonus for having more reviews (up to 20 points for 10+ reviews)
+  const reviewCountBonus = Math.min(reviews.length * 2, 20);
+  
+  // Final score: 80% rating + 20% review count bonus
+  const score = Math.min(ratingScore * 0.8 + reviewCountBonus, 100);
+
+  return { score, reviewCount: reviews.length, avgRating };
+}
+
 function calculateROIScore(outcomeScore: number, fundingAmount: number): number {
   if (fundingAmount <= 0) return 0;
 
@@ -150,6 +191,7 @@ export interface ProjectROIResult {
   githubScore: number;
   deliverableScore: number;
   onchainScore: number;
+  communityScore: number;
   outcomeScore: number;
   fundingAmount: number;
   roiScore: number;
@@ -180,12 +222,14 @@ export async function calculateProjectROI(projectId: string): Promise<ProjectROI
   const githubScore = calculateGitHubScore(project);
   const deliverableData = await calculateDeliverableScore(projectId);
   const onchainScore = calculateOnchainScore(project);
+  const communityData = await calculateCommunityScore(projectId);
 
-  // Weighted outcome score
+  // Weighted outcome score (includes community reviews)
   const outcomeScore =
     githubScore * WEIGHTS.github +
     deliverableData.score * WEIGHTS.deliverables +
-    onchainScore * WEIGHTS.onchain;
+    onchainScore * WEIGHTS.onchain +
+    communityData.score * WEIGHTS.community;
 
   // Calculate ROI
   const roiScore = calculateROIScore(outcomeScore, fundingAmount);
@@ -213,6 +257,12 @@ export async function calculateProjectROI(projectId: string): Promise<ProjectROI
       weight: WEIGHTS.onchain,
       score: onchainScore,
     },
+    community: {
+      reviewCount: communityData.reviewCount,
+      avgRating: communityData.avgRating,
+      weight: WEIGHTS.community,
+      score: communityData.score,
+    },
     outcome: {
       score: outcomeScore,
     },
@@ -228,6 +278,7 @@ export async function calculateProjectROI(projectId: string): Promise<ProjectROI
     githubScore,
     deliverableScore: deliverableData.score,
     onchainScore,
+    communityScore: communityData.score,
     outcomeScore,
     fundingAmount,
     roiScore,
@@ -242,6 +293,7 @@ export async function storeProjectROI(result: ProjectROIResult): Promise<void> {
       githubScore: result.githubScore,
       deliverableScore: result.deliverableScore,
       onchainScore: result.onchainScore,
+      communityScore: result.communityScore,
       outcomeScore: result.outcomeScore,
       fundingAmount: result.fundingAmount,
       roiScore: result.roiScore,
