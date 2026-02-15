@@ -19,7 +19,15 @@ type GraphEdge = {
     source: string;
     target: string;
     type: "fund_project" | "project_person";
+    funding?: number;
+    fundingLabel?: string;
   };
+};
+
+const formatFundingLabel = (amount: number): string => {
+  if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`;
+  if (amount >= 1000) return `$${(amount / 1000).toFixed(0)}K`;
+  return `$${amount}`;
 };
 
 export async function GET(request: NextRequest) {
@@ -120,14 +128,19 @@ export async function GET(request: NextRequest) {
 
   const edges: GraphEdge[] = [
     ...projects.map(
-      (project): GraphEdge => ({
-        data: {
-          id: `fund-${project.fundId}-project-${project.id}`,
-          source: `fund-${project.fundId}`,
-          target: `project-${project.id}`,
-          type: "fund_project",
-        },
-      })
+      (project): GraphEdge => {
+        const funding = Number(project.fundingAmount);
+        return {
+          data: {
+            id: `fund-${project.fundId}-project-${project.id}`,
+            source: `fund-${project.fundId}`,
+            target: `project-${project.id}`,
+            type: "fund_project",
+            funding,
+            fundingLabel: formatFundingLabel(funding),
+          },
+        };
+      }
     ),
     ...filteredProjectPeople.map(
       (pp): GraphEdge => ({

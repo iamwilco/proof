@@ -24,6 +24,8 @@ type GraphEdge = {
     source: string;
     target: string;
     type: "fund_project" | "project_person";
+    funding?: number;
+    fundingLabel?: string;
   };
 };
 
@@ -391,6 +393,37 @@ export default function GraphClient() {
                     "target-arrow-shape": "triangle",
                     "curve-style": "bezier",
                     opacity: 0.6,
+                  },
+                },
+                // Funding flow edges - show labels and thicker lines
+                {
+                  selector: 'edge[type = "fund_project"]',
+                  style: {
+                    width: 2,
+                    "line-color": "#10b981",
+                    "target-arrow-color": "#10b981",
+                    label: viewMode === "funding" ? "data(fundingLabel)" : "",
+                    "font-size": 8,
+                    "text-background-color": "#ffffff",
+                    "text-background-opacity": 0.9,
+                    "text-background-padding": "2px",
+                    color: "#047857",
+                  },
+                },
+                // High-value funding edges (>$100K)
+                {
+                  selector: 'edge[funding > 100000]',
+                  style: {
+                    width: viewMode === "funding" ? 4 : 2,
+                    "line-color": "#059669",
+                  },
+                },
+                // Very high-value funding edges (>$500K)
+                {
+                  selector: 'edge[funding > 500000]',
+                  style: {
+                    width: viewMode === "funding" ? 6 : 3,
+                    "line-color": "#047857",
                   },
                 },
               ]}
