@@ -35,9 +35,10 @@ type MonthlyReport = {
 interface ReportSectionProps {
   projectId: string;
   initialReports: MonthlyReport[];
+  isAuthenticated?: boolean;
 }
 
-export default function ReportSection({ projectId, initialReports }: ReportSectionProps) {
+export default function ReportSection({ projectId, initialReports, isAuthenticated = false }: ReportSectionProps) {
   const router = useRouter();
   const [reports, setReports] = useState(initialReports);
   const [month, setMonth] = useState(new Date().getMonth() + 1);
@@ -99,163 +100,174 @@ export default function ReportSection({ projectId, initialReports }: ReportSecti
   };
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6">
+    <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900">Monthly Reports</h2>
-          <p className="text-sm text-slate-500">Latest progress updates from project teams.</p>
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Monthly Reports</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Latest progress updates from project teams.</p>
         </div>
-        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+        <span className="rounded-full bg-slate-100 dark:bg-slate-700 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">
           {reports.length} total
         </span>
       </div>
 
-      <form onSubmit={submitReport} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-        <div className="grid gap-3 md:grid-cols-2">
-          <label className="text-sm font-medium text-slate-700">
-            Month
-            <select
-              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-              value={month}
-              onChange={(event) => setMonth(Number(event.target.value))}
+      {isAuthenticated ? (
+        <form onSubmit={submitReport} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
+          <div className="grid gap-3 md:grid-cols-2">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              Month
+              <select
+                className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white px-3 py-2 text-sm"
+                value={month}
+                onChange={(event) => setMonth(Number(event.target.value))}
+              >
+                {MONTHS.map((label, idx) => (
+                  <option key={label} value={idx + 1}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              Year
+              <input
+                type="number"
+                min={2020}
+                className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white px-3 py-2 text-sm"
+                value={year}
+                onChange={(event) => setYear(Number(event.target.value))}
+              />
+            </label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 md:col-span-2">
+              Reporter Name
+              <input
+                type="text"
+                required
+                className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white px-3 py-2 text-sm"
+                value={reporterName}
+                onChange={(event) => setReporterName(event.target.value)}
+              />
+            </label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 md:col-span-2">
+              Summary
+              <textarea
+                required
+                rows={3}
+                className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white px-3 py-2 text-sm"
+                value={summary}
+                onChange={(event) => setSummary(event.target.value)}
+              />
+            </label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 md:col-span-2">
+              Progress Highlights
+              <textarea
+                rows={2}
+                className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white px-3 py-2 text-sm"
+                value={progress}
+                onChange={(event) => setProgress(event.target.value)}
+              />
+            </label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 md:col-span-2">
+              Blockers
+              <textarea
+                rows={2}
+                className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white px-3 py-2 text-sm"
+                value={blockers}
+                onChange={(event) => setBlockers(event.target.value)}
+              />
+            </label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 md:col-span-2">
+              Next Steps
+              <textarea
+                rows={2}
+                className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white px-3 py-2 text-sm"
+                value={nextSteps}
+                onChange={(event) => setNextSteps(event.target.value)}
+              />
+            </label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 md:col-span-2">
+              Evidence URLs (one per line)
+              <textarea
+                rows={2}
+                className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white px-3 py-2 text-sm"
+                value={evidence}
+                onChange={(event) => setEvidence(event.target.value)}
+              />
+            </label>
+          </div>
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+            <button
+              type="submit"
+              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+              disabled={status === "loading"}
             >
-              {MONTHS.map((label, idx) => (
-                <option key={label} value={idx + 1}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="text-sm font-medium text-slate-700">
-            Year
-            <input
-              type="number"
-              min={2020}
-              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-              value={year}
-              onChange={(event) => setYear(Number(event.target.value))}
-            />
-          </label>
-          <label className="text-sm font-medium text-slate-700 md:col-span-2">
-            Reporter Name
-            <input
-              type="text"
-              required
-              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-              value={reporterName}
-              onChange={(event) => setReporterName(event.target.value)}
-            />
-          </label>
-          <label className="text-sm font-medium text-slate-700 md:col-span-2">
-            Summary
-            <textarea
-              required
-              rows={3}
-              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-              value={summary}
-              onChange={(event) => setSummary(event.target.value)}
-            />
-          </label>
-          <label className="text-sm font-medium text-slate-700 md:col-span-2">
-            Progress Highlights
-            <textarea
-              rows={2}
-              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-              value={progress}
-              onChange={(event) => setProgress(event.target.value)}
-            />
-          </label>
-          <label className="text-sm font-medium text-slate-700 md:col-span-2">
-            Blockers
-            <textarea
-              rows={2}
-              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-              value={blockers}
-              onChange={(event) => setBlockers(event.target.value)}
-            />
-          </label>
-          <label className="text-sm font-medium text-slate-700 md:col-span-2">
-            Next Steps
-            <textarea
-              rows={2}
-              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-              value={nextSteps}
-              onChange={(event) => setNextSteps(event.target.value)}
-            />
-          </label>
-          <label className="text-sm font-medium text-slate-700 md:col-span-2">
-            Evidence URLs (one per line)
-            <textarea
-              rows={2}
-              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-              value={evidence}
-              onChange={(event) => setEvidence(event.target.value)}
-            />
-          </label>
+              {status === "loading" ? "Submitting..." : "Submit Report"}
+            </button>
+            {message && (
+              <span
+                className={`text-sm ${
+                  status === "error" ? "text-rose-600 dark:text-rose-400" : "text-emerald-600 dark:text-emerald-400"
+                }`}
+              >
+                {message}
+              </span>
+            )}
+          </div>
+        </form>
+      ) : (
+        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4 text-center">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
+            <a href="/login" className="font-medium text-blue-600 dark:text-blue-400 hover:underline">
+              Sign in
+            </a>{" "}
+            to submit a monthly report.
+          </p>
         </div>
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <button
-            type="submit"
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-            disabled={status === "loading"}
-          >
-            {status === "loading" ? "Submitting..." : "Submit Report"}
-          </button>
-          {message && (
-            <span
-              className={`text-sm ${
-                status === "error" ? "text-rose-600" : "text-emerald-600"
-              }`}
-            >
-              {message}
-            </span>
-          )}
-        </div>
-      </form>
+      )}
 
       <div className="mt-6 space-y-4">
         {reports.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+          <div className="rounded-lg border border-dashed border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 text-center text-sm text-slate-500 dark:text-slate-400">
             No monthly reports submitted yet.
           </div>
         ) : (
           reports.map((report) => (
-            <div key={report.id} className="rounded-xl border border-slate-200 bg-white p-4">
+            <div key={report.id} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h3 className="text-base font-semibold text-slate-900">
+                  <h3 className="text-base font-semibold text-slate-900 dark:text-white">
                     {MONTHS[report.month - 1]} {report.year}
                   </h3>
-                  <p className="text-xs text-slate-500">Submitted by {report.reporterName}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Submitted by {report.reporterName}</p>
                 </div>
                 <div className="text-right">
-                  <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+                  <span className="rounded-full bg-slate-100 dark:bg-slate-700 px-2 py-0.5 text-xs font-medium text-slate-600 dark:text-slate-300">
                     {report.status.replace(/_/g, " ")}
                   </span>
-                  <div className="mt-1 text-xs text-slate-400">
+                  <div className="mt-1 text-xs text-slate-400 dark:text-slate-500">
                     {new Date(report.createdAt).toLocaleDateString()}
                   </div>
                 </div>
               </div>
-              <p className="mt-3 text-sm text-slate-700">{report.summary}</p>
+              <p className="mt-3 text-sm text-slate-700 dark:text-slate-300">{report.summary}</p>
               {report.progress && (
-                <p className="mt-2 text-sm text-slate-600">
-                  <span className="font-medium text-slate-700">Progress:</span> {report.progress}
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                  <span className="font-medium text-slate-700 dark:text-slate-300">Progress:</span> {report.progress}
                 </p>
               )}
               {report.blockers && (
-                <p className="mt-2 text-sm text-slate-600">
-                  <span className="font-medium text-slate-700">Blockers:</span> {report.blockers}
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                  <span className="font-medium text-slate-700 dark:text-slate-300">Blockers:</span> {report.blockers}
                 </p>
               )}
               {report.nextSteps && (
-                <p className="mt-2 text-sm text-slate-600">
-                  <span className="font-medium text-slate-700">Next steps:</span> {report.nextSteps}
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                  <span className="font-medium text-slate-700 dark:text-slate-300">Next steps:</span> {report.nextSteps}
                 </p>
               )}
               {report.evidenceUrls.length > 0 && (
                 <div className="mt-3">
-                  <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
                     Evidence
                   </p>
                   <ul className="mt-1 space-y-1 text-sm">
@@ -265,7 +277,7 @@ export default function ReportSection({ projectId, initialReports }: ReportSecti
                           href={url}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-blue-600 hover:underline"
+                          className="text-blue-600 dark:text-blue-400 hover:underline"
                         >
                           {url}
                         </a>

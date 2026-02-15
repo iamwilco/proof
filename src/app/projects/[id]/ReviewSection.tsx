@@ -28,6 +28,7 @@ type ReviewResponse = {
 
 type ReviewSectionProps = {
   projectId: string;
+  isAuthenticated?: boolean;
 };
 
 type FormState = "idle" | "loading" | "success" | "error";
@@ -36,7 +37,7 @@ type VoteState = "idle" | "loading" | "success" | "error";
 
 const scoreLabel = (value?: number | null) => (value ? value.toFixed(1) : "—");
 
-export default function ReviewSection({ projectId }: ReviewSectionProps) {
+export default function ReviewSection({ projectId, isAuthenticated = false }: ReviewSectionProps) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [averages, setAverages] = useState<ReviewResponse["averages"]>({});
   const [reviewState, setReviewState] = useState<FormState>("idle");
@@ -146,111 +147,122 @@ export default function ReviewSection({ projectId }: ReviewSectionProps) {
 
   return (
     <section className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
-      <div className="rounded-2xl border border-slate-200 bg-white p-6">
-        <h2 className="text-lg font-semibold text-slate-900">Community reviews</h2>
-        <p className="mt-2 text-sm text-slate-500">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Community reviews</h2>
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
           Share structured feedback on alignment, feasibility, and auditability.
         </p>
 
-        <form onSubmit={submitReview} className="mt-6 space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="block text-sm font-medium text-slate-700">
-              Overall rating
-              <select
-                value={rating}
-                onChange={(event) => setRating(Number(event.target.value))}
-                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-              >
-                {[5, 4, 3, 2, 1].map((value) => (
-                  <option key={value} value={value}>
-                    {value} / 5
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="block text-sm font-medium text-slate-700">
-              Title
-              <input
-                value={title}
-                onChange={(event) => setTitle(event.target.value)}
-                className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                placeholder="Summarize your take"
+        {isAuthenticated ? (
+          <form onSubmit={submitReview} className="mt-6 space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                Overall rating
+                <select
+                  value={rating}
+                  onChange={(event) => setRating(Number(event.target.value))}
+                  className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white px-3 py-2 text-sm"
+                >
+                  {[5, 4, 3, 2, 1].map((value) => (
+                    <option key={value} value={value}>
+                      {value} / 5
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                Title
+                <input
+                  value={title}
+                  onChange={(event) => setTitle(event.target.value)}
+                  className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white px-3 py-2 text-sm"
+                  placeholder="Summarize your take"
+                />
+              </label>
+            </div>
+
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+              Review
+              <textarea
+                value={content}
+                onChange={(event) => setContent(event.target.value)}
+                rows={4}
+                className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white px-3 py-2 text-sm"
               />
             </label>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                Alignment
+                <select
+                  value={alignmentScore}
+                  onChange={(event) => setAlignmentScore(Number(event.target.value))}
+                  className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white px-3 py-2 text-sm"
+                >
+                  {[5, 4, 3, 2, 1].map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                Feasibility
+                <select
+                  value={feasibilityScore}
+                  onChange={(event) => setFeasibilityScore(Number(event.target.value))}
+                  className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white px-3 py-2 text-sm"
+                >
+                  {[5, 4, 3, 2, 1].map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                Auditability
+                <select
+                  value={auditabilityScore}
+                  onChange={(event) => setAuditabilityScore(Number(event.target.value))}
+                  className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white px-3 py-2 text-sm"
+                >
+                  {[5, 4, 3, 2, 1].map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              disabled={reviewState === "loading"}
+              className="w-full rounded-lg bg-slate-900 dark:bg-slate-100 px-4 py-2 text-sm font-semibold text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 disabled:opacity-60"
+            >
+              {reviewState === "loading" ? "Submitting…" : "Submit review"}
+            </button>
+            <label className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+              <input type="checkbox" required className="accent-slate-900 dark:accent-slate-100" />
+              I&apos;m not a robot (captcha placeholder)
+            </label>
+          </form>
+        ) : (
+          <div className="mt-6 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4 text-center">
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              <a href="/login" className="font-medium text-blue-600 dark:text-blue-400 hover:underline">
+                Sign in
+              </a>{" "}
+              to submit a community review.
+            </p>
           </div>
-
-          <label className="block text-sm font-medium text-slate-700">
-            Review
-            <textarea
-              value={content}
-              onChange={(event) => setContent(event.target.value)}
-              rows={4}
-              className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-            />
-          </label>
-
-          <div className="grid gap-4 sm:grid-cols-3">
-            <label className="block text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Alignment
-              <select
-                value={alignmentScore}
-                onChange={(event) => setAlignmentScore(Number(event.target.value))}
-                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-              >
-                {[5, 4, 3, 2, 1].map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="block text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Feasibility
-              <select
-                value={feasibilityScore}
-                onChange={(event) => setFeasibilityScore(Number(event.target.value))}
-                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-              >
-                {[5, 4, 3, 2, 1].map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="block text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Auditability
-              <select
-                value={auditabilityScore}
-                onChange={(event) => setAuditabilityScore(Number(event.target.value))}
-                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-              >
-                {[5, 4, 3, 2, 1].map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            disabled={reviewState === "loading"}
-            className="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-60"
-          >
-            {reviewState === "loading" ? "Submitting…" : "Submit review"}
-          </button>
-          <label className="flex items-center gap-2 text-xs text-slate-500">
-            <input type="checkbox" required className="accent-slate-900" />
-            I&apos;m not a robot (captcha placeholder)
-          </label>
-        </form>
+        )}
 
         {reviewMessage && (
           <p
             className={`mt-3 text-sm ${
-              reviewState === "error" ? "text-rose-600" : "text-emerald-600"
+              reviewState === "error" ? "text-rose-600 dark:text-rose-400" : "text-emerald-600 dark:text-emerald-400"
             }`}
           >
             {reviewMessage}
@@ -258,54 +270,54 @@ export default function ReviewSection({ projectId }: ReviewSectionProps) {
         )}
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-6">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-slate-900">Review snapshot</h3>
-          <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-700">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Review snapshot</h3>
+          <span className="rounded-full bg-emerald-50 dark:bg-emerald-900/50 px-3 py-1 text-sm font-semibold text-emerald-700 dark:text-emerald-300">
             {reviewStats.ratingAvg}
           </span>
         </div>
-        <div className="mt-4 grid gap-3 text-sm text-slate-600">
+        <div className="mt-4 grid gap-3 text-sm text-slate-600 dark:text-slate-400">
           <div className="flex items-center justify-between">
             <span>Alignment</span>
-            <span className="font-medium text-slate-900">{reviewStats.alignmentAvg}</span>
+            <span className="font-medium text-slate-900 dark:text-white">{reviewStats.alignmentAvg}</span>
           </div>
           <div className="flex items-center justify-between">
             <span>Feasibility</span>
-            <span className="font-medium text-slate-900">{reviewStats.feasibilityAvg}</span>
+            <span className="font-medium text-slate-900 dark:text-white">{reviewStats.feasibilityAvg}</span>
           </div>
           <div className="flex items-center justify-between">
             <span>Auditability</span>
-            <span className="font-medium text-slate-900">{reviewStats.auditabilityAvg}</span>
+            <span className="font-medium text-slate-900 dark:text-white">{reviewStats.auditabilityAvg}</span>
           </div>
         </div>
 
         <div className="mt-6 space-y-4">
           {reviews.length === 0 ? (
-            <p className="text-sm text-slate-500">No reviews yet.</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">No reviews yet.</p>
           ) : (
             reviews.map((review) => (
-              <div key={review.id} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <div key={review.id} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">{review.title}</p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white">{review.title}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       {review.user?.displayName || review.user?.walletAddress || "Anonymous"}
                     </p>
                   </div>
-                  <span className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-slate-700">
+                  <span className="rounded-full bg-white dark:bg-slate-800 px-2 py-1 text-xs font-semibold text-slate-700 dark:text-slate-300">
                     {review.rating}/5
                   </span>
                 </div>
-                <p className="mt-3 text-sm text-slate-600">{review.content}</p>
-                <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
+                <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{review.content}</p>
+                <div className="mt-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                   <span>{new Date(review.createdAt).toLocaleDateString()}</span>
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
                       onClick={() => submitVote(review.id, 1)}
                       disabled={voteState[review.id] === "loading"}
-                      className="rounded-full border border-slate-200 px-2 py-1 text-xs font-semibold text-slate-600 hover:bg-white"
+                      className="rounded-full border border-slate-200 dark:border-slate-600 px-2 py-1 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800"
                     >
                       Helpful ({review.helpfulCount})
                     </button>
@@ -313,7 +325,7 @@ export default function ReviewSection({ projectId }: ReviewSectionProps) {
                       type="button"
                       onClick={() => submitVote(review.id, -1)}
                       disabled={voteState[review.id] === "loading"}
-                      className="rounded-full border border-slate-200 px-2 py-1 text-xs font-semibold text-slate-600 hover:bg-white"
+                      className="rounded-full border border-slate-200 dark:border-slate-600 px-2 py-1 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800"
                     >
                       Not helpful ({review.notHelpfulCount})
                     </button>

@@ -118,12 +118,36 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
   </section>
 );
 
+// Helper to generate slug from title
+const generateSlug = (title: string): string => {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 80);
+};
+
+// Helper to build external links
+const buildProjectCatalystUrl = (fundNumber: number, category: string, slug: string): string => {
+  const categorySlug = category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return `https://projectcatalyst.io/funds/${fundNumber}/${categorySlug}/${slug}`;
+};
+
+const buildMilestonesUrl = (externalId: string): string => {
+  return `https://milestones.projectcatalyst.io/projects/${externalId}`;
+};
+
+const buildCatalystExplorerUrl = (fundNumber: number, slug: string): string => {
+  return `https://www.catalystexplorer.com/en/proposals/${slug}-f${fundNumber}/details`;
+};
+
 export default async function ProjectDetailPage({ params }: PageProps) {
   const { id } = await params;
   const session = await getSession();
   const isAuthenticated = !!session;
 
-  const project = await prisma.project.findUnique({
+  // Try to find by ID first, then by slug
+  let project = await prisma.project.findUnique({
     where: { id },
     include: {
       fund: true,
@@ -175,9 +199,67 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     },
   });
 
+  // If not found by ID, try by slug
+  if (!project) {
+    project = await prisma.project.findFirst({
+      where: { slug: id },
+      include: {
+        fund: true,
+        milestones: {
+          include: {
+            deliverables: true,
+          },
+          orderBy: { dueDate: "asc" },
+        },
+        deliverables: {
+          where: { milestoneId: null },
+        },
+        projectPeople: {
+          include: {
+            person: true,
+          },
+        },
+        projectOrgs: {
+          include: {
+            organization: true,
+          },
+        },
+        concerns: {
+          include: {
+            responses: true,
+          },
+          orderBy: { createdAt: "desc" },
+        },
+        links: true,
+        votingRecords: {
+          orderBy: { capturedAt: "desc" },
+          take: 1,
+        },
+        reports: {
+          orderBy: [{ year: "desc" }, { month: "desc" }],
+        },
+        flags: {
+          where: { status: { in: ["pending", "confirmed"] } },
+          orderBy: { createdAt: "desc" },
+          take: 5,
+        },
+        _count: {
+          select: {
+            flags: {
+              where: { status: { in: ["pending", "confirmed"] } },
+            },
+          },
+        },
+      },
+    });
+  }
+
   if (!project) {
     notFound();
   }
+
+  // Generate slug if not present
+  const projectSlug = project.slug || generateSlug(project.title);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 px-6 py-12">
@@ -428,23 +510,22 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           </Section>
         )}
 
-        <Section title="Connections">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              Hover to preview the strongest relationships around this proposal.
-            </p>
-            <ConnectionHoverCard entityType="project" entityId={project.id} href={`/projects/${project.id}`}>
-              <button
-                type="button"
-                className="rounded-lg border border-slate-200 dark:border-slate-600 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
-              >
-                Open connection explorer
-              </button>
-            </ConnectionHoverCard>
-          </div>
-        </Section>
-
         <div className="space-y-6">
+          <Section title="Connections">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                Hover to preview the strongest relationships around this proposal.
+              </p>
+              <ConnectionHoverCard entityType="project" entityId={project.id} href={`/projects/${project.id}`}>
+                <button
+                  type="button"
+                  className="rounded-lg border border-slate-200 dark:border-slate-600 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
+                >
+                  Open connection explorer
+                </button>
+              </ConnectionHoverCard>
+            </div>
+          </Section>
           {project.votingRecords.length > 0 && (
             <Section title="Voting Results">
               <VotingStats
@@ -475,7 +556,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               </div>
             </Section>
           )}
-          <ReviewSection projectId={project.id} />
+          <ReviewSection projectId={project.id} isAuthenticated={isAuthenticated} />
           {isAuthenticated && (
             <Section title="Leader responses">
               <LeaderResponsePanel
@@ -579,6 +660,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               ...report,
               createdAt: report.createdAt.toISOString(),
             }))}
+            isAuthenticated={isAuthenticated}
           />
 
           {project.milestones.length > 0 && (
@@ -690,28 +772,74 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </Section>
           )}
 
-          {project.links.length > 0 && (
-            <Section title="External Links">
-              <ul className="space-y-2">
-                {project.links.map((link) => (
-                  <li key={link.id}>
-                    <a
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
-                    >
-                      <LinkIcon type={link.type} />
-                      <span className="text-sm">{link.url}</span>
-                    </a>
-                    <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
-                      {link.type.replace(/_/g, " ")}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </Section>
-          )}
+          <Section title="External Links">
+            <ul className="space-y-3">
+              {/* Project Catalyst link */}
+              <li>
+                <a
+                  href={buildProjectCatalystUrl(project.fund.number, project.category, projectSlug)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  <span className="mr-2">🏛️</span>
+                  <span className="text-sm">View on Project Catalyst</span>
+                </a>
+                <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
+                  Official Catalyst Portal
+                </span>
+              </li>
+              {/* Milestones link - only if externalId exists */}
+              {project.externalId && (
+                <li>
+                  <a
+                    href={buildMilestonesUrl(project.externalId)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    <span className="mr-2">📊</span>
+                    <span className="text-sm">View Milestones on Project Catalyst</span>
+                  </a>
+                  <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
+                    Milestone Tracker
+                  </span>
+                </li>
+              )}
+              {/* Catalyst Explorer link */}
+              <li>
+                <a
+                  href={buildCatalystExplorerUrl(project.fund.number, projectSlug)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  <span className="mr-2">🔍</span>
+                  <span className="text-sm">View on Catalyst Explorer</span>
+                </a>
+                <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
+                  Community Explorer
+                </span>
+              </li>
+              {/* Original project links */}
+              {project.links.map((link) => (
+                <li key={link.id}>
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    <LinkIcon type={link.type} />
+                    <span className="text-sm">{link.url}</span>
+                  </a>
+                  <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
+                    {link.type.replace(/_/g, " ")}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </Section>
 
           {isAuthenticated ? (
             <FlagSection projectId={project.id} projectTitle={project.title} />
