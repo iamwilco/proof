@@ -114,11 +114,13 @@ async function main() {
   const fundFilter = args.includes("--fund") ? parseInt(args[args.indexOf("--fund") + 1]) : null;
   const limitArg = args.includes("--limit") ? parseInt(args[args.indexOf("--limit") + 1]) : null;
   const dryRun = args.includes("--dry-run");
+  const skipEnriched = args.includes("--skip-enriched");
 
   console.log("PROOF-130: Catalyst Explorer single-proposal enrichment");
   console.log(`  Fund filter: ${fundFilter ?? "all"}`);
   console.log(`  Limit: ${limitArg ?? "none"}`);
   console.log(`  Dry run: ${dryRun}`);
+  console.log(`  Skip enriched: ${skipEnriched}`);
   console.log(`  Rate limit: ${DELAY_MS}ms between requests`);
   console.log();
 
@@ -126,6 +128,9 @@ async function main() {
   const where: Record<string, unknown> = {
     externalId: { not: null },
   };
+  if (skipEnriched) {
+    where.alignmentScore = null;
+  }
   if (fundFilter) {
     where.fund = { number: fundFilter };
   }

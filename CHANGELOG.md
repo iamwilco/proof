@@ -16,7 +16,7 @@ All notable changes to this project will be documented in this file.
 - `getNormalizationInfo()` now reports rate source (historical vs default) per fund.
 - Single-proposal enrichment: fetches detailed data from Catalyst Explorer `/proposals/{id}` for all 11,356 projects.
 - New schema fields: `impact`, `feasibility`, `teamDescription`, `budgetBreakdown`, `alignmentScore`, `feasibilityScore`, `auditabilityScore`, `opensourced`.
-- GitHub URL extraction from all proposal text fields (~28% hit rate across 11K projects).
+- GitHub URL extraction from all proposal text fields (1,589 projects = 14% of total).
 - Project detail page now shows: Expected Impact, Feasibility, Team, Budget Breakdown, Reviewer Scores (1-5 with progress bars), Open Source badge, project duration badge.
 
 ### Fixed
