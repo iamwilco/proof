@@ -55,6 +55,14 @@ model Project {
   problem         String?
   solution        String?
   experience      String?
+  impact          String?       // Expected impact/outcomes (from detail endpoint)
+  feasibility     String?       // Feasibility assessment (from detail endpoint)
+  teamDescription String?       // Detailed team info with bios (from pitch.team)
+  budgetBreakdown String?       // Budget breakdown text (from pitch.budget)
+  opensourced     Boolean?      // Whether project is open source
+  alignmentScore  Float?        // Reviewer alignment score
+  feasibilityScore Float?       // Reviewer feasibility score
+  auditabilityScore Float?      // Reviewer auditability score
   category        String
   challenge       String?       // Challenge/campaign name
   status          String

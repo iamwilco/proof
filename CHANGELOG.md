@@ -14,6 +14,10 @@ All notable changes to this project will be documented in this file.
 - `FUND_HISTORICAL_RATES` lookup: F10=$0.252, F11=$0.377, F12=$0.451, F13=$0.348, F14=$0.401, F15=$0.352.
 - 7,017 projects across F10-F15 re-normalized with accurate USD equivalents.
 - `getNormalizationInfo()` now reports rate source (historical vs default) per fund.
+- Single-proposal enrichment: fetches detailed data from Catalyst Explorer `/proposals/{id}` for all 11,356 projects.
+- New schema fields: `impact`, `feasibility`, `teamDescription`, `budgetBreakdown`, `alignmentScore`, `feasibilityScore`, `auditabilityScore`, `opensourced`.
+- GitHub URL extraction from all proposal text fields (~28% hit rate across 11K projects).
+- Project detail page now shows: Expected Impact, Feasibility, Team, Budget Breakdown, Reviewer Scores (1-5 with progress bars), Open Source badge, project duration badge.
 
 ### Fixed
 - Sidebar layout: aligned to left edge with fixed positioning, made nav scrollable, fixed z-index overlap with header.

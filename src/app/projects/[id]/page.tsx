@@ -118,53 +118,50 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
   </section>
 );
 
-// Proposal Details Section - shows problem, solution, expected outcome
+// Proposal Details Section - shows problem, solution, expected outcome, impact, feasibility, team, budget
 const ProposalDetails = ({ 
   problem, 
   solution, 
-  experience 
+  experience,
+  impact,
+  feasibility,
+  teamDescription,
+  budgetBreakdown,
 }: { 
   problem?: string | null; 
   solution?: string | null; 
   experience?: string | null;
+  impact?: string | null;
+  feasibility?: string | null;
+  teamDescription?: string | null;
+  budgetBreakdown?: string | null;
 }) => {
-  const hasContent = problem || solution || experience;
+  const hasContent = problem || solution || experience || impact || feasibility || teamDescription || budgetBreakdown;
   if (!hasContent) return null;
+
+  const sections = [
+    { icon: "🎯", title: "Problem Statement", content: problem },
+    { icon: "💡", title: "Proposed Solution", content: solution },
+    { icon: "📈", title: "Expected Impact", content: impact },
+    { icon: "🔬", title: "Feasibility", content: feasibility },
+    { icon: "👥", title: "Team Experience & Qualifications", content: experience || teamDescription },
+    { icon: "💰", title: "Budget Breakdown", content: budgetBreakdown },
+  ].filter((s) => s.content);
 
   return (
     <section className="rounded-2xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 p-6">
       <h2 className="mb-4 text-lg font-semibold text-blue-900 dark:text-blue-100">Proposal Details</h2>
       <div className="space-y-6">
-        {problem && (
-          <div>
+        {sections.map((s) => (
+          <div key={s.title}>
             <h3 className="flex items-center gap-2 text-sm font-semibold text-blue-800 dark:text-blue-200">
-              <span>🎯</span> Problem Statement
+              <span>{s.icon}</span> {s.title}
             </h3>
             <p className="mt-2 text-sm text-blue-900/80 dark:text-blue-100/80 whitespace-pre-wrap">
-              {problem}
+              {s.content}
             </p>
           </div>
-        )}
-        {solution && (
-          <div>
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-blue-800 dark:text-blue-200">
-              <span>💡</span> Proposed Solution
-            </h3>
-            <p className="mt-2 text-sm text-blue-900/80 dark:text-blue-100/80 whitespace-pre-wrap">
-              {solution}
-            </p>
-          </div>
-        )}
-        {experience && (
-          <div>
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-blue-800 dark:text-blue-200">
-              <span>👥</span> Team Experience & Qualifications
-            </h3>
-            <p className="mt-2 text-sm text-blue-900/80 dark:text-blue-100/80 whitespace-pre-wrap">
-              {experience}
-            </p>
-          </div>
-        )}
+        ))}
       </div>
     </section>
   );
@@ -346,6 +343,16 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               <p className="mt-2 text-base text-slate-600 dark:text-slate-300">{project.description}</p>
             </div>
             <div className="flex items-center gap-2">
+              {project.opensourced && (
+                <span className="rounded-full bg-green-100 dark:bg-green-900/30 px-3 py-1 text-xs font-medium text-green-700 dark:text-green-300">
+                  Open Source
+                </span>
+              )}
+              {project.projectDuration && (
+                <span className="rounded-full bg-slate-100 dark:bg-slate-700 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-300">
+                  {project.projectDuration} months
+                </span>
+              )}
               {project.votingRecords[0]?.fundRank && (
                 <RankingBadge rank={project.votingRecords[0].fundRank} label="Fund" />
               )}
@@ -392,7 +399,49 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           problem={project.problem}
           solution={project.solution}
           experience={project.experience}
+          impact={project.impact}
+          feasibility={project.feasibility}
+          teamDescription={project.teamDescription}
+          budgetBreakdown={project.budgetBreakdown}
         />
+
+        {/* Reviewer Scores */}
+        {(project.alignmentScore || project.feasibilityScore || project.auditabilityScore) && (
+          <Section title="Reviewer Scores">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+              Community reviewer assessments (1-5 scale)
+            </p>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {project.alignmentScore && (
+                <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4 text-center">
+                  <p className="text-xs text-slate-400 dark:text-slate-500">Alignment</p>
+                  <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{project.alignmentScore.toFixed(2)}</p>
+                  <div className="mt-2 h-1.5 w-full rounded-full bg-slate-200 dark:bg-slate-700">
+                    <div className="h-1.5 rounded-full bg-blue-500" style={{ width: `${(project.alignmentScore / 5) * 100}%` }} />
+                  </div>
+                </div>
+              )}
+              {project.feasibilityScore && (
+                <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4 text-center">
+                  <p className="text-xs text-slate-400 dark:text-slate-500">Feasibility</p>
+                  <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{project.feasibilityScore.toFixed(2)}</p>
+                  <div className="mt-2 h-1.5 w-full rounded-full bg-slate-200 dark:bg-slate-700">
+                    <div className="h-1.5 rounded-full bg-green-500" style={{ width: `${(project.feasibilityScore / 5) * 100}%` }} />
+                  </div>
+                </div>
+              )}
+              {project.auditabilityScore && (
+                <div className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4 text-center">
+                  <p className="text-xs text-slate-400 dark:text-slate-500">Auditability</p>
+                  <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{project.auditabilityScore.toFixed(2)}</p>
+                  <div className="mt-2 h-1.5 w-full rounded-full bg-slate-200 dark:bg-slate-700">
+                    <div className="h-1.5 rounded-full bg-purple-500" style={{ width: `${(project.auditabilityScore / 5) * 100}%` }} />
+                  </div>
+                </div>
+              )}
+            </div>
+          </Section>
+        )}
 
         {(project.githubUrl || project.githubActivityScore !== null) && (
           <Section title="GitHub Activity">
