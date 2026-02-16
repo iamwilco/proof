@@ -2,8 +2,8 @@
 
 > Quick-glance milestone status and current work
 
-**Last Updated:** 2026-02-14  
-**Current Focus:** Milestone 31 — Pre-Launch Design Fixes
+**Last Updated:** 2026-02-16  
+**Current Focus:** Milestone 33 — Data Quality & External Links
 
 ---
 
@@ -38,10 +38,10 @@
 ## Current Task
 
 ```
-ID:          PROOF-118
-Title:       TBD
-Milestone:   31 (Pre-Launch Fixes)
-Status:      pending
+ID:          PROOF-129
+Title:       Historical ADA/USD rates per fund
+Milestone:   33 (Data Quality)
+Status:      pending (next up)
 ```
 
 ---
@@ -50,6 +50,7 @@ Status:      pending
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-128 | Fix external links: use projectcatalyst.io instead of catalystexplorer.com | 2026-02-16 |
 | PROOF-118 | Pre-Launch Design Fixes (Sidebar, Dark Mode, Homepage, Auth, Forms) | 2026-02-14 |
 | PROOF-117 | Verify Admin Dashboard | 2026-02-14 |
 | PROOF-116 | Auth: Protected Routes | 2026-02-14 |

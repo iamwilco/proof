@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+### Changed
+- External links now point to `milestones.projectcatalyst.io` (official IOG source) instead of `catalystexplorer.com`.
+- `catalystUrl` populated for all 11,356 projects (was null for all).
+- `explorerUrl` cleared — PROOF replaces Catalyst Explorer, no need to link to competitor.
+- Removed duplicate milestones/explorer links from project detail page; single "View on Project Catalyst" link.
+- Cleaned up unused `generateSlug` function and `projectSlug` variable from project detail page.
+
 ### Fixed
 - Sidebar layout: aligned to left edge with fixed positioning, made nav scrollable, fixed z-index overlap with header.
 - Dark mode styling: comprehensive rework across funds, projects, people, organizations pages for proper contrast and readability.

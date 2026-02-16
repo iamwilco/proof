@@ -371,14 +371,13 @@ async function upsertProposal(
   const fundingAmountUSD = normalizeToUSD(fundingAmount, fundNumber, currency);
   const amountReceivedUSD = normalizeToUSD(amountReceived, fundNumber, currency);
 
-  // Build external URLs
-  const catalystUrl = proposal.link || null;
-  const milestonesUrl = proposal.id 
-    ? `https://milestones.projectcatalyst.io/projects/${proposal.id}` 
+  // Build external URLs — point to projectcatalyst.io (official IOG source), not catalystexplorer.com
+  // milestones.projectcatalyst.io is the official Milestone Module for funded projects
+  const catalystUrl = proposal.id
+    ? `https://milestones.projectcatalyst.io/projects/${proposal.id}`
     : null;
-  const explorerUrl = proposal.slug && fundNumber
-    ? `https://www.catalystexplorer.com/proposals/${proposal.slug}`
-    : null;
+  const milestonesUrl = catalystUrl; // Same as catalystUrl — milestones module IS the official project page
+  const explorerUrl = null; // Intentionally null — PROOF replaces catalystexplorer.com
 
   const data = {
     externalId: proposal.id,

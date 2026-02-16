@@ -1,7 +1,13 @@
 #!/usr/bin/env npx ts-node
 /**
  * Populate slugs and external URLs for existing projects
- * Run: npx ts-node scripts/populate-project-slugs.ts
+ * 
+ * External link strategy:
+ * - catalystUrl → milestones.projectcatalyst.io (official IOG Milestone Module)
+ * - milestonesUrl → same as catalystUrl
+ * - explorerUrl → null (PROOF replaces catalystexplorer.com)
+ * 
+ * Run: npx tsx scripts/populate-project-slugs.ts
  */
 
 import { PrismaClient } from "../src/generated/prisma";
@@ -18,6 +24,10 @@ function generateSlug(title: string): string {
 
 async function main() {
   console.log("Populating project slugs and external URLs...\n");
+  console.log("URL strategy:");
+  console.log("  catalystUrl  → milestones.projectcatalyst.io (official IOG source)");
+  console.log("  milestonesUrl → milestones.projectcatalyst.io");
+  console.log("  explorerUrl  → null (PROOF replaces catalystexplorer.com)\n");
 
   // Get all projects
   const projects = await prisma.project.findMany({
@@ -61,15 +71,23 @@ async function main() {
       updates.slug = slug;
     }
 
-    // Generate milestones URL if missing but externalId exists
-    if (!project.milestonesUrl && project.externalId) {
-      updates.milestonesUrl = `https://milestones.projectcatalyst.io/projects/${project.externalId}`;
+    // catalystUrl → milestones.projectcatalyst.io (official IOG Milestone Module)
+    const officialUrl = project.externalId
+      ? `https://milestones.projectcatalyst.io/projects/${project.externalId}`
+      : null;
+
+    if (project.catalystUrl !== officialUrl) {
+      updates.catalystUrl = officialUrl;
     }
 
-    // Generate explorer URL if missing but slug exists
-    const finalSlug = updates.slug || project.slug;
-    if (!project.explorerUrl && finalSlug) {
-      updates.explorerUrl = `https://www.catalystexplorer.com/proposals/${finalSlug}`;
+    // milestonesUrl → same as catalystUrl
+    if (project.milestonesUrl !== officialUrl) {
+      updates.milestonesUrl = officialUrl;
+    }
+
+    // explorerUrl → null (PROOF replaces catalystexplorer.com)
+    if (project.explorerUrl !== null) {
+      updates.explorerUrl = null;
     }
 
     // Update if there are changes
@@ -80,7 +98,7 @@ async function main() {
       });
       updated++;
       
-      if (updated % 100 === 0) {
+      if (updated % 500 === 0) {
         console.log(`  Updated ${updated} projects...`);
       }
     } else {

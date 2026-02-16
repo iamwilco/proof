@@ -2290,6 +2290,281 @@
       ],
       "milestone": 32,
       "created": "2026-02-15"
+    },
+    {
+      "id": "PROOF-128",
+      "title": "Fix external links: use projectcatalyst.io instead of catalystexplorer.com",
+      "description": "catalystUrl is null for all 11,356 projects. PROOF aims to replace Catalyst Explorer, so external links should point to projectcatalyst.io (the official IOG source) not catalystexplorer.com. Construct catalystUrl from projectcatalyst.io patterns. Validate milestonesUrl resolves. Update ingestion and run backfill.",
+      "status": "completed",
+      "completed": "2026-02-16",
+      "priority": "high",
+      "labels": ["data", "ingestion", "bugfix"],
+      "dependencies": [],
+      "est_effort_hours": 2,
+      "acceptance_criteria": [
+        "catalystUrl points to projectcatalyst.io (not catalystexplorer.com)",
+        "milestonesUrl validated or removed if unresolvable",
+        "External links section on project detail shows working links",
+        "Backfill script updated and run"
+      ],
+      "milestone": 33,
+      "created": "2026-02-16"
+    },
+    {
+      "id": "PROOF-129",
+      "title": "Historical ADA/USD rates per fund",
+      "description": "Replace static $0.35 ADA/USD rate with exact historical rates per fund sourced from Project Catalyst fund pages (which show both ADA and USD values). Create a FUND_HISTORICAL_RATES static lookup in currency.ts. Re-normalize all ADA-denominated projects (F10-F15). No CoinGecko needed — exact values available from official source.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["data", "currency", "accuracy"],
+      "dependencies": [],
+      "est_effort_hours": 3,
+      "acceptance_criteria": [
+        "currency.ts uses per-fund historical rates instead of single default",
+        "All F10-F15 project fundingAmountUSD values recalculated",
+        "Fund page totals reflect accurate USD equivalents",
+        "Rate source documented in getNormalizationInfo()"
+      ],
+      "milestone": 33,
+      "created": "2026-02-16"
+    },
+    {
+      "id": "PROOF-130",
+      "title": "Catalyst Explorer single-proposal enrichment",
+      "description": "Fetch detailed data from Catalyst Explorer /proposals/{id} endpoint for each funded project. Extract: GitHub URLs from description/solution text, additional links, milestone summary counts, ideascale_link, any fields not captured by the list endpoint. Update ingestion to call detail endpoint for funded projects.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["data", "ingestion", "enrichment"],
+      "dependencies": [],
+      "est_effort_hours": 4,
+      "acceptance_criteria": [
+        "GitHub URLs extracted from proposal text via regex for github.com links",
+        "githubUrl populated for projects that mention GitHub in problem/solution/website",
+        "Any additional API fields (ideascale_link, etc.) captured",
+        "Rate-limited to respect API limits"
+      ],
+      "milestone": 33,
+      "created": "2026-02-16"
+    },
+    {
+      "id": "PROOF-131",
+      "title": "Build milestone scraper for milestones.projectcatalyst.io (Fund 14 PoC)",
+      "description": "milestones.projectcatalyst.io has no public API — official sources do not expose milestone data via any REST/GraphQL endpoint. IOG has not published data exports. Community requests for API access have gone unanswered. The only viable path is scraping public-facing project pages. Build a Python scraper (Playwright) to extract milestone data. Output JSON matching MilestoneRecord interface. SCOPE: Fund 14 only (122 funded projects) as proof of concept. If successful, expand to other funds.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["data", "scraping", "milestones"],
+      "dependencies": ["PROOF-130"],
+      "est_effort_hours": 6,
+      "acceptance_criteria": [
+        "Python scraper produces valid MilestoneRecord JSON",
+        "Scraped data includes milestone status, SoM, PoA fields",
+        "Rate-limited and respectful (1 req/sec, User-Agent header)",
+        "Output file works with ingest-milestones.ts --payload",
+        "Fund 14 projects (122 funded) scraped successfully",
+        "Scraper rationale documented: no official API exists"
+      ],
+      "milestone": 33,
+      "created": "2026-02-16"
+    },
+    {
+      "id": "PROOF-132",
+      "title": "Ingest milestones and update completion tracking",
+      "description": "Run ingest-milestones.ts with scraped data. Verify milestone counts update on projects. Ensure project detail page shows milestones with SoM/PoA status. Verify completion rates display correctly on fund pages.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["data", "ingestion", "milestones"],
+      "dependencies": ["PROOF-131"],
+      "est_effort_hours": 3,
+      "acceptance_criteria": [
+        "Milestone records created in database",
+        "Project milestonesTotal/milestonesCompleted updated",
+        "Project detail page shows milestone section with real data",
+        "Fund completion rates reflect actual milestone progress"
+      ],
+      "milestone": 33,
+      "created": "2026-02-16"
+    },
+    {
+      "id": "PROOF-133",
+      "title": "GitHub URL extraction (auto + admin UI) and sync",
+      "description": "Two-pronged approach: (1) Auto-extract GitHub URLs from project fields (website, problem, solution, description) using regex. (2) Add admin UI for manual GitHub URL linking to fill gaps. Populate githubUrl, githubOwner, githubRepo. Then trigger GitHub sync via /api/admin/github/sync to fetch stars, forks, contributors, activity scores.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["data", "github", "enrichment"],
+      "dependencies": ["PROOF-130"],
+      "est_effort_hours": 4,
+      "acceptance_criteria": [
+        "GitHub URLs extracted for all projects mentioning github.com",
+        "githubOwner and githubRepo parsed from URL",
+        "GitHub sync populates stars, forks, contributors, activity score",
+        "At least 200+ projects have GitHub data after sync"
+      ],
+      "milestone": 33,
+      "created": "2026-02-16"
+    },
+    {
+      "id": "PROOF-134",
+      "title": "Debug and fix wallet connect auth flow",
+      "description": "Wallet connect is broken for real users with live wallets (Nami, Eternl, Lace). Debug the full auth flow: client-side wallet detection → CIP-30 enable → signData → POST /api/auth/wallet → server verification → session creation. Replace placeholder signature verification in verify.ts (lines 85-90) with actual COSESign1 verification using @emurgo/cardano-serialization-lib-nodejs or @meshsdk/core. Test end-to-end.",
+      "status": "pending",
+      "priority": "medium",
+      "labels": ["security", "auth", "wallet"],
+      "dependencies": [],
+      "est_effort_hours": 4,
+      "acceptance_criteria": [
+        "Actual COSE signature verification implemented",
+        "Replay attacks prevented via nonce checking",
+        "Timestamp validation within 5-minute window",
+        "Rejects invalid/forged signatures",
+        "Works with Nami, Eternl, Lace wallets"
+      ],
+      "milestone": 34,
+      "created": "2026-02-16"
+    },
+    {
+      "id": "PROOF-135",
+      "title": "Run initial ROI calculation batch",
+      "description": "After milestone and GitHub data are ingested (PROOF-132, PROOF-133), run ROI recalculation for all funded/completed projects. Verify scores are meaningful. Calculate percentiles. Display on ROI dashboard.",
+      "status": "pending",
+      "priority": "medium",
+      "labels": ["analytics", "roi"],
+      "dependencies": ["PROOF-132", "PROOF-133"],
+      "est_effort_hours": 2,
+      "acceptance_criteria": [
+        "ROI scores calculated for all funded projects with data",
+        "Category and overall percentiles computed",
+        "ROI dashboard shows real data instead of empty state",
+        "Top/bottom performers list reflects actual scores"
+      ],
+      "milestone": 34,
+      "created": "2026-02-16"
+    },
+    {
+      "id": "PROOF-136",
+      "title": "On-chain address discovery from funding transactions",
+      "description": "Cross-reference Catalyst funding transaction addresses with project records. Parse payment txHash from milestones (once ingested) to discover project wallet addresses. Populate onchainAddress. Then trigger on-chain sync to fetch tx counts, unique addresses, volume.",
+      "status": "pending",
+      "priority": "medium",
+      "labels": ["data", "onchain", "enrichment"],
+      "dependencies": ["PROOF-132"],
+      "est_effort_hours": 6,
+      "acceptance_criteria": [
+        "On-chain addresses discovered from funding/milestone payment data",
+        "On-chain sync populates tx count, unique addresses, volume",
+        "At least funded projects with payment hashes get on-chain data",
+        "25% ROI weight for on-chain becomes meaningful"
+      ],
+      "milestone": 34,
+      "created": "2026-02-16"
+    },
+    {
+      "id": "PROOF-137",
+      "title": "Graph enrichment: org links and centrality",
+      "description": "Extract organization data from Catalyst Explorer or manual entry. Populate ProjectOrganization and PersonOrganization tables. Compute NetworkX-style centrality metrics (degree, betweenness) in ETL. Add cross-fund team overlap detection. Store centrality in graph API response.",
+      "status": "pending",
+      "priority": "medium",
+      "labels": ["graph", "analytics", "enrichment"],
+      "dependencies": [],
+      "est_effort_hours": 6,
+      "acceptance_criteria": [
+        "Organization nodes appear in network graph",
+        "Centrality metrics computed and stored",
+        "Cross-fund repeat teams detectable",
+        "Graph clusters identified and labeled"
+      ],
+      "milestone": 34,
+      "created": "2026-02-16"
+    },
+    {
+      "id": "PROOF-138",
+      "title": "Data availability indicators on project detail page",
+      "description": "Add a visual indicator showing which data layers are populated for each project (milestones, GitHub, on-chain, reviews, voting). Help users understand data coverage. Show 'Data not yet available' messages instead of hiding empty sections.",
+      "status": "pending",
+      "priority": "low",
+      "labels": ["ui", "transparency", "ux"],
+      "dependencies": [],
+      "est_effort_hours": 3,
+      "acceptance_criteria": [
+        "Data coverage indicator visible on project detail",
+        "Empty sections show informative message instead of being hidden",
+        "Users understand what data exists vs what's pending ingestion"
+      ],
+      "milestone": 34,
+      "created": "2026-02-16"
+    },
+    {
+      "id": "PROOF-139",
+      "title": "Validate and fix external URL resolution",
+      "description": "HEAD-request validate all generated external URLs (catalystUrl, milestonesUrl, explorerUrl). Fix or remove URLs that return 404. Build a URL validation utility. Add to health check endpoint.",
+      "status": "pending",
+      "priority": "low",
+      "labels": ["data", "quality", "links"],
+      "dependencies": ["PROOF-128"],
+      "est_effort_hours": 3,
+      "acceptance_criteria": [
+        "URL validation script checks all external links",
+        "404 URLs flagged or removed",
+        "Health check reports broken link count",
+        "Only verified URLs shown to users"
+      ],
+      "milestone": 34,
+      "created": "2026-02-16"
+    },
+    {
+      "id": "PROOF-140",
+      "title": "Admin data ingestion dashboard",
+      "description": "Create an admin page showing data coverage per layer: projects, milestones, GitHub, on-chain, reviews, ROI. Show ingestion run history, last sync times, error counts. Add buttons to trigger re-ingestion for specific funds or data layers.",
+      "status": "pending",
+      "priority": "low",
+      "labels": ["admin", "ui", "monitoring"],
+      "dependencies": [],
+      "est_effort_hours": 4,
+      "acceptance_criteria": [
+        "Admin dashboard shows counts per data layer",
+        "Last sync timestamps visible",
+        "Trigger buttons for ingestion scripts",
+        "Error/warning counts from last run"
+      ],
+      "milestone": 34,
+      "created": "2026-02-16"
+    },
+    {
+      "id": "PROOF-141",
+      "title": "Fund comparison: accurate USD equivalents and budget utilization",
+      "description": "With historical ADA/USD rates (PROOF-129), update fund pages to show accurate USD totals. Add budget utilization percentage. Show completion rate trends. Compare funding efficiency across funds.",
+      "status": "pending",
+      "priority": "low",
+      "labels": ["analytics", "funds", "ui"],
+      "dependencies": ["PROOF-129"],
+      "est_effort_hours": 3,
+      "acceptance_criteria": [
+        "Fund pages show accurate USD equivalents for ADA funds",
+        "Budget utilization percentage displayed",
+        "Cross-fund comparison table with normalized amounts",
+        "Rate used for conversion shown for transparency"
+      ],
+      "milestone": 34,
+      "created": "2026-02-16"
+    },
+    {
+      "id": "PROOF-142",
+      "title": "Fix graph visualization: layout, edge thickness, funding labels",
+      "description": "The network graph is currently unusable — a cluttered mess with no actionable insights. Edge thickness for funding amounts does not render correctly. Funding labels are not visible. Layout algorithm produces too many overlaps. Fix: (1) Fix edge thickness mapping based on funding amounts in Cytoscape stylesheet. (2) Make funding labels visible on edges. (3) Improve layout algorithm — consider cola/cose-bilkent for better spacing. (4) Add progressive disclosure: limit initial visible nodes, expand on click. (5) Improve filtering controls to reduce clutter. (6) Add zoom-dependent label visibility.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["ui", "graph", "ux", "visualization"],
+      "dependencies": [],
+      "est_effort_hours": 6,
+      "acceptance_criteria": [
+        "Edge thickness visually reflects funding amount differences",
+        "Funding labels visible on edges when zoomed in",
+        "Graph layout has minimal overlaps and is readable",
+        "Filtering controls work to reduce visible nodes",
+        "Node count limited by default with option to show more",
+        "Graph provides actionable insights about fund/project/person relationships"
+      ],
+      "milestone": 33,
+      "created": "2026-02-16"
     }
   ]
 }

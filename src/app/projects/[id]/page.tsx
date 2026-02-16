@@ -118,15 +118,6 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
   </section>
 );
 
-// Helper to generate slug from title
-const generateSlug = (title: string): string => {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 80);
-};
-
 // Proposal Details Section - shows problem, solution, expected outcome
 const ProposalDetails = ({ 
   problem, 
@@ -301,9 +292,6 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   if (isUUID && project.slug) {
     redirect(`/projects/${project.slug}`);
   }
-
-  // Generate slug if not present (fallback)
-  const projectSlug = project.slug || generateSlug(project.title);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 px-6 py-12">
@@ -830,7 +818,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
           <Section title="External Links">
             <ul className="space-y-3">
-              {/* Project Catalyst link - use stored URL if available */}
+              {/* Official Project Catalyst link — milestones.projectcatalyst.io */}
               {project.catalystUrl && (
                 <li>
                   <a
@@ -843,41 +831,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                     <span className="text-sm">View on Project Catalyst</span>
                   </a>
                   <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
-                    Official Catalyst Portal
-                  </span>
-                </li>
-              )}
-              {/* Milestones link - use stored URL */}
-              {project.milestonesUrl && (
-                <li>
-                  <a
-                    href={project.milestonesUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
-                  >
-                    <span className="mr-2">📊</span>
-                    <span className="text-sm">View Milestones</span>
-                  </a>
-                  <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
-                    Milestone Tracker
-                  </span>
-                </li>
-              )}
-              {/* Catalyst Explorer link - use stored URL */}
-              {project.explorerUrl && (
-                <li>
-                  <a
-                    href={project.explorerUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
-                  >
-                    <span className="mr-2">🔍</span>
-                    <span className="text-sm">View on Catalyst Explorer</span>
-                  </a>
-                  <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
-                    Community Explorer
+                    Official Milestone Module · projectcatalyst.io
                   </span>
                 </li>
               )}
@@ -933,7 +887,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 </li>
               ))}
               {/* Fallback message if no links */}
-              {!project.catalystUrl && !project.milestonesUrl && !project.explorerUrl && !project.ideascaleUrl && !project.website && project.links.length === 0 && (
+              {!project.catalystUrl && !project.ideascaleUrl && !project.website && project.links.length === 0 && (
                 <li className="text-sm text-slate-500 dark:text-slate-400">
                   No external links available for this project.
                 </li>
