@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import prisma from "../../../lib/prisma";
 import { getSession } from "../../../lib/auth/session";
@@ -127,18 +127,56 @@ const generateSlug = (title: string): string => {
     .slice(0, 80);
 };
 
-// Helper to build external links
-const buildProjectCatalystUrl = (fundNumber: number, category: string, slug: string): string => {
-  const categorySlug = category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-  return `https://projectcatalyst.io/funds/${fundNumber}/${categorySlug}/${slug}`;
-};
+// Proposal Details Section - shows problem, solution, expected outcome
+const ProposalDetails = ({ 
+  problem, 
+  solution, 
+  experience 
+}: { 
+  problem?: string | null; 
+  solution?: string | null; 
+  experience?: string | null;
+}) => {
+  const hasContent = problem || solution || experience;
+  if (!hasContent) return null;
 
-const buildMilestonesUrl = (externalId: string): string => {
-  return `https://milestones.projectcatalyst.io/projects/${externalId}`;
-};
-
-const buildCatalystExplorerUrl = (fundNumber: number, slug: string): string => {
-  return `https://www.catalystexplorer.com/en/proposals/${slug}-f${fundNumber}/details`;
+  return (
+    <section className="rounded-2xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 p-6">
+      <h2 className="mb-4 text-lg font-semibold text-blue-900 dark:text-blue-100">Proposal Details</h2>
+      <div className="space-y-6">
+        {problem && (
+          <div>
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-blue-800 dark:text-blue-200">
+              <span>🎯</span> Problem Statement
+            </h3>
+            <p className="mt-2 text-sm text-blue-900/80 dark:text-blue-100/80 whitespace-pre-wrap">
+              {problem}
+            </p>
+          </div>
+        )}
+        {solution && (
+          <div>
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-blue-800 dark:text-blue-200">
+              <span>💡</span> Proposed Solution
+            </h3>
+            <p className="mt-2 text-sm text-blue-900/80 dark:text-blue-100/80 whitespace-pre-wrap">
+              {solution}
+            </p>
+          </div>
+        )}
+        {experience && (
+          <div>
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-blue-800 dark:text-blue-200">
+              <span>👥</span> Team Experience & Qualifications
+            </h3>
+            <p className="mt-2 text-sm text-blue-900/80 dark:text-blue-100/80 whitespace-pre-wrap">
+              {experience}
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
+  );
 };
 
 export default async function ProjectDetailPage({ params }: PageProps) {
@@ -258,7 +296,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  // Generate slug if not present
+  // Redirect UUID URLs to clean slug URLs for better SEO and readability
+  const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+  if (isUUID && project.slug) {
+    redirect(`/projects/${project.slug}`);
+  }
+
+  // Generate slug if not present (fallback)
   const projectSlug = project.slug || generateSlug(project.title);
 
   return (
@@ -306,6 +350,11 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex-1">
               <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{project.title}</h1>
+              {project.challenge && (
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                  Challenge: {project.challenge}
+                </p>
+              )}
               <p className="mt-2 text-base text-slate-600 dark:text-slate-300">{project.description}</p>
             </div>
             <div className="flex items-center gap-2">
@@ -349,6 +398,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </div>
           </div>
         </header>
+
+        {/* Proposal Details - Problem, Solution, Expected Outcome */}
+        <ProposalDetails
+          problem={project.problem}
+          solution={project.solution}
+          experience={project.experience}
+        />
 
         {(project.githubUrl || project.githubActivityScore !== null) && (
           <Section title="GitHub Activity">
@@ -774,54 +830,92 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
           <Section title="External Links">
             <ul className="space-y-3">
-              {/* Project Catalyst link */}
-              <li>
-                <a
-                  href={buildProjectCatalystUrl(project.fund.number, project.category, projectSlug)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
-                >
-                  <span className="mr-2">🏛️</span>
-                  <span className="text-sm">View on Project Catalyst</span>
-                </a>
-                <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
-                  Official Catalyst Portal
-                </span>
-              </li>
-              {/* Milestones link - only if externalId exists */}
-              {project.externalId && (
+              {/* Project Catalyst link - use stored URL if available */}
+              {project.catalystUrl && (
                 <li>
                   <a
-                    href={buildMilestonesUrl(project.externalId)}
+                    href={project.catalystUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    <span className="mr-2">🏛️</span>
+                    <span className="text-sm">View on Project Catalyst</span>
+                  </a>
+                  <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
+                    Official Catalyst Portal
+                  </span>
+                </li>
+              )}
+              {/* Milestones link - use stored URL */}
+              {project.milestonesUrl && (
+                <li>
+                  <a
+                    href={project.milestonesUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
                   >
                     <span className="mr-2">📊</span>
-                    <span className="text-sm">View Milestones on Project Catalyst</span>
+                    <span className="text-sm">View Milestones</span>
                   </a>
                   <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
                     Milestone Tracker
                   </span>
                 </li>
               )}
-              {/* Catalyst Explorer link */}
-              <li>
-                <a
-                  href={buildCatalystExplorerUrl(project.fund.number, projectSlug)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
-                >
-                  <span className="mr-2">🔍</span>
-                  <span className="text-sm">View on Catalyst Explorer</span>
-                </a>
-                <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
-                  Community Explorer
-                </span>
-              </li>
-              {/* Original project links */}
+              {/* Catalyst Explorer link - use stored URL */}
+              {project.explorerUrl && (
+                <li>
+                  <a
+                    href={project.explorerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    <span className="mr-2">🔍</span>
+                    <span className="text-sm">View on Catalyst Explorer</span>
+                  </a>
+                  <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
+                    Community Explorer
+                  </span>
+                </li>
+              )}
+              {/* IdeaScale link */}
+              {project.ideascaleUrl && (
+                <li>
+                  <a
+                    href={project.ideascaleUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    <span className="mr-2">�</span>
+                    <span className="text-sm">View on IdeaScale</span>
+                  </a>
+                  <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
+                    Original Proposal
+                  </span>
+                </li>
+              )}
+              {/* Website */}
+              {project.website && (
+                <li>
+                  <a
+                    href={project.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    <span className="mr-2">🌐</span>
+                    <span className="text-sm">{project.website}</span>
+                  </a>
+                  <span className="ml-6 text-xs text-slate-400 dark:text-slate-500">
+                    Project Website
+                  </span>
+                </li>
+              )}
+              {/* Additional project links */}
               {project.links.map((link) => (
                 <li key={link.id}>
                   <a
@@ -838,6 +932,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   </span>
                 </li>
               ))}
+              {/* Fallback message if no links */}
+              {!project.catalystUrl && !project.milestonesUrl && !project.explorerUrl && !project.ideascaleUrl && !project.website && project.links.length === 0 && (
+                <li className="text-sm text-slate-500 dark:text-slate-400">
+                  No external links available for this project.
+                </li>
+              )}
             </ul>
           </Section>
 

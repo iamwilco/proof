@@ -371,6 +371,15 @@ async function upsertProposal(
   const fundingAmountUSD = normalizeToUSD(fundingAmount, fundNumber, currency);
   const amountReceivedUSD = normalizeToUSD(amountReceived, fundNumber, currency);
 
+  // Build external URLs
+  const catalystUrl = proposal.link || null;
+  const milestonesUrl = proposal.id 
+    ? `https://milestones.projectcatalyst.io/projects/${proposal.id}` 
+    : null;
+  const explorerUrl = proposal.slug && fundNumber
+    ? `https://www.catalystexplorer.com/proposals/${proposal.slug}`
+    : null;
+
   const data = {
     externalId: proposal.id,
     fundId,
@@ -381,6 +390,7 @@ async function upsertProposal(
     solution: proposal.solution,
     experience: proposal.experience,
     category: proposal.campaign?.title || "Uncategorized",
+    challenge: proposal.campaign?.title || null,
     status,
     fundingStatus,
     fundingAmount,
@@ -392,6 +402,9 @@ async function upsertProposal(
     noVotes: proposal.no_votes_count || 0,
     fundedAt: proposal.funded_at ? new Date(proposal.funded_at) : null,
     website: proposal.website,
+    catalystUrl,
+    milestonesUrl,
+    explorerUrl,
     sourceUrl,
     sourceType: "catalyst_explorer",
     lastSeenAt: now,
