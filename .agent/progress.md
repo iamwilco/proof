@@ -50,6 +50,7 @@ Status:      pending (next up)
 
 | Task | Title | Completed |
 |------|-------|-----------|
+| PROOF-129 | Historical ADA/USD rates per fund (7,017 projects re-normalized) | 2026-02-16 |
 | PROOF-128 | Fix external links: use projectcatalyst.io instead of catalystexplorer.com | 2026-02-16 |
 | PROOF-118 | Pre-Launch Design Fixes (Sidebar, Dark Mode, Homepage, Auth, Forms) | 2026-02-14 |
 | PROOF-117 | Verify Admin Dashboard | 2026-02-14 |

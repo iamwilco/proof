@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 - `explorerUrl` cleared — PROOF replaces Catalyst Explorer, no need to link to competitor.
 - Removed duplicate milestones/explorer links from project detail page; single "View on Project Catalyst" link.
 - Cleaned up unused `generateSlug` function and `projectSlug` variable from project detail page.
+- ADA→USD conversion now uses per-fund historical rates instead of static $0.35 default.
+- `FUND_HISTORICAL_RATES` lookup: F10=$0.252, F11=$0.377, F12=$0.451, F13=$0.348, F14=$0.401, F15=$0.352.
+- 7,017 projects across F10-F15 re-normalized with accurate USD equivalents.
+- `getNormalizationInfo()` now reports rate source (historical vs default) per fund.
 
 ### Fixed
 - Sidebar layout: aligned to left edge with fixed positioning, made nav scrollable, fixed z-index overlap with header.
