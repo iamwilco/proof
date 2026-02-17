@@ -13,7 +13,13 @@ interface SearchResult {
   href: string;
 }
 
-export function GlobalSearch() {
+type GlobalSearchProps = {
+  className?: string;
+  overlay?: boolean;
+  autoFocus?: boolean;
+};
+
+export function GlobalSearch({ className = "", overlay = false, autoFocus = false }: GlobalSearchProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -99,7 +105,10 @@ export function GlobalSearch() {
   };
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-md">
+    <div
+      ref={containerRef}
+      className={`relative w-full ${overlay ? "max-w-none" : "max-w-md"} ${className}`}
+    >
       <Input
         ref={inputRef}
         type="search"
@@ -112,6 +121,7 @@ export function GlobalSearch() {
         }}
         onFocus={() => setIsOpen(true)}
         onKeyDown={handleKeyDown}
+        autoFocus={autoFocus}
         leftIcon={
           <svg className="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -120,7 +130,13 @@ export function GlobalSearch() {
       />
 
       {isOpen && (query.length >= 2 || results.length > 0) && (
-        <div className="absolute left-0 right-0 top-full z-50 mt-2 max-h-96 overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-800">
+        <div
+          className={`${
+            overlay
+              ? "mt-4 max-h-[60vh] rounded-2xl"
+              : "absolute left-0 right-0 top-full mt-2 max-h-96 rounded-xl"
+          } z-50 overflow-y-auto border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-800`}
+        >
           {isLoading ? (
             <div className="flex items-center justify-center p-4">
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
@@ -132,7 +148,7 @@ export function GlobalSearch() {
                   <Link
                     href={result.href}
                     onClick={() => setIsOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 transition-colors ${
+                    className={`flex items-center gap-3 px-4 py-4 transition-colors ${
                       index === selectedIndex
                         ? "bg-blue-50 dark:bg-blue-900/20"
                         : "hover:bg-slate-50 dark:hover:bg-slate-700/50"
