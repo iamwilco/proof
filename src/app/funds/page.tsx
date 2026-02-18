@@ -41,6 +41,9 @@ type FundWithStats = {
   totalBudget: number;
   totalAwarded: number;
   totalDistributed: number;
+  totalVoters: number | null;
+  participationRate: number | null;
+  successRate: number | null;
   usdValue?: number;
 };
 
@@ -144,6 +147,17 @@ const FundCard = ({ fund, adaPrice }: { fund: FundWithStats; adaPrice: number })
           <ProgressBar value={Number(fund.totalDistributed)} max={Number(fund.totalAwarded)} color="bg-amber-500" />
         </div>
       </div>
+
+      {(fund.totalVoters || fund.participationRate) && (
+        <div className="mt-4 flex items-center gap-3 border-t border-slate-100 pt-3 text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400">
+          {fund.totalVoters != null && (
+            <span>👥 {fund.totalVoters.toLocaleString()} voters</span>
+          )}
+          {fund.participationRate != null && (
+            <span>📊 {formatPercent(fund.participationRate)} participation</span>
+          )}
+        </div>
+      )}
     </Link>
   );
 };
@@ -217,6 +231,9 @@ export default async function FundsPage() {
                 totalBudget: Number(fund.totalBudget),
                 totalAwarded: Number(fund.totalAwarded),
                 totalDistributed: Number(fund.totalDistributed),
+                totalVoters: fund.totalVoters,
+                participationRate: fund.participationRate,
+                successRate: fund.successRate,
               }}
               adaPrice={getEstimatedPriceForFund(fund.number)}
             />

@@ -99,6 +99,20 @@ interface CatalystFund {
   launched_at: string;
 }
 
+interface CatalystFundStatistics {
+  total_voters: number;
+  total_voting_power: number;
+  participation_rate: number;
+  average_proposal_amount: number;
+  success_rate: number;
+}
+
+interface CatalystFundDetail extends CatalystFund {
+  description?: string;
+  voting_power_threshold?: number;
+  statistics?: CatalystFundStatistics;
+}
+
 interface CatalystCampaign {
   id: string;
   title: string;
@@ -198,6 +212,25 @@ function extractFundNumber(fundTitle: string): number {
   return match ? parseInt(match[1], 10) : 0;
 }
 
+// ============ Fund Statistics ============
+
+const fundStatsCache = new Map<string, CatalystFundDetail>();
+
+async function fetchFundDetail(fundId: string): Promise<CatalystFundDetail | null> {
+  if (fundStatsCache.has(fundId)) return fundStatsCache.get(fundId)!;
+
+  try {
+    const url = `${CATALYST_EXPLORER_API}/funds/${fundId}?include=statistics`;
+    const response = await fetchWithRetry<{ data: CatalystFundDetail }>(url);
+    const detail = response.data;
+    fundStatsCache.set(fundId, detail);
+    return detail;
+  } catch (error) {
+    console.warn(`  Could not fetch fund detail for ${fundId}: ${error}`);
+    return null;
+  }
+}
+
 // ============ Data Fetching ============
 
 function buildProposalUrl(page: number, options: CLIOptions): string {
@@ -272,6 +305,19 @@ async function upsertFund(fund: CatalystFund): Promise<string> {
   const fundNumber = extractFundNumber(fund.title);
   const now = new Date();
 
+  // Fetch fund detail with statistics from dedicated endpoint
+  const detail = await fetchFundDetail(fund.id);
+  const stats = detail?.statistics;
+
+  const statsData = {
+    description: detail?.description || null,
+    totalVoters: stats?.total_voters ?? null,
+    totalVotingPower: stats?.total_voting_power ?? null,
+    participationRate: stats?.participation_rate ?? null,
+    votingPowerThreshold: detail?.voting_power_threshold ?? null,
+    successRate: stats?.success_rate ?? null,
+  };
+
   const existing = await prisma.fund.findFirst({
     where: { OR: [{ externalId: fund.id }, { number: fundNumber }] },
   });
@@ -286,6 +332,7 @@ async function upsertFund(fund: CatalystFund): Promise<string> {
         status: fund.status || "active",
         currency: fund.currency || "USD",  // Use API-provided currency (USD for F2-9, ADA for F10+)
         totalBudget: fund.amount || 0,
+        ...statsData,
         lastSeenAt: now,
       },
     });
@@ -302,6 +349,7 @@ async function upsertFund(fund: CatalystFund): Promise<string> {
       status: fund.status || "active",
       currency: fund.currency || "USD",  // Use API-provided currency (USD for F2-9, ADA for F10+)
       totalBudget: fund.amount || 0,
+      ...statsData,
       startDate: fund.launched_at ? new Date(fund.launched_at) : null,
       sourceUrl: `${CATALYST_EXPLORER_API}/funds/${fund.id}`,
       sourceType: "catalyst_explorer",
