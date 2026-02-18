@@ -253,6 +253,72 @@ async function fetchFundDetail(fundId: string): Promise<CatalystFundDetail | nul
   }
 }
 
+// ============ Campaign Budget Tracking ============
+
+interface CatalystCampaignDetail {
+  id: string;
+  title: string;
+  slug?: string;
+  budget?: number;
+  proposals_count?: number;
+  funded_proposals_count?: number;
+  total_amount_awarded?: number;
+}
+
+const campaignsFetchedForFund = new Set<string>();
+
+async function fetchAndUpsertCampaigns(fundExternalId: string, fundDbId: string): Promise<number> {
+  if (campaignsFetchedForFund.has(fundExternalId)) return 0;
+  campaignsFetchedForFund.add(fundExternalId);
+
+  try {
+    const url = `${CATALYST_EXPLORER_API}/funds/${fundExternalId}/campaigns?per_page=60`;
+    const response = await fetchWithRetry<{ data: CatalystCampaignDetail[] }>(url);
+    const campaigns = response.data || [];
+
+    if (campaigns.length === 0) return 0;
+
+    const now = new Date();
+    let count = 0;
+
+    for (const campaign of campaigns) {
+      const externalId = `campaign_${campaign.id}`;
+      await prisma.campaign.upsert({
+        where: { externalId },
+        create: {
+          externalId,
+          fundId: fundDbId,
+          title: campaign.title,
+          slug: campaign.slug || null,
+          budget: campaign.budget || 0,
+          proposalsCount: campaign.proposals_count || 0,
+          fundedProposalsCount: campaign.funded_proposals_count || 0,
+          totalAmountAwarded: campaign.total_amount_awarded || 0,
+          sourceUrl: `${CATALYST_EXPLORER_API}/funds/${fundExternalId}/campaigns`,
+          sourceType: "catalyst_explorer",
+          lastSeenAt: now,
+        },
+        update: {
+          title: campaign.title,
+          slug: campaign.slug || null,
+          budget: campaign.budget || 0,
+          proposalsCount: campaign.proposals_count || 0,
+          fundedProposalsCount: campaign.funded_proposals_count || 0,
+          totalAmountAwarded: campaign.total_amount_awarded || 0,
+          lastSeenAt: now,
+        },
+      });
+      count++;
+    }
+
+    console.log(`  + ${count} campaigns for fund ${fundExternalId}`);
+    return count;
+  } catch (error) {
+    console.warn(`  Could not fetch campaigns for fund ${fundExternalId}: ${error}`);
+    return 0;
+  }
+}
+
 // ============ Data Fetching ============
 
 function buildProposalUrl(page: number, options: CLIOptions): string {
@@ -751,6 +817,7 @@ async function run(): Promise<void> {
   let teamLinksCount = 0;
   let reviewsCount = 0;
   let linksCount = 0;
+  let campaignsCount = 0;
   const startTime = Date.now();
 
   try {
@@ -761,6 +828,8 @@ async function run(): Promise<void> {
       if (proposal.fund) {
         fundId = await upsertFund(proposal.fund);
         fundNumber = extractFundNumber(proposal.fund.title);
+        // Fetch per-campaign budgets for this fund (once per fund)
+        campaignsCount += await fetchAndUpsertCampaigns(proposal.fund.id, fundId);
       } else {
         const defaultFund = await prisma.fund.upsert({
           where: { externalId: "unknown" },
@@ -815,6 +884,7 @@ async function run(): Promise<void> {
     console.log(`Team links: ${teamLinksCount}`);
     console.log(`Catalyst reviews: ${reviewsCount}`);
     console.log(`Project links: ${linksCount}`);
+    console.log(`Campaigns: ${campaignsCount}`);
 
   } catch (error) {
     console.error("Ingestion failed:", error);

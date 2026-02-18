@@ -36,6 +36,7 @@ model Fund {
   votingPowerThreshold    Decimal?  @db.Decimal(20, 2)
   successRate             Float?
   votingRecords           VotingRecord[]
+  campaigns               Campaign[]
   startDate               DateTime?
   endDate                 DateTime?
   projects                Project[]
@@ -682,6 +683,26 @@ model CommunityProject {
   @@unique([communityId, projectId])
   @@index([communityId])
   @@index([projectId])
+}
+
+model Campaign {
+  id                    String   @id @default(uuid())
+  externalId            String   @unique
+  fundId                String
+  fund                  Fund     @relation(fields: [fundId], references: [id])
+  title                 String
+  slug                  String?
+  budget                Decimal  @default(0) @db.Decimal(18, 2)
+  proposalsCount        Int      @default(0)
+  fundedProposalsCount  Int      @default(0)
+  totalAmountAwarded    Decimal  @default(0) @db.Decimal(18, 2)
+  sourceUrl             String
+  sourceType            String
+  lastSeenAt            DateTime
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([fundId])
 }
 
 model CatalystReview {
