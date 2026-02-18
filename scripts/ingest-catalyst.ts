@@ -19,6 +19,7 @@ const prisma = new PrismaClient({});
 interface CLIOptions {
   fund?: number;      // --fund=15 to ingest only Fund 15
   since?: Date;       // --since=2026-02-01 for delta sync
+  status?: string;    // --status=funded to filter by status
   full: boolean;      // --full for full refresh (default)
   help: boolean;
 }
@@ -43,6 +44,12 @@ function parseArgs(): CLIOptions {
         options.since = date;
         options.full = false;
       }
+    } else if (arg.startsWith("--status=")) {
+      const status = arg.split("=")[1];
+      if (["funded", "unfunded", "complete", "over_budget"].includes(status)) {
+        options.status = status;
+        options.full = false;
+      }
     } else if (arg === "--full") {
       options.full = true;
     }
@@ -61,12 +68,14 @@ Usage:
 Options:
   --fund=<number>     Ingest only specific fund (e.g., --fund=15)
   --since=<date>      Ingest proposals updated since date (e.g., --since=2026-02-01)
+  --status=<status>   Filter by status: funded, unfunded, complete, over_budget
   --full              Full ingestion of all proposals (default)
   --help, -h          Show this help message
 
 Examples:
   npx tsx scripts/ingest-catalyst.ts --fund=15
   npx tsx scripts/ingest-catalyst.ts --since=2026-02-01
+  npx tsx scripts/ingest-catalyst.ts --status=complete
   npx tsx scripts/ingest-catalyst.ts --fund=14 --since=2026-01-15
   npx tsx scripts/ingest-catalyst.ts --full
 
@@ -198,14 +207,18 @@ function buildProposalUrl(page: number, options: CLIOptions): string {
     include: "campaign,fund,team",
   });
 
-  // Add fund filter if specified
+  // Use native API filter params for server-side filtering
   if (options.fund) {
-    params.set("fund", `Fund ${options.fund}`);
+    params.set("filter[fund]", options.fund.toString());
   }
 
-  // Add date filter if specified (updated_at >= since)
+  if (options.status) {
+    params.set("filter[status]", options.status);
+  }
+
+  // Sort by most recently updated for efficient delta sync
   if (options.since) {
-    params.set("updated_after", options.since.toISOString().split("T")[0]);
+    params.set("sort", "-created_at");
   }
 
   return `${CATALYST_EXPLORER_API}/proposals?${params.toString()}`;
@@ -229,13 +242,7 @@ async function* fetchAllProposals(options: CLIOptions): AsyncGenerator<CatalystP
     console.log(`  Got ${proposals.length} proposals (page ${page}/${lastPage}, total: ${total})`);
 
     for (const proposal of proposals) {
-      // Additional client-side filtering for fund number if API doesn't support exact match
-      if (options.fund && proposal.fund) {
-        const fundNum = extractFundNumber(proposal.fund.title);
-        if (fundNum !== options.fund) continue;
-      }
-
-      // Additional client-side filtering for date if API doesn't support it
+      // Client-side date filter as fallback (API may not support exact date filtering)
       if (options.since && proposal.updated_at) {
         const updatedAt = new Date(proposal.updated_at);
         if (updatedAt < options.since) continue;
@@ -558,7 +565,10 @@ async function run(): Promise<void> {
   if (CLI_OPTIONS.since) {
     console.log(`Since filter: ${CLI_OPTIONS.since.toISOString().split("T")[0]}`);
   }
-  if (CLI_OPTIONS.full && !CLI_OPTIONS.fund && !CLI_OPTIONS.since) {
+  if (CLI_OPTIONS.status) {
+    console.log(`Status filter: ${CLI_OPTIONS.status}`);
+  }
+  if (CLI_OPTIONS.full && !CLI_OPTIONS.fund && !CLI_OPTIONS.since && !CLI_OPTIONS.status) {
     console.log(`Mode: Full ingestion`);
   }
   console.log();
