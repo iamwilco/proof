@@ -130,6 +130,25 @@ interface CatalystTeamMember {
   hero_img_url?: string;
 }
 
+interface CatalystReviewData {
+  id: string;
+  reviewer_name?: string;
+  rating?: number;
+  alignment_note?: string;
+  feasibility_note?: string;
+  auditability_note?: string;
+  alignment_rating?: number;
+  feasibility_rating?: number;
+  auditability_rating?: number;
+}
+
+interface CatalystLinkData {
+  id: string;
+  type: string;
+  url: string;
+  title?: string;
+}
+
 interface CatalystProposal {
   id: string;
   title: string;
@@ -144,12 +163,15 @@ interface CatalystProposal {
   currency: string;
   yes_votes_count?: number;
   no_votes_count?: number;
+  reviews_count?: number;
   funded_at?: string;
   website?: string;
   link: string;
   fund?: CatalystFund;
   campaign?: CatalystCampaign;
   team?: CatalystTeamMember[];
+  reviews?: CatalystReviewData[];
+  links?: CatalystLinkData[];
   created_at: string;
   updated_at: string;
 }
@@ -237,7 +259,7 @@ function buildProposalUrl(page: number, options: CLIOptions): string {
   const params = new URLSearchParams({
     per_page: PER_PAGE.toString(),
     page: page.toString(),
-    include: "campaign,fund,team",
+    include: "campaign,fund,team,reviews,links",
   });
 
   // Use native API filter params for server-side filtering
@@ -454,6 +476,7 @@ async function upsertProposal(
     currency,
     yesVotes: proposal.yes_votes_count || 0,
     noVotes: proposal.no_votes_count || 0,
+    reviewsCount: proposal.reviews_count || 0,
     fundedAt: proposal.funded_at ? new Date(proposal.funded_at) : null,
     website: proposal.website,
     catalystUrl,
@@ -505,6 +528,109 @@ async function linkTeamToProject(
       },
     });
   }
+}
+
+async function upsertCatalystReviews(
+  projectId: string,
+  proposalId: string,
+  reviews: CatalystReviewData[]
+): Promise<number> {
+  const now = new Date();
+  let count = 0;
+
+  for (const review of reviews) {
+    const externalId = `catalyst_review_${review.id}`;
+    await prisma.catalystReview.upsert({
+      where: { externalId },
+      create: {
+        externalId,
+        projectId,
+        reviewerName: review.reviewer_name || null,
+        rating: review.rating ?? null,
+        alignmentNote: review.alignment_note || null,
+        feasibilityNote: review.feasibility_note || null,
+        auditabilityNote: review.auditability_note || null,
+        alignmentScore: review.alignment_rating ?? null,
+        feasibilityScore: review.feasibility_rating ?? null,
+        auditabilityScore: review.auditability_rating ?? null,
+        sourceUrl: `${CATALYST_EXPLORER_API}/proposals/${proposalId}`,
+        sourceType: "catalyst_explorer",
+        lastSeenAt: now,
+      },
+      update: {
+        reviewerName: review.reviewer_name || null,
+        rating: review.rating ?? null,
+        alignmentNote: review.alignment_note || null,
+        feasibilityNote: review.feasibility_note || null,
+        auditabilityNote: review.auditability_note || null,
+        alignmentScore: review.alignment_rating ?? null,
+        feasibilityScore: review.feasibility_rating ?? null,
+        auditabilityScore: review.auditability_rating ?? null,
+        lastSeenAt: now,
+      },
+    });
+    count++;
+  }
+
+  // Update reviewsCount on project
+  if (count > 0) {
+    await prisma.project.update({
+      where: { id: projectId },
+      data: { reviewsCount: count },
+    });
+  }
+
+  return count;
+}
+
+function classifyLinkType(url: string, apiType?: string): string {
+  if (apiType) return apiType;
+  if (url.includes("github.com")) return "github_repo";
+  if (url.includes("youtube.com") || url.includes("youtu.be")) return "youtube_video";
+  if (url.includes("twitter.com") || url.includes("x.com")) return "twitter";
+  if (url.includes("discord.gg") || url.includes("discord.com")) return "discord";
+  if (url.includes("t.me") || url.includes("telegram")) return "telegram";
+  return "website";
+}
+
+async function upsertProjectLinks(
+  projectId: string,
+  links: CatalystLinkData[]
+): Promise<number> {
+  const now = new Date();
+  let count = 0;
+
+  for (const link of links) {
+    if (!link.url) continue;
+
+    const type = classifyLinkType(link.url, link.type);
+
+    // Check if link already exists for this project+url
+    const existing = await prisma.link.findFirst({
+      where: { projectId, url: link.url },
+    });
+
+    if (existing) {
+      await prisma.link.update({
+        where: { id: existing.id },
+        data: { type, lastSeenAt: now },
+      });
+    } else {
+      await prisma.link.create({
+        data: {
+          projectId,
+          type,
+          url: link.url,
+          sourceUrl: `${CATALYST_EXPLORER_API}/proposals`,
+          sourceType: "catalyst_explorer",
+          lastSeenAt: now,
+        },
+      });
+    }
+    count++;
+  }
+
+  return count;
 }
 
 // ============ Stats Computation ============
@@ -623,6 +749,8 @@ async function run(): Promise<void> {
 
   let proposalCount = 0;
   let teamLinksCount = 0;
+  let reviewsCount = 0;
+  let linksCount = 0;
   const startTime = Date.now();
 
   try {
@@ -659,6 +787,16 @@ async function run(): Promise<void> {
         teamLinksCount += proposal.team.length;
       }
 
+      // Store official Catalyst reviews
+      if (proposal.reviews && proposal.reviews.length > 0) {
+        reviewsCount += await upsertCatalystReviews(projectId, proposal.id, proposal.reviews);
+      }
+
+      // Store project links from API
+      if (proposal.links && proposal.links.length > 0) {
+        linksCount += await upsertProjectLinks(projectId, proposal.links);
+      }
+
       if (proposalCount % 100 === 0) {
         console.log(`  Processed ${proposalCount} proposals, ${personCache.size} people...`);
       }
@@ -675,6 +813,8 @@ async function run(): Promise<void> {
     console.log(`Proposals: ${proposalCount}`);
     console.log(`People: ${personCache.size}`);
     console.log(`Team links: ${teamLinksCount}`);
+    console.log(`Catalyst reviews: ${reviewsCount}`);
+    console.log(`Project links: ${linksCount}`);
 
   } catch (error) {
     console.error("Ingestion failed:", error);

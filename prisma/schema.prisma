@@ -139,6 +139,8 @@ model Project {
   reports         MonthlyReport[]
   communityProjects CommunityProject[]
   catalystCommunityProposals CatalystCommunityProposal[]
+  catalystReviews CatalystReview[]
+  reviewsCount    Int           @default(0)
   completionNFT   CompletionNFT?
   bookmarks       Bookmark[]
   fundingTransactions FundingTransaction[]
@@ -679,6 +681,27 @@ model CommunityProject {
 
   @@unique([communityId, projectId])
   @@index([communityId])
+  @@index([projectId])
+}
+
+model CatalystReview {
+  id              String   @id @default(uuid())
+  externalId      String   @unique
+  projectId       String
+  project         Project  @relation(fields: [projectId], references: [id])
+  reviewerName    String?
+  rating          Int?
+  alignmentNote   String?
+  feasibilityNote String?
+  auditabilityNote String?
+  alignmentScore  Int?
+  feasibilityScore Int?
+  auditabilityScore Int?
+  sourceUrl       String
+  sourceType      String
+  lastSeenAt      DateTime
+  createdAt       DateTime @default(now())
+
   @@index([projectId])
 }
 
