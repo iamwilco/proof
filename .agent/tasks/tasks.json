@@ -2352,7 +2352,7 @@
       "id": "PROOF-131",
       "title": "Build milestone scraper for milestones.projectcatalyst.io (Fund 14 PoC)",
       "description": "milestones.projectcatalyst.io has no public API — official sources do not expose milestone data via any REST/GraphQL endpoint. IOG has not published data exports. Community requests for API access have gone unanswered. The only viable path is scraping public-facing project pages. Build a Python scraper (Playwright) to extract milestone data. Output JSON matching MilestoneRecord interface. SCOPE: Fund 14 only (122 funded projects) as proof of concept. If successful, expand to other funds.",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "high",
       "labels": ["data", "scraping", "milestones"],
       "dependencies": ["PROOF-130"],
@@ -2567,6 +2567,133 @@
       ],
       "milestone": 33,
       "created": "2026-02-16"
+    },
+    {
+      "id": "PROOF-143",
+      "title": "Update API docs and migrate Python ETL to new CatalystExplorer API",
+      "description": "The Python ETL scripts (ingest_proposals.py, ingest_voting_records.py) still use the old LIDO Nation API at lidonation.com/api/catalyst-explorer which is deprecated. Migrate to the new official API at catalystexplorer.com/api/v1. Update etl/catalyst/api.md with new endpoint documentation.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["etl", "api", "migration"],
+      "dependencies": [],
+      "est_effort_hours": 2,
+      "acceptance_criteria": [
+        "etl/catalyst/api.md updated with new CatalystExplorer API v1 docs",
+        "ingest_proposals.py BASE_URL points to catalystexplorer.com/api/v1",
+        "ingest_voting_records.py updated to new API",
+        "Old LIDO Nation references removed"
+      ],
+      "milestone": 35,
+      "created": "2026-02-18"
+    },
+    {
+      "id": "PROOF-144",
+      "title": "Add fund statistics ingestion from CatalystExplorer API",
+      "description": "The new CatalystExplorer API provides fund-level statistics via ?include=statistics: total_voters, total_voting_power, participation_rate, success_rate, voting_power_threshold. Add these fields to Fund schema and ingest them during fund upsert in ingest-catalyst.ts.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["etl", "schema", "funds"],
+      "dependencies": ["PROOF-149"],
+      "est_effort_hours": 3,
+      "acceptance_criteria": [
+        "Fund model has new fields: description, totalVoters, totalVotingPower, participationRate, votingPowerThreshold, successRate",
+        "ingest-catalyst.ts fetches fund details with ?include=statistics",
+        "Fund statistics populated during ingestion",
+        "Fund page displays new voter/participation stats"
+      ],
+      "milestone": 35,
+      "created": "2026-02-18"
+    },
+    {
+      "id": "PROOF-145",
+      "title": "Use proper API filters in ingest-catalyst.ts for delta sync",
+      "description": "Replace client-side fund and date filtering in ingest-catalyst.ts with native API query params: filter[fund], filter[status], sort=-updated_at. This makes delta syncs faster by fetching only relevant data from the server.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["etl", "performance"],
+      "dependencies": [],
+      "est_effort_hours": 1,
+      "acceptance_criteria": [
+        "buildProposalUrl uses filter[fund] instead of client-side filtering",
+        "filter[status] supported for targeted ingestion",
+        "sort=-updated_at used for delta sync efficiency",
+        "--fund and --since CLI flags work with server-side filters"
+      ],
+      "milestone": 35,
+      "created": "2026-02-18"
+    },
+    {
+      "id": "PROOF-146",
+      "title": "Add reviews and links includes to proposal ingestion",
+      "description": "The CatalystExplorer API supports include=reviews,links on proposal detail. Add these to the ingestion pipeline to populate official community advisor reviews and external project links.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["etl", "reviews", "links"],
+      "dependencies": [],
+      "est_effort_hours": 3,
+      "acceptance_criteria": [
+        "Proposal fetches include reviews and links relations",
+        "Official CA reviews stored in Review model or new CatalystReview model",
+        "Project links from API stored in Link model",
+        "reviews_count stored on Project"
+      ],
+      "milestone": 35,
+      "created": "2026-02-18"
+    },
+    {
+      "id": "PROOF-147",
+      "title": "Build Catalyst communities ingestion script",
+      "description": "New ingestion script to fetch official Catalyst communities from /api/v1/communities with members, proposals, statistics, and social links. Store in a new CatalystCommunity model or enrich existing Community model.",
+      "status": "pending",
+      "priority": "medium",
+      "labels": ["etl", "communities", "new-feature"],
+      "dependencies": ["PROOF-149"],
+      "est_effort_hours": 4,
+      "acceptance_criteria": [
+        "New ingest-communities.ts script",
+        "Fetches communities with include=users,proposals,statistics",
+        "Stores community data with verified status, social links, member counts",
+        "Links community proposals to existing Project records",
+        "Communities page enriched with official Catalyst data"
+      ],
+      "milestone": 35,
+      "created": "2026-02-18"
+    },
+    {
+      "id": "PROOF-148",
+      "title": "Add campaign budget tracking from fund campaigns endpoint",
+      "description": "Use /api/v1/funds/{id}/campaigns to fetch per-campaign (category) budgets. Store campaign budget data and show budget utilization on fund and project pages.",
+      "status": "pending",
+      "priority": "medium",
+      "labels": ["etl", "funds", "analytics"],
+      "dependencies": [],
+      "est_effort_hours": 3,
+      "acceptance_criteria": [
+        "Campaign budget data fetched from API",
+        "Per-campaign budget stored (new Campaign model or enriched category data)",
+        "Budget utilization percentage shown on fund pages",
+        "Category budget context shown on project detail"
+      ],
+      "milestone": 35,
+      "created": "2026-02-18"
+    },
+    {
+      "id": "PROOF-149",
+      "title": "Schema migration: new Fund and CatalystCommunity fields",
+      "description": "Add new fields to Fund model (description, totalVoters, totalVotingPower, participationRate, votingPowerThreshold, successRate) and create CatalystCommunity model for official Catalyst community data.",
+      "status": "pending",
+      "priority": "high",
+      "labels": ["schema", "migration"],
+      "dependencies": [],
+      "est_effort_hours": 2,
+      "acceptance_criteria": [
+        "Fund model extended with voting/participation fields",
+        "CatalystCommunity model created with members, social links, stats",
+        "Prisma migration generated and applied",
+        "Existing data unaffected"
+      ],
+      "milestone": 35,
+      "created": "2026-02-18"
     }
   ]
 }

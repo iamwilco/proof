@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from sqlalchemy import Column, DateTime, Integer, MetaData, String, Table, Text, create_engine
 from sqlalchemy.dialects.postgresql import JSONB, insert
 
-BASE_URL = "https://www.lidonation.com/api/catalyst-explorer"
+BASE_URL = "https://www.catalystexplorer.com/api/v1"
 PROPOSALS_ENDPOINT = f"{BASE_URL}/proposals"
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
