@@ -22,12 +22,19 @@ model Fund {
   slug                    String?
   status                  String    @default("active")
   currency                String    @default("USD")
+  description             String?
   totalBudget             Decimal   @default(0) @db.Decimal(18, 2)
   totalAwarded            Decimal   @default(0) @db.Decimal(18, 2)
   totalDistributed        Decimal   @default(0) @db.Decimal(18, 2)
   proposalsCount          Int       @default(0)
   fundedProposalsCount    Int       @default(0)
   completedProposalsCount Int       @default(0)
+  // Voting & participation stats from CatalystExplorer API
+  totalVoters             Int?
+  totalVotingPower        Decimal?  @db.Decimal(20, 2)
+  participationRate       Float?
+  votingPowerThreshold    Decimal?  @db.Decimal(20, 2)
+  successRate             Float?
   votingRecords           VotingRecord[]
   startDate               DateTime?
   endDate                 DateTime?
@@ -131,6 +138,7 @@ model Project {
   flags           Flag[]
   reports         MonthlyReport[]
   communityProjects CommunityProject[]
+  catalystCommunityProposals CatalystCommunityProposal[]
   completionNFT   CompletionNFT?
   bookmarks       Bookmark[]
   fundingTransactions FundingTransaction[]
@@ -670,6 +678,66 @@ model CommunityProject {
   addedAt     DateTime  @default(now())
 
   @@unique([communityId, projectId])
+  @@index([communityId])
+  @@index([projectId])
+}
+
+model CatalystCommunity {
+  id                    String   @id @default(uuid())
+  externalId            String   @unique
+  name                  String
+  slug                  String   @unique
+  description           String?
+  website               String?
+  twitterHandle         String?
+  discordUrl            String?
+  verified              Boolean  @default(false)
+  membersCount          Int      @default(0)
+  proposalsCount        Int      @default(0)
+  fundedProposalsCount  Int      @default(0)
+  totalFundingReceived  Decimal  @default(0) @db.Decimal(18, 2)
+  successRate           Float?
+  // Relationships
+  members               CatalystCommunityMember[]
+  proposals             CatalystCommunityProposal[]
+  sourceUrl             String
+  sourceType            String
+  lastSeenAt            DateTime
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([verified])
+  @@index([slug])
+}
+
+model CatalystCommunityMember {
+  id          String             @id @default(uuid())
+  communityId String
+  community   CatalystCommunity  @relation(fields: [communityId], references: [id])
+  externalId  String
+  name        String
+  username    String?
+  role        String?
+  bio         String?
+  joinedAt    DateTime?
+  createdAt   DateTime           @default(now())
+
+  @@unique([communityId, externalId])
+  @@index([communityId])
+}
+
+model CatalystCommunityProposal {
+  id          String             @id @default(uuid())
+  communityId String
+  community   CatalystCommunity  @relation(fields: [communityId], references: [id])
+  projectId   String?
+  project     Project?           @relation(fields: [projectId], references: [id])
+  externalId  String
+  title       String?
+  status      String?
+  createdAt   DateTime           @default(now())
+
+  @@unique([communityId, externalId])
   @@index([communityId])
   @@index([projectId])
 }
