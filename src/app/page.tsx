@@ -37,7 +37,7 @@ export default async function Home() {
   ]);
 
   const totalProjects = projectsData.reduce((sum, p) => sum + p._count, 0);
-  const completedProjects = projectsData.find((p) => p.status === "completed")?._count || 0;
+  const completedProjects = projectsData.find((p) => p.status === "complete")?._count || 0;
   const inProgressProjects = projectsData.find((p) => p.status === "in_progress")?._count || 0;
   const completionRate = totalProjects > 0 ? (completedProjects / totalProjects) * 100 : 0;
 

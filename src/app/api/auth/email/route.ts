@@ -16,18 +16,22 @@ export async function POST(request: NextRequest) {
     const token = generateMagicLinkToken();
     await storeMagicLinkToken(email.toLowerCase(), token);
 
-    const magicLink = `${process.env.NEXTAUTH_URL}/api/auth/email/verify?token=${token}`;
-
-    // In production, send email here
-    // For now, log the link for testing
-    console.log(`Magic link for ${email}: ${magicLink}`);
+    const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+    const magicLink = `${baseUrl}/api/auth/email/verify?token=${token}`;
 
     // TODO: Integrate with email service (SendGrid, Resend, etc.)
     // await sendMagicLinkEmail(email, magicLink);
+    console.log(`Magic link for ${email}: ${magicLink}`);
+
+    // In development, return the link directly so the user can sign in
+    const isDev = process.env.NODE_ENV !== "production";
 
     return NextResponse.json({
       success: true,
-      message: "Check your email for the sign-in link",
+      message: isDev
+        ? "Development mode: use the link below to sign in"
+        : "Check your email for the sign-in link",
+      ...(isDev && { magicLink }),
     });
   } catch (error) {
     console.error("Email auth error:", error);

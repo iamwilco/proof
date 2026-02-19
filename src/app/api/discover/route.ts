@@ -1,11 +1,41 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../lib/prisma";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const searchParams = request.nextUrl.searchParams;
+    const fundParam = searchParams.get("fund"); // "all" or fund number
+
+    // Build fund filter: default to latest fund (15), "all" disables filter
+    const fundFilter: Record<string, unknown> = {};
+    if (fundParam !== "all") {
+      const fundNumber = fundParam ? parseInt(fundParam, 10) : 15;
+      const fund = await prisma.fund.findFirst({
+        where: { number: fundNumber },
+        select: { id: true },
+      });
+      if (fund) {
+        fundFilter.fundId = fund.id;
+      }
+    }
+
+    // For the selected fund, check if there are any funded projects
+    // If none (e.g. Fund 15 still in voting), show pending proposals instead
+    let statusFilter: Record<string, unknown> = { fundingStatus: "funded" };
+    if (fundFilter.fundId) {
+      const fundedCount = await prisma.project.count({
+        where: { fundId: fundFilter.fundId as string, fundingStatus: "funded" },
+      });
+      if (fundedCount === 0) {
+        // Fund still in voting phase — show all proposals
+        statusFilter = { fundingStatus: { in: ["pending", "funded"] } };
+      }
+    }
+
     const projects = await prisma.project.findMany({
       where: {
-        fundingStatus: "funded",
+        ...statusFilter,
+        ...fundFilter,
       },
       orderBy: [
         { yesVotes: "desc" },

@@ -4,26 +4,22 @@ import { getEstimatedPriceForFund } from "../../lib/priceService";
 
 export const revalidate = 60;
 
-const formatCurrency = (amount: number, currency: string) => {
-  if (currency === "ADA") {
-    return `₳${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(amount)}`;
-  }
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(amount);
+const formatCompact = (amount: number, prefix = "$") => {
+  if (amount >= 1_000_000_000) return `${prefix}${(amount / 1_000_000_000).toFixed(1)}B`;
+  if (amount >= 1_000_000) return `${prefix}${(amount / 1_000_000).toFixed(1)}M`;
+  if (amount >= 1_000) return `${prefix}${(amount / 1_000).toFixed(0)}K`;
+  return `${prefix}${Math.round(amount).toLocaleString()}`;
 };
 
-const formatUsd = (amount: number) => {
-  if (amount >= 1_000_000) {
-    return `$${(amount / 1_000_000).toFixed(1)}M`;
+const formatAmount = (amount: number, currency: string, adaPrice?: number) => {
+  if (currency === "ADA") {
+    const usdValue = adaPrice ? amount * adaPrice : amount;
+    return formatCompact(usdValue);
   }
-  if (amount >= 1_000) {
-    return `$${Math.round(amount / 1_000)}K`;
-  }
-  return `$${Math.round(amount)}`;
+  return formatCompact(amount);
 };
+
+const formatAda = (amount: number) => formatCompact(amount, "₳");
 
 const formatPercent = (value: number) => {
   return `${Math.round(value * 100)}%`;
@@ -92,15 +88,13 @@ const FundCard = ({ fund, adaPrice }: { fund: FundWithStats; adaPrice: number })
         </div>
         <div className="text-right">
           <p className="text-2xl font-bold text-slate-900 dark:text-white">
-            {fund.currency === "ADA" 
-              ? formatUsd(Number(fund.totalAwarded) * adaPrice)
-              : formatCurrency(Number(fund.totalAwarded), fund.currency)}
+            {formatAmount(Number(fund.totalAwarded), fund.currency, adaPrice)}
           </p>
           <p className="text-xs text-slate-500 dark:text-slate-400">
             Total Awarded
             {fund.currency === "ADA" && (
               <span className="ml-1 text-slate-400 dark:text-slate-500">
-                ({formatCurrency(Number(fund.totalAwarded), "ADA")})
+                ({formatAda(Number(fund.totalAwarded))})
               </span>
             )}
           </p>
@@ -168,12 +162,25 @@ export default async function FundsPage() {
     orderBy: { number: "desc" },
   });
 
+  // Compute totals, converting ADA-denominated funds to estimated USD
   const totalStats = {
     proposals: funds.reduce((sum, f) => sum + f.proposalsCount, 0),
     funded: funds.reduce((sum, f) => sum + f.fundedProposalsCount, 0),
     completed: funds.reduce((sum, f) => sum + f.completedProposalsCount, 0),
-    awarded: funds.reduce((sum, f) => sum + Number(f.totalAwarded), 0),
-    distributed: funds.reduce((sum, f) => sum + Number(f.totalDistributed), 0),
+    awardedUsd: funds.reduce((sum, f) => {
+      const awarded = Number(f.totalAwarded);
+      if (f.currency === "ADA") {
+        return sum + awarded * getEstimatedPriceForFund(f.number);
+      }
+      return sum + awarded;
+    }, 0),
+    distributedUsd: funds.reduce((sum, f) => {
+      const distributed = Number(f.totalDistributed);
+      if (f.currency === "ADA") {
+        return sum + distributed * getEstimatedPriceForFund(f.number);
+      }
+      return sum + distributed;
+    }, 0),
   };
 
   const overallCompletionRate = totalStats.funded > 0
@@ -211,8 +218,8 @@ export default async function FundsPage() {
               <p className="text-sm text-slate-500 dark:text-slate-400">Completed</p>
             </div>
             <div>
-              <p className="text-3xl font-bold text-slate-900 dark:text-white">—</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Total Awarded (mixed currencies)</p>
+              <p className="text-3xl font-bold text-slate-900 dark:text-white">{formatCompact(totalStats.awardedUsd)}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Total Awarded (est. USD)</p>
             </div>
             <div>
               <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">{formatPercent(overallCompletionRate)}</p>

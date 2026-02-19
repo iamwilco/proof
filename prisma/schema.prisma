@@ -242,13 +242,20 @@ model Deliverable {
   updatedAt   DateTime   @updatedAt
 }
 
+enum PersonEntityType {
+  UNKNOWN
+  INDIVIDUAL
+  ORGANIZATION
+}
+
 model Person {
-  id                      String    @id @default(uuid())
-  externalId              String?   @unique
+  id                      String           @id @default(uuid())
+  externalId              String?          @unique
   name                    String
   username                String?
   bio                     String?
   aliases                 String[]
+  entityType              PersonEntityType @default(UNKNOWN)
   twitter                 String?
   linkedin                String?
   email                   String?

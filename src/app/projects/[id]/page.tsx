@@ -12,6 +12,7 @@ import FlagSection from "./FlagSection";
 import LeaderResponsePanel from "./LeaderResponsePanel";
 import ReportSection from "./ReportSection";
 import ReviewSection from "./ReviewSection";
+import { ProposalDetails as ProposalDetailsTabs, MilestoneTabs } from "./ProposalContent";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -118,54 +119,24 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
   </section>
 );
 
-// Proposal Details Section - shows problem, solution, expected outcome, impact, feasibility, team, budget
-const ProposalDetails = ({ 
-  problem, 
-  solution, 
-  experience,
-  impact,
-  feasibility,
-  teamDescription,
-  budgetBreakdown,
-}: { 
-  problem?: string | null; 
-  solution?: string | null; 
+function buildProposalSections(project: {
+  problem?: string | null;
+  solution?: string | null;
   experience?: string | null;
   impact?: string | null;
   feasibility?: string | null;
   teamDescription?: string | null;
   budgetBreakdown?: string | null;
-}) => {
-  const hasContent = problem || solution || experience || impact || feasibility || teamDescription || budgetBreakdown;
-  if (!hasContent) return null;
-
-  const sections = [
-    { icon: "🎯", title: "Problem Statement", content: problem },
-    { icon: "💡", title: "Proposed Solution", content: solution },
-    { icon: "📈", title: "Expected Impact", content: impact },
-    { icon: "🔬", title: "Feasibility", content: feasibility },
-    { icon: "👥", title: "Team Experience & Qualifications", content: experience || teamDescription },
-    { icon: "💰", title: "Budget Breakdown", content: budgetBreakdown },
-  ].filter((s) => s.content);
-
-  return (
-    <section className="rounded-2xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 p-6">
-      <h2 className="mb-4 text-lg font-semibold text-blue-900 dark:text-blue-100">Proposal Details</h2>
-      <div className="space-y-6">
-        {sections.map((s) => (
-          <div key={s.title}>
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-blue-800 dark:text-blue-200">
-              <span>{s.icon}</span> {s.title}
-            </h3>
-            <p className="mt-2 text-sm text-blue-900/80 dark:text-blue-100/80 whitespace-pre-wrap">
-              {s.content}
-            </p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-};
+}) {
+  return [
+    { label: "Problem", content: project.problem },
+    { label: "Solution", content: project.solution },
+    { label: "Impact", content: project.impact },
+    { label: "Feasibility", content: project.feasibility },
+    { label: "Team", content: project.experience || project.teamDescription },
+    { label: "Budget", content: project.budgetBreakdown },
+  ].filter((s): s is { label: string; content: string } => !!s.content);
+}
 
 export default async function ProjectDetailPage({ params }: PageProps) {
   const { id } = await params;
@@ -394,16 +365,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           </div>
         </header>
 
-        {/* Proposal Details - Problem, Solution, Expected Outcome */}
-        <ProposalDetails
-          problem={project.problem}
-          solution={project.solution}
-          experience={project.experience}
-          impact={project.impact}
-          feasibility={project.feasibility}
-          teamDescription={project.teamDescription}
-          budgetBreakdown={project.budgetBreakdown}
-        />
+        {/* Proposal Details - Tabbed view with markdown rendering */}
+        <ProposalDetailsTabs sections={buildProposalSections(project)} />
 
         {/* Reviewer Scores */}
         {(project.alignmentScore || project.feasibilityScore || project.auditabilityScore) && (
@@ -757,91 +720,23 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           />
 
           {project.milestones.length > 0 && (
-            <Section title="Milestones">
-              <div className="space-y-4">
-                {project.milestones.map((milestone) => (
-                  <div
-                    key={milestone.id}
-                    className="rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <h3 className="font-semibold text-slate-900 dark:text-white">
-                          {milestone.title}
-                        </h3>
-                        {milestone.dueDate && (
-                          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                            Due: {formatDate(milestone.dueDate)}
-                          </p>
-                        )}
-                      </div>
-                      <div className="flex flex-wrap items-center justify-end gap-2">
-                        <StatusBadge status={milestone.status} />
-                        {milestone.somStatus && (
-                          <span className="rounded-full bg-blue-100 dark:bg-blue-900/50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300">
-                            SoM: {milestone.somStatus.replace(/_/g, " ")}
-                          </span>
-                        )}
-                        {milestone.poaStatus && (
-                          <span className="rounded-full bg-purple-100 dark:bg-purple-900/50 px-2 py-0.5 text-xs font-medium text-purple-700 dark:text-purple-300">
-                            PoA: {milestone.poaStatus.replace(/_/g, " ")}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {milestone.evidenceUrls.length > 0 && (
-                      <div className="mt-3 border-t border-slate-200 dark:border-slate-700 pt-3">
-                        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
-                          Evidence
-                        </p>
-                        <ul className="space-y-1 text-sm">
-                          {milestone.evidenceUrls.map((url) => (
-                            <li key={url} className="truncate">
-                              <a
-                                href={url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-blue-600 dark:text-blue-400 hover:underline"
-                              >
-                                {url}
-                              </a>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {milestone.deliverables.length > 0 && (
-                      <div className="mt-3 border-t border-slate-200 dark:border-slate-700 pt-3">
-                        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
-                          Deliverables
-                        </p>
-                        <ul className="space-y-1">
-                          {milestone.deliverables.map((d) => (
-                            <li
-                              key={d.id}
-                              className="flex items-center justify-between text-sm"
-                            >
-                              <span className="text-slate-700 dark:text-slate-300">{d.title}</span>
-                              <span
-                                className={`text-xs ${
-                                  d.status === "completed"
-                                    ? "text-emerald-600 dark:text-emerald-400"
-                                    : "text-slate-400 dark:text-slate-500"
-                                }`}
-                              >
-                                {d.status.replace(/_/g, " ")}
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </Section>
+            <MilestoneTabs
+              milestones={project.milestones.map((m) => ({
+                id: m.id,
+                title: m.title,
+                status: m.status,
+                dueDate: m.dueDate?.toISOString() ?? null,
+                somStatus: m.somStatus,
+                poaStatus: m.poaStatus,
+                description: m.description ?? null,
+                evidenceUrls: m.evidenceUrls,
+                deliverables: m.deliverables.map((d) => ({
+                  id: d.id,
+                  title: d.title,
+                  status: d.status,
+                })),
+              }))}
+            />
           )}
 
           {project.deliverables.length > 0 && (

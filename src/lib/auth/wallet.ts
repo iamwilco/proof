@@ -139,7 +139,8 @@ export async function requestSignature(
   address: string,
   message: string
 ): Promise<{ signature: string; key: string }> {
-  const payload = Buffer.from(message, "utf8").toString("hex");
+  const bytes = new TextEncoder().encode(message);
+  const payload = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
   return api.signData(address, payload);
 }
 

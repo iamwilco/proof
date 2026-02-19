@@ -17,10 +17,13 @@ function LoginContent() {
   const [emailState, setEmailState] = useState<EmailState>("idle");
   const [emailMessage, setEmailMessage] = useState("");
 
+  const [magicLink, setMagicLink] = useState<string | null>(null);
+
   const handleEmailSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setEmailState("loading");
     setEmailMessage("");
+    setMagicLink(null);
 
     try {
       const response = await fetch("/api/auth/email", {
@@ -29,13 +32,17 @@ function LoginContent() {
         body: JSON.stringify({ email }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.error || "Failed to send magic link");
       }
 
       setEmailState("sent");
-      setEmailMessage("Magic link sent! Check your email to sign in.");
+      setEmailMessage(data.message || "Magic link sent! Check your email to sign in.");
+      if (data.magicLink) {
+        setMagicLink(data.magicLink);
+      }
     } catch (err) {
       setEmailState("error");
       setEmailMessage(err instanceof Error ? err.message : "Unable to send magic link.");
@@ -152,7 +159,15 @@ function LoginContent() {
                     : "border border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-300"
                 }`}
               >
-                {emailMessage}
+                <p>{emailMessage}</p>
+                {magicLink && (
+                  <a
+                    href={magicLink}
+                    className="mt-2 inline-block font-medium text-blue-600 hover:underline dark:text-blue-400"
+                  >
+                    Click here to sign in →
+                  </a>
+                )}
               </div>
             )}
           </CardContent>
